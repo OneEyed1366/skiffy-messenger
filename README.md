@@ -2,7 +2,7 @@
 
 ![coverage][coverage_badge]
 [![style: very good analysis][very_good_analysis_badge]][very_good_analysis_link]
-[![License: MIT][license_badge]][license_link]
+[![License: Apache 2.0][license_badge]][license_link]
 
 **Telegram-level UX on Matrix: Fast, intuitive, and feature-rich messaging with guaranteed privacy and data sovereignty.**
 
@@ -214,7 +214,7 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
 
 ## 🙏 Acknowledgments
 
@@ -234,7 +234,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 **Built with ❤️ using Flutter and Rust**
 
 [coverage_badge]: coverage_badge.svg
-[license_badge]: https://img.shields.io/badge/license-MIT-blue.svg
-[license_link]: https://opensource.org/licenses/MIT
+[license_badge]: https://img.shields.io/badge/license-Apache%202.0-blue.svg
+[license_link]: https://opensource.org/licenses/Apache-2.0
 [very_good_analysis_badge]: https://img.shields.io/badge/style-very_good_analysis-B22C89.svg
 [very_good_analysis_link]: https://pub.dev/packages/very_good_analysis
