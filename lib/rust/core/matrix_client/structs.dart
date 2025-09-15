@@ -4,8 +4,8 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
-import 'package:skiffy/api/frb_generated.dart';
-import 'package:skiffy/api/lib.dart';
+import 'package:skiffy/rust/frb_generated.dart';
+import 'package:skiffy/rust/lib.dart';
 
 // These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `fmt`
 
@@ -21,7 +21,7 @@ abstract class MatrixClient implements RustOpaqueInterface {
   static Future<MatrixClient> newInstance({
     required String homeServerUrl,
     bool? disableRetries,
-  }) => RustLib.instance.api.crateMatrixClientStructsMatrixClientNew(
+  }) => RustLib.instance.api.crateCoreMatrixClientStructsMatrixClientNew(
     homeServerUrl: homeServerUrl,
     disableRetries: disableRetries,
   );

@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use crate::matrix_client::structs::MatrixClient;
+    use crate::core::matrix_client::structs::MatrixClient;
     use mockito::Server;
 
     #[tokio::test]
