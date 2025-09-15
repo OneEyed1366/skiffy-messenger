@@ -1,1 +1,4 @@
-export 'colors.dart' show AppColors;
+export 'colors.dart';
+export 'icons.dart';
+export 'theme.dart';
+export 'typography.dart';

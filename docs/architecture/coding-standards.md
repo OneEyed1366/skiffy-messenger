@@ -22,6 +22,7 @@
 ## General Principles
 
 ### Core Values
+
 1. **Readability over cleverness** - Code is read more often than written
 2. **Explicit over implicit** - Clear intent matters
 3. **Consistency** - Follow established patterns
@@ -30,6 +31,7 @@
 6. **Security** - Security is not optional
 
 ### Universal Rules
+
 - No commented-out code in production
 - No debug prints in production code
 - All TODOs must include a ticket reference
@@ -42,6 +44,7 @@
 ### Code Formatting
 
 #### Mandatory Tools
+
 ```bash
 # Format all Dart code
 flutter format .
@@ -54,6 +57,7 @@ dart fix --apply
 ```
 
 #### Linter Configuration
+
 ```yaml
 # analysis_options.yaml
 include: package:flutter_lints/flutter.yaml
@@ -85,6 +89,7 @@ analyzer:
 ### Naming Conventions
 
 #### Files and Directories
+
 ```dart
 // ✅ Good
 lib/features/auth/screens/login_screen.dart
@@ -96,6 +101,7 @@ lib/widgets/AppButton.dart
 ```
 
 #### Classes and Types
+
 ```dart
 // ✅ Good
 class AuthenticationService {}
@@ -108,6 +114,7 @@ class messageBubble extends StatelessWidget {}
 ```
 
 #### Variables and Functions
+
 ```dart
 // ✅ Good
 final userName = 'John';
@@ -123,6 +130,7 @@ const DEFAULT_TIMEOUT = Duration(seconds: 30);
 ### Flutter Widget Standards
 
 #### Stateless vs Stateful
+
 ```dart
 // ✅ Prefer StatelessWidget when possible
 class MessageTile extends StatelessWidget {
@@ -137,6 +145,7 @@ class AnimatedMessageInput extends StatefulWidget {
 ```
 
 #### Widget Structure
+
 ```dart
 /// A reusable button component following the app's design system.
 class AppButton extends StatelessWidget {
@@ -168,6 +177,7 @@ class AppButton extends StatelessWidget {
 ```
 
 #### BLoC Pattern Standards
+
 ```dart
 // Event classes
 abstract class AuthEvent extends Equatable {
@@ -240,6 +250,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 ### Async Programming
 
 #### Future Handling
+
 ```dart
 // ✅ Good - explicit error handling
 Future<void> sendMessage(String text) async {
@@ -261,6 +272,7 @@ Future<void> sendMessage(String text) async {
 ```
 
 #### Stream Management
+
 ```dart
 class TimelineBloc extends Bloc<TimelineEvent, TimelineState> {
   StreamSubscription? _messageSubscription;
@@ -320,6 +332,7 @@ cargo clippy -- -D warnings
 ```
 
 ### Clippy Configuration
+
 ```toml
 # .clippy.toml
 cognitive-complexity-threshold = 30
@@ -633,6 +646,7 @@ void main() {
 ### Code Documentation
 
 #### Dart Documentation
+
 ```dart
 /// Manages the authentication state of the application.
 ///
@@ -656,6 +670,7 @@ class AuthenticationService {
 ```
 
 #### Rust Documentation
+
 ```rust
 /// Handles Matrix protocol authentication.
 ///
@@ -689,6 +704,7 @@ pub mod auth {
 ### README Standards
 
 Every module should have a README:
+
 ```markdown
 # Auth Module
 
@@ -707,7 +723,9 @@ authBloc.add(LoginRequested(username, password));
 ```
 
 ## Testing
+
 Run tests with: `flutter test test/features/auth/`
+
 ```
 
 ## Performance Standards
@@ -833,6 +851,7 @@ fn generate_session_id() -> String {
 ### Review Checklist
 
 #### Before Submitting PR
+
 - [ ] Code compiles without warnings
 - [ ] All tests pass
 - [ ] Code is formatted (`flutter format` / `cargo fmt`)
@@ -842,6 +861,7 @@ fn generate_session_id() -> String {
 - [ ] Security implications reviewed
 
 #### Review Focus Areas
+
 1. **Correctness** - Does it work as intended?
 2. **Performance** - Are there any bottlenecks?
 3. **Security** - Are inputs validated?
@@ -850,6 +870,7 @@ fn generate_session_id() -> String {
 6. **Documentation** - Is it well documented?
 
 ### PR Description Template
+
 ```markdown
 ## Description
 Brief description of changes
@@ -886,6 +907,7 @@ Brief description of changes
 ```
 
 #### Types
+
 - **feat**: New feature
 - **fix**: Bug fix
 - **docs**: Documentation only
@@ -895,6 +917,7 @@ Brief description of changes
 - **chore**: Maintenance tasks
 
 #### Examples
+
 ```
 feat(auth): add SSO login support
 
@@ -937,6 +960,7 @@ All code must pass the following automated checks:
 ### Exceptions
 
 Exceptions to these standards require:
+
 1. Technical justification
 2. Team lead approval
 3. Documentation of the exception

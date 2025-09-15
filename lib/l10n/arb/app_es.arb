@@ -1,7 +1,22 @@
 {
     "@@locale": "es",
-    "counterAppBarTitle": "Contador",
+    "counterAppBarTitle": "SkiffyMessenger",
     "@counterAppBarTitle": {
         "description": "Texto mostrado en la AppBar de la página del contador"
-    }
+    },
+    "textFieldSearchHint": "Buscar...",
+    "textFieldShowPassword": "Mostrar contraseña",
+    "textFieldHidePassword": "Ocultar contraseña",
+    "validatorEmailRequired": "Ingrese dirección de correo",
+    "validatorEmailInvalid": "Ingrese dirección de correo válida",
+    "validatorPasswordRequired": "Ingrese contraseña",
+    "validatorPasswordMinLength": "La contraseña debe contener al menos {minLength} caracteres",
+    "validatorPasswordUppercase": "La contraseña debe contener una letra mayúscula",
+    "validatorPasswordLowercase": "La contraseña debe contener una letra minúscula",
+    "validatorPasswordDigit": "La contraseña debe contener un dígito",
+    "validatorMatrixIdRequired": "Ingrese Matrix ID",
+    "validatorMatrixIdInvalid": "Ingrese Matrix ID válido (@user:server.com)",
+    "validatorFieldRequired": "Campo{fieldName} es requerido",
+    "validatorMinLength": "Longitud mínima: {minLength} caracteres",
+    "validatorMaxLength": "Longitud máxima: {maxLength} caracteres"
 }

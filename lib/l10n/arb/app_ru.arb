@@ -1,7 +1,58 @@
 {
     "@@locale": "ru",
-    "counterAppBarTitle": "Счетчик",
+    "counterAppBarTitle": "SkiffyMessenger",
     "@counterAppBarTitle": {
         "description": "Text shown in the AppBar of the Counter Page"
+    },
+    "textFieldSearchHint": "Поиск...",
+    "textFieldShowPassword": "Показать пароль",
+    "textFieldHidePassword": "Скрыть пароль",
+    "validatorEmailRequired": "Введите email адрес",
+    "validatorEmailInvalid": "Введите корректный email адрес",
+    "validatorPasswordRequired": "Введите пароль",
+    "validatorPasswordMinLength": "Пароль должен содержать минимум {minLength} символов",
+    "@validatorPasswordMinLength": {
+        "description": "Error message when password is too short",
+        "placeholders": {
+            "minLength": {
+                "type": "Object",
+                "example": "8"
+            }
+        }
+    },
+    "validatorPasswordUppercase": "Пароль должен содержать заглавную букву",
+    "validatorPasswordLowercase": "Пароль должен содержать строчную букву",
+    "validatorPasswordDigit": "Пароль должен содержать цифру",
+    "validatorMatrixIdRequired": "Введите Matrix ID",
+    "validatorMatrixIdInvalid": "Введите корректный Matrix ID (@user:server.com)",
+    "validatorFieldRequired": "Поле{fieldName} обязательно для заполнения",
+    "@validatorFieldRequired": {
+        "description": "Error message when a field is required",
+        "placeholders": {
+            "fieldName": {
+                "type": "Object",
+                "example": " \"Name\""
+            }
+        }
+    },
+    "validatorMinLength": "Минимальная длина: {minLength} символов",
+    "@validatorMinLength": {
+        "description": "Error message when input is too short",
+        "placeholders": {
+            "minLength": {
+                "type": "Object",
+                "example": "3"
+            }
+        }
+    },
+    "validatorMaxLength": "Максимальная длина: {maxLength} символов",
+    "@validatorMaxLength": {
+        "description": "Error message when input is too long",
+        "placeholders": {
+            "maxLength": {
+                "type": "Object",
+                "example": "50"
+            }
+        }
     }
 }

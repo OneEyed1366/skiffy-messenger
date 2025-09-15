@@ -6,18 +6,17 @@
 // Static analysis wrongly picks the IO variant, thus ignore this
 // ignore_for_file: argument_type_not_assignable
 
+import 'api/secure_storage.dart';
+import 'core/matrix_client/structs.dart';
+import 'core/storage.dart';
+import 'core/storage/factory.dart';
+import 'core/storage/keychain.dart';
+import 'core/storage/memory.dart';
 import 'dart:async';
 import 'dart:convert';
-
+import 'frb_generated.dart';
+import 'lib.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated_web.dart';
-import 'package:skiffy/rust/api/secure_storage.dart';
-import 'package:skiffy/rust/core/matrix_client/structs.dart';
-import 'package:skiffy/rust/core/storage.dart';
-import 'package:skiffy/rust/core/storage/factory.dart';
-import 'package:skiffy/rust/core/storage/keychain.dart';
-import 'package:skiffy/rust/core/storage/memory.dart';
-import 'package:skiffy/rust/frb_generated.dart';
-import 'package:skiffy/rust/lib.dart';
 
 abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   RustLibApiImplPlatform({
@@ -468,7 +467,7 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 // Section: wire_class
 
 class RustLibWire implements BaseWire {
-  RustLibWire.fromExternalLibrary();
+  RustLibWire.fromExternalLibrary(ExternalLibrary lib);
 
   void
   rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcdynSecureStorage(
