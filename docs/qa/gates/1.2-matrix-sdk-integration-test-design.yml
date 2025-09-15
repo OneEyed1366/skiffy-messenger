@@ -1,0 +1,14 @@
+test_design:
+  scenarios_total: 12
+  by_level:
+    unit: 6
+    integration: 4
+    e2e: 2
+  by_priority:
+    p0: 4
+    p1: 5
+    p2: 3
+  coverage_gaps: 
+    - "Integration test implementation pending"
+    - "E2E test implementation pending"
+    - "Actual Matrix server testing required"
