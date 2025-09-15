@@ -3,7 +3,7 @@ import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/widgets.dart';
-import 'package:skiffy/api/api.dart' show RustLib;
+import 'package:skiffy/rust/frb_generated.dart' show RustLib;
 
 class AppBlocObserver extends BlocObserver {
   const AppBlocObserver();
