@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod tests {
     use crate::core::matrix_client::structs::MatrixClient;
-    use crate::core::storage::{InMemoryStorage, SecureStorage};
+    use crate::core::storage::{AuthKeys, InMemoryStorage, SecureStorage};
     use mockito::Server;
     use std::sync::Arc;
 
@@ -66,8 +66,8 @@ mod tests {
         assert!(client.get_user_info().await.is_some());
 
         // Verify tokens are stored in SecureStorage
-        assert!(storage.get("skiffy__access_token").await.is_ok());
-        assert!(storage.get("skiffy__user_id").await.is_ok());
+        assert!(storage.get(AuthKeys::ACCESS_TOKEN).await.is_ok());
+        assert!(storage.get(AuthKeys::USER_ID).await.is_ok());
     }
 
     #[tokio::test]
@@ -149,7 +149,7 @@ mod tests {
         assert!(result.is_err());
 
         // Storage should remain empty since login failed
-        assert!(storage.get("skiffy__access_token").await.is_err());
+        assert!(storage.get(AuthKeys::ACCESS_TOKEN).await.is_err());
     }
 
     #[tokio::test]
@@ -182,6 +182,6 @@ mod tests {
         assert!(!client.is_logged_in());
 
         // Storage should remain empty since login failed
-        assert!(storage.get("skiffy__access_token").await.is_err());
+        assert!(storage.get(AuthKeys::ACCESS_TOKEN).await.is_err());
     }
 }

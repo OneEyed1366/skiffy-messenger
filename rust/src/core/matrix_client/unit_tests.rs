@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod tests {
     use crate::core::matrix_client::structs::MatrixClient;
-    use crate::core::storage::{InMemoryStorage, SecureStorage};
+    use crate::core::storage::{AuthKeys, InMemoryStorage, SecureStorage};
     use anyhow::Result;
     use std::env;
     use std::sync::Arc;
@@ -30,9 +30,9 @@ mod tests {
             assert!(client.get_user_info().await.is_some());
 
             // Verify tokens are stored
-            assert!(storage.get("skiffy__access_token").await.is_ok());
-            assert!(storage.get("skiffy__user_id").await.is_ok());
-            assert!(storage.get("skiffy__device_id").await.is_ok());
+            assert!(storage.get(AuthKeys::ACCESS_TOKEN).await.is_ok());
+            assert!(storage.get(AuthKeys::USER_ID).await.is_ok());
+            assert!(storage.get(AuthKeys::DEVICE_ID).await.is_ok());
         }
 
         Ok(())
@@ -101,10 +101,10 @@ mod tests {
         let storage: Arc<dyn SecureStorage> = Arc::new(InMemoryStorage::new());
 
         // Mock stored session data
-        storage.set("skiffy__access_token", "test_access_token").await.unwrap();
-        storage.set("skiffy__user_id", "@test:matrix.org").await.unwrap();
-        storage.set("skiffy__device_id", "TEST_DEVICE").await.unwrap();
-        storage.set("skiffy__refresh_token", "test_refresh_token").await.unwrap();
+        storage.set(AuthKeys::ACCESS_TOKEN, "test_access_token").await.unwrap();
+        storage.set(AuthKeys::USER_ID, "@test:matrix.org").await.unwrap();
+        storage.set(AuthKeys::DEVICE_ID, "TEST_DEVICE").await.unwrap();
+        storage.set(AuthKeys::REFRESH_TOKEN, "test_refresh_token").await.unwrap();
 
         // Try session restoration - this may succeed or fail depending on server connectivity
         // The important thing is that our restoration logic processes the stored data correctly
@@ -127,23 +127,23 @@ mod tests {
         let storage: Arc<dyn SecureStorage> = Arc::new(InMemoryStorage::new());
 
         // Pre-populate storage with mock session data
-        storage.set("skiffy__access_token", "test_access_token").await.unwrap();
-        storage.set("skiffy__user_id", "@test:matrix.org").await.unwrap();
-        storage.set("skiffy__device_id", "TEST_DEVICE").await.unwrap();
-        storage.set("skiffy__refresh_token", "test_refresh_token").await.unwrap();
+        storage.set(AuthKeys::ACCESS_TOKEN, "test_access_token").await.unwrap();
+        storage.set(AuthKeys::USER_ID, "@test:matrix.org").await.unwrap();
+        storage.set(AuthKeys::DEVICE_ID, "TEST_DEVICE").await.unwrap();
+        storage.set(AuthKeys::REFRESH_TOKEN, "test_refresh_token").await.unwrap();
 
         // Verify data is stored
-        assert!(storage.get("skiffy__access_token").await.is_ok());
-        assert!(storage.get("skiffy__user_id").await.is_ok());
+        assert!(storage.get(AuthKeys::ACCESS_TOKEN).await.is_ok());
+        assert!(storage.get(AuthKeys::USER_ID).await.is_ok());
 
         // Logout should clear all data
         client.logout(&*storage).await?;
 
         // Verify all session data is cleared
-        assert!(storage.get("skiffy__access_token").await.is_err());
-        assert!(storage.get("skiffy__user_id").await.is_err());
-        assert!(storage.get("skiffy__device_id").await.is_err());
-        assert!(storage.get("skiffy__refresh_token").await.is_err());
+        assert!(storage.get(AuthKeys::ACCESS_TOKEN).await.is_err());
+        assert!(storage.get(AuthKeys::USER_ID).await.is_err());
+        assert!(storage.get(AuthKeys::DEVICE_ID).await.is_err());
+        assert!(storage.get(AuthKeys::REFRESH_TOKEN).await.is_err());
 
         // Verify client state is cleared
         assert!(!client.is_logged_in());
@@ -164,7 +164,7 @@ mod tests {
         assert!(result.is_err());
 
         // Storage should remain empty since login failed
-        assert!(storage.get("skiffy__access_token").await.is_err());
+        assert!(storage.get(AuthKeys::ACCESS_TOKEN).await.is_err());
 
         Ok(())
     }
@@ -176,8 +176,8 @@ mod tests {
         let storage: Arc<dyn SecureStorage> = Arc::new(InMemoryStorage::new());
 
         // Store incomplete session data (missing user_id)
-        storage.set("skiffy__access_token", "test_access_token").await.unwrap();
-        storage.set("skiffy__device_id", "TEST_DEVICE").await.unwrap();
+        storage.set(AuthKeys::ACCESS_TOKEN, "test_access_token").await.unwrap();
+        storage.set(AuthKeys::DEVICE_ID, "TEST_DEVICE").await.unwrap();
         // Deliberately omit user_id
 
         // Should fail gracefully when required data is missing
@@ -194,9 +194,9 @@ mod tests {
         let storage: Arc<dyn SecureStorage> = Arc::new(InMemoryStorage::new());
 
         // Store session data with invalid user_id format
-        storage.set("skiffy__access_token", "test_access_token").await.unwrap();
-        storage.set("skiffy__user_id", "invalid_user_id_format").await.unwrap();
-        storage.set("skiffy__device_id", "TEST_DEVICE").await.unwrap();
+        storage.set(AuthKeys::ACCESS_TOKEN, "test_access_token").await.unwrap();
+        storage.set(AuthKeys::USER_ID, "invalid_user_id_format").await.unwrap();
+        storage.set(AuthKeys::DEVICE_ID, "TEST_DEVICE").await.unwrap();
 
         // Should fail when user_id format is invalid
         let result = client.restore_session(&*storage).await;

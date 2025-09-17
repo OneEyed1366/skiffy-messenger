@@ -14,10 +14,12 @@ pub mod windows;
 pub mod linux;
 
 pub mod factory;
+pub mod keys;
 pub mod memory;
 
 // Re-exports
 pub use factory::{create_memory_storage, create_secure_storage};
+pub use keys::AuthKeys;
 pub use memory::InMemoryStorage;
 
 #[cfg(any(target_os = "macos", target_os = "ios"))]

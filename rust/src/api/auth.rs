@@ -2,7 +2,7 @@ use anyhow::Result;
 use flutter_rust_bridge::frb;
 use crate::core::{
     matrix_client::MatrixClient,
-    storage::{create_secure_storage, SecureStorageError}
+    storage::{create_secure_storage, AuthKeys, SecureStorageError}
 };
 use thiserror::Error;
 
@@ -132,7 +132,7 @@ pub async fn has_stored_session() -> Result<bool, AuthError> {
             message: e.to_string()
         }))?;
 
-    match storage.get("skiffy__access_token").await {
+    match storage.get(AuthKeys::ACCESS_TOKEN).await {
         Ok(_) => Ok(true),
         Err(SecureStorageError::KeyNotFound { .. }) => Ok(false),
         Err(e) => Err(AuthError::Storage(e)),

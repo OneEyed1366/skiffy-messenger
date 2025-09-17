@@ -7,7 +7,7 @@ use matrix_sdk::{
 };
 use std::str::FromStr;
 use url::Url;
-use crate::core::storage::SecureStorage;
+use crate::core::storage::{AuthKeys, SecureStorage};
 
 #[derive(Debug)]
 pub struct MatrixClient {
@@ -49,21 +49,21 @@ impl MatrixClient {
         self.device_id = Some(response.device_id.clone());
 
         // Store session data in SecureStorage with standardized keys
-        storage.set("skiffy__access_token", &response.access_token)
+        storage.set(AuthKeys::ACCESS_TOKEN, &response.access_token)
             .await
             .context("Failed to store access token in secure storage")?;
 
         if let Some(refresh_token) = &response.refresh_token {
-            storage.set("skiffy__refresh_token", refresh_token)
+            storage.set(AuthKeys::REFRESH_TOKEN, refresh_token)
                 .await
                 .context("Failed to store refresh token in secure storage")?;
         }
 
-        storage.set("skiffy__user_id", response.user_id.as_str())
+        storage.set(AuthKeys::USER_ID, response.user_id.as_str())
             .await
             .context("Failed to store user ID in secure storage")?;
 
-        storage.set("skiffy__device_id", response.device_id.as_str())
+        storage.set(AuthKeys::DEVICE_ID, response.device_id.as_str())
             .await
             .context("Failed to store device ID in secure storage")?;
 
@@ -72,16 +72,16 @@ impl MatrixClient {
 
     pub async fn restore_session(&mut self, storage: &dyn SecureStorage) -> Result<bool> {
         // Try to load stored credentials from SecureStorage
-        let access_token = match storage.get("skiffy__access_token").await {
+        let access_token = match storage.get(AuthKeys::ACCESS_TOKEN).await {
             Ok(token) => token,
             Err(_) => return Ok(false), // No stored session
         };
 
-        let user_id_str = storage.get("skiffy__user_id")
+        let user_id_str = storage.get(AuthKeys::USER_ID)
             .await
             .context("Failed to load user ID from secure storage")?;
 
-        let device_id_str = storage.get("skiffy__device_id")
+        let device_id_str = storage.get(AuthKeys::DEVICE_ID)
             .await
             .context("Failed to load device ID from secure storage")?;
 
@@ -101,7 +101,7 @@ impl MatrixClient {
             },
             tokens: SessionTokens {
                 access_token,
-                refresh_token: storage.get("skiffy__refresh_token").await.ok(),
+                refresh_token: storage.get(AuthKeys::REFRESH_TOKEN).await.ok(),
             },
         };
 
@@ -159,14 +159,7 @@ impl MatrixClient {
         self.device_id = None;
 
         // Clear all session data from SecureStorage
-        let keys_to_clear = [
-            "skiffy__access_token",
-            "skiffy__refresh_token",
-            "skiffy__user_id",
-            "skiffy__device_id"
-        ];
-
-        for key in &keys_to_clear {
+        for key in AuthKeys::all() {
             if let Err(e) = storage.delete(key).await {
                 eprintln!("Warning: Failed to delete {} from secure storage: {}", key, e);
             }
