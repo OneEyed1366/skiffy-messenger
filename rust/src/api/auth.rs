@@ -1,9 +1,9 @@
-use anyhow::Result;
-use flutter_rust_bridge::frb;
 use crate::core::{
     matrix_client::MatrixClient,
-    storage::{create_secure_storage, AuthKeys, SecureStorageError}
+    storage::{create_secure_storage, AuthKeys, SecureStorageError},
 };
+use anyhow::Result;
+use flutter_rust_bridge::frb;
 use thiserror::Error;
 
 /// Errors that can occur during authentication operations
@@ -44,22 +44,28 @@ pub struct User {
 
 /// Login with username and password
 #[frb]
-pub async fn login(home_server_url: String, username: String, password: String) -> Result<User, AuthError> {
-    let storage = create_secure_storage()
-        .await
-        .map_err(|e| AuthError::Storage(SecureStorageError::Internal {
-            message: e.to_string()
-        }))?;
+pub async fn login(
+    home_server_url: String,
+    username: String,
+    password: String,
+) -> Result<User, AuthError> {
+    let storage = create_secure_storage().await.map_err(|e| {
+        AuthError::Storage(SecureStorageError::Internal {
+            message: e.to_string(),
+        })
+    })?;
 
     let mut client = MatrixClient::new(&home_server_url, Some(false))
         .await
         .map_err(|e| AuthError::Network(e.to_string()))?;
 
-    client.login(&username, &password, &*storage)
+    client
+        .login(&username, &password, &*storage)
         .await
         .map_err(AuthError::from)?;
 
-    let user_id = client.get_user_info()
+    let user_id = client
+        .get_user_info()
         .await
         .ok_or(AuthError::SessionNotFound)?;
 
@@ -72,22 +78,24 @@ pub async fn login(home_server_url: String, username: String, password: String) 
 /// Restore a previous session from secure storage
 #[frb]
 pub async fn restore_session(home_server_url: String) -> Result<Option<User>, AuthError> {
-    let storage = create_secure_storage()
-        .await
-        .map_err(|e| AuthError::Storage(SecureStorageError::Internal {
-            message: e.to_string()
-        }))?;
+    let storage = create_secure_storage().await.map_err(|e| {
+        AuthError::Storage(SecureStorageError::Internal {
+            message: e.to_string(),
+        })
+    })?;
 
     let mut client = MatrixClient::new(&home_server_url, Some(false))
         .await
         .map_err(|e| AuthError::Network(e.to_string()))?;
 
-    let restored = client.restore_session(&*storage)
+    let restored = client
+        .restore_session(&*storage)
         .await
         .map_err(AuthError::from)?;
 
     if restored {
-        let user_id = client.get_user_info()
+        let user_id = client
+            .get_user_info()
             .await
             .ok_or(AuthError::SessionNotFound)?;
 
@@ -103,11 +111,11 @@ pub async fn restore_session(home_server_url: String) -> Result<Option<User>, Au
 /// Logout and clear all session data
 #[frb]
 pub async fn logout(home_server_url: String) -> Result<(), AuthError> {
-    let storage = create_secure_storage()
-        .await
-        .map_err(|e| AuthError::Storage(SecureStorageError::Internal {
-            message: e.to_string()
-        }))?;
+    let storage = create_secure_storage().await.map_err(|e| {
+        AuthError::Storage(SecureStorageError::Internal {
+            message: e.to_string(),
+        })
+    })?;
 
     let mut client = MatrixClient::new(&home_server_url, Some(false))
         .await
@@ -116,9 +124,7 @@ pub async fn logout(home_server_url: String) -> Result<(), AuthError> {
     // First restore the session if it exists so we can logout properly
     let _ = client.restore_session(&*storage).await;
 
-    client.logout(&*storage)
-        .await
-        .map_err(AuthError::from)?;
+    client.logout(&*storage).await.map_err(AuthError::from)?;
 
     Ok(())
 }
@@ -126,11 +132,11 @@ pub async fn logout(home_server_url: String) -> Result<(), AuthError> {
 /// Check if there is a stored session
 #[frb]
 pub async fn has_stored_session() -> Result<bool, AuthError> {
-    let storage = create_secure_storage()
-        .await
-        .map_err(|e| AuthError::Storage(SecureStorageError::Internal {
-            message: e.to_string()
-        }))?;
+    let storage = create_secure_storage().await.map_err(|e| {
+        AuthError::Storage(SecureStorageError::Internal {
+            message: e.to_string(),
+        })
+    })?;
 
     match storage.get(AuthKeys::ACCESS_TOKEN).await {
         Ok(_) => Ok(true),

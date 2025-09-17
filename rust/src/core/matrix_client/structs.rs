@@ -1,13 +1,15 @@
+use crate::core::storage::{AuthKeys, SecureStorage};
 use anyhow::{Context, Result};
 use matrix_sdk::{
-    config::{RequestConfig, SyncSettings},
-    ruma::{events::room::message::RoomMessageEventContent, OwnedDeviceId, OwnedRoomId, OwnedUserId},
-    Client, SessionMeta, SessionTokens,
     authentication::matrix::MatrixSession,
+    config::{RequestConfig, SyncSettings},
+    ruma::{
+        events::room::message::RoomMessageEventContent, OwnedDeviceId, OwnedRoomId, OwnedUserId,
+    },
+    Client, SessionMeta, SessionTokens,
 };
 use std::str::FromStr;
 use url::Url;
-use crate::core::storage::{AuthKeys, SecureStorage};
 
 #[derive(Debug)]
 pub struct MatrixClient {
@@ -36,7 +38,12 @@ impl MatrixClient {
         })
     }
 
-    pub async fn login(&mut self, username: &str, password: &str, storage: &dyn SecureStorage) -> Result<()> {
+    pub async fn login(
+        &mut self,
+        username: &str,
+        password: &str,
+        storage: &dyn SecureStorage,
+    ) -> Result<()> {
         let response = self
             .client
             .matrix_auth()
@@ -49,21 +56,25 @@ impl MatrixClient {
         self.device_id = Some(response.device_id.clone());
 
         // Store session data in SecureStorage with standardized keys
-        storage.set(AuthKeys::ACCESS_TOKEN, &response.access_token)
+        storage
+            .set(AuthKeys::ACCESS_TOKEN, &response.access_token)
             .await
             .context("Failed to store access token in secure storage")?;
 
         if let Some(refresh_token) = &response.refresh_token {
-            storage.set(AuthKeys::REFRESH_TOKEN, refresh_token)
+            storage
+                .set(AuthKeys::REFRESH_TOKEN, refresh_token)
                 .await
                 .context("Failed to store refresh token in secure storage")?;
         }
 
-        storage.set(AuthKeys::USER_ID, response.user_id.as_str())
+        storage
+            .set(AuthKeys::USER_ID, response.user_id.as_str())
             .await
             .context("Failed to store user ID in secure storage")?;
 
-        storage.set(AuthKeys::DEVICE_ID, response.device_id.as_str())
+        storage
+            .set(AuthKeys::DEVICE_ID, response.device_id.as_str())
             .await
             .context("Failed to store device ID in secure storage")?;
 
@@ -77,11 +88,13 @@ impl MatrixClient {
             Err(_) => return Ok(false), // No stored session
         };
 
-        let user_id_str = storage.get(AuthKeys::USER_ID)
+        let user_id_str = storage
+            .get(AuthKeys::USER_ID)
             .await
             .context("Failed to load user ID from secure storage")?;
 
-        let device_id_str = storage.get(AuthKeys::DEVICE_ID)
+        let device_id_str = storage
+            .get(AuthKeys::DEVICE_ID)
             .await
             .context("Failed to load device ID from secure storage")?;
 
@@ -89,8 +102,7 @@ impl MatrixClient {
         let user_id = OwnedUserId::from_str(&user_id_str)
             .context("Invalid user ID format in stored session")?;
 
-        let device_id = OwnedDeviceId::try_from(device_id_str)
-            .context("Invalid device ID format in stored session")?;
+        let device_id = OwnedDeviceId::from(device_id_str);
 
         // Restore the session in the Matrix client
         // Create MatrixSession from stored credentials
@@ -161,7 +173,10 @@ impl MatrixClient {
         // Clear all session data from SecureStorage
         for key in AuthKeys::all() {
             if let Err(e) = storage.delete(key).await {
-                eprintln!("Warning: Failed to delete {} from secure storage: {}", key, e);
+                eprintln!(
+                    "Warning: Failed to delete {} from secure storage: {}",
+                    key, e
+                );
             }
         }
 

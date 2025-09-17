@@ -101,10 +101,22 @@ mod tests {
         let storage: Arc<dyn SecureStorage> = Arc::new(InMemoryStorage::new());
 
         // Mock stored session data
-        storage.set(AuthKeys::ACCESS_TOKEN, "test_access_token").await.unwrap();
-        storage.set(AuthKeys::USER_ID, "@test:matrix.org").await.unwrap();
-        storage.set(AuthKeys::DEVICE_ID, "TEST_DEVICE").await.unwrap();
-        storage.set(AuthKeys::REFRESH_TOKEN, "test_refresh_token").await.unwrap();
+        storage
+            .set(AuthKeys::ACCESS_TOKEN, "test_access_token")
+            .await
+            .unwrap();
+        storage
+            .set(AuthKeys::USER_ID, "@test:matrix.org")
+            .await
+            .unwrap();
+        storage
+            .set(AuthKeys::DEVICE_ID, "TEST_DEVICE")
+            .await
+            .unwrap();
+        storage
+            .set(AuthKeys::REFRESH_TOKEN, "test_refresh_token")
+            .await
+            .unwrap();
 
         // Try session restoration - this may succeed or fail depending on server connectivity
         // The important thing is that our restoration logic processes the stored data correctly
@@ -127,10 +139,22 @@ mod tests {
         let storage: Arc<dyn SecureStorage> = Arc::new(InMemoryStorage::new());
 
         // Pre-populate storage with mock session data
-        storage.set(AuthKeys::ACCESS_TOKEN, "test_access_token").await.unwrap();
-        storage.set(AuthKeys::USER_ID, "@test:matrix.org").await.unwrap();
-        storage.set(AuthKeys::DEVICE_ID, "TEST_DEVICE").await.unwrap();
-        storage.set(AuthKeys::REFRESH_TOKEN, "test_refresh_token").await.unwrap();
+        storage
+            .set(AuthKeys::ACCESS_TOKEN, "test_access_token")
+            .await
+            .unwrap();
+        storage
+            .set(AuthKeys::USER_ID, "@test:matrix.org")
+            .await
+            .unwrap();
+        storage
+            .set(AuthKeys::DEVICE_ID, "TEST_DEVICE")
+            .await
+            .unwrap();
+        storage
+            .set(AuthKeys::REFRESH_TOKEN, "test_refresh_token")
+            .await
+            .unwrap();
 
         // Verify data is stored
         assert!(storage.get(AuthKeys::ACCESS_TOKEN).await.is_ok());
@@ -160,7 +184,9 @@ mod tests {
         let storage: Arc<dyn SecureStorage> = Arc::new(InMemoryStorage::new());
 
         // Test with invalid credentials - should fail gracefully
-        let result = client.login("invalid_user", "invalid_pass", &*storage).await;
+        let result = client
+            .login("invalid_user", "invalid_pass", &*storage)
+            .await;
         assert!(result.is_err());
 
         // Storage should remain empty since login failed
@@ -176,8 +202,14 @@ mod tests {
         let storage: Arc<dyn SecureStorage> = Arc::new(InMemoryStorage::new());
 
         // Store incomplete session data (missing user_id)
-        storage.set(AuthKeys::ACCESS_TOKEN, "test_access_token").await.unwrap();
-        storage.set(AuthKeys::DEVICE_ID, "TEST_DEVICE").await.unwrap();
+        storage
+            .set(AuthKeys::ACCESS_TOKEN, "test_access_token")
+            .await
+            .unwrap();
+        storage
+            .set(AuthKeys::DEVICE_ID, "TEST_DEVICE")
+            .await
+            .unwrap();
         // Deliberately omit user_id
 
         // Should fail gracefully when required data is missing
@@ -194,9 +226,18 @@ mod tests {
         let storage: Arc<dyn SecureStorage> = Arc::new(InMemoryStorage::new());
 
         // Store session data with invalid user_id format
-        storage.set(AuthKeys::ACCESS_TOKEN, "test_access_token").await.unwrap();
-        storage.set(AuthKeys::USER_ID, "invalid_user_id_format").await.unwrap();
-        storage.set(AuthKeys::DEVICE_ID, "TEST_DEVICE").await.unwrap();
+        storage
+            .set(AuthKeys::ACCESS_TOKEN, "test_access_token")
+            .await
+            .unwrap();
+        storage
+            .set(AuthKeys::USER_ID, "invalid_user_id_format")
+            .await
+            .unwrap();
+        storage
+            .set(AuthKeys::DEVICE_ID, "TEST_DEVICE")
+            .await
+            .unwrap();
 
         // Should fail when user_id format is invalid
         let result = client.restore_session(&*storage).await;

@@ -61,7 +61,10 @@ mod tests {
 
         let mut client = MatrixClient::new(&url, Some(false)).await.unwrap();
         let storage: Arc<dyn SecureStorage> = Arc::new(InMemoryStorage::new());
-        client.login("test_user", "test_password", &*storage).await.unwrap();
+        client
+            .login("test_user", "test_password", &*storage)
+            .await
+            .unwrap();
         assert!(client.is_logged_in());
         assert!(client.get_user_info().await.is_some());
 
@@ -114,7 +117,10 @@ mod tests {
 
         let mut client = MatrixClient::new(&url, Some(true)).await.unwrap();
         let storage: Arc<dyn SecureStorage> = Arc::new(InMemoryStorage::new());
-        client.login("test_user", "test_password", &*storage).await.unwrap();
+        client
+            .login("test_user", "test_password", &*storage)
+            .await
+            .unwrap();
 
         // Test message sending - we'll accept that it might fail due to room not found
         // but verify the HTTP call was made
@@ -177,7 +183,9 @@ mod tests {
 
         let mut client = MatrixClient::new(&url, Some(false)).await.unwrap();
         let storage: Arc<dyn SecureStorage> = Arc::new(InMemoryStorage::new());
-        let result = client.login("invalid_user", "wrong_password", &*storage).await;
+        let result = client
+            .login("invalid_user", "wrong_password", &*storage)
+            .await;
         assert!(result.is_err());
         assert!(!client.is_logged_in());
 
