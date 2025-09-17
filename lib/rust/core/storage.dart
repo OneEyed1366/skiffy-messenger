@@ -9,23 +9,8 @@ import 'package:skiffy/rust/frb_generated.dart';
 
 part 'storage.freezed.dart';
 
-// These functions are ignored because they have generic arguments: `clear`, `delete`, `get`, `set`
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `assert_receiver_is_total_eq`, `clone`, `eq`, `fmt`, `fmt`, `fmt`
-
-abstract class SecureStorage {
-  /// Check if the storage backend provides persistent storage
-  ///
-  /// # Returns
-  ///
-  /// Returns `SessionStatus::Persistent` if data survives app restarts,
-  /// `SessionStatus::NonPersistent` if data is only stored in memory.
-  Future<SessionStatus> isPersistent();
-}
-
 @freezed
-sealed class SecureStorageError
-    with _$SecureStorageError
-    implements FrbException {
+sealed class SecureStorageError with _$SecureStorageError {
   const SecureStorageError._();
 
   /// The key was not found in storage
@@ -52,13 +37,4 @@ sealed class SecureStorageError
   const factory SecureStorageError.internal({
     required String message,
   }) = SecureStorageError_Internal;
-}
-
-/// Status of the storage session persistence
-enum SessionStatus {
-  /// Session data is securely persisted across app restarts
-  persistent,
-
-  /// Session data is only stored in memory and will be lost on app restart
-  nonPersistent,
 }

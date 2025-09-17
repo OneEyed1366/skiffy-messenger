@@ -4,6 +4,7 @@ pub mod api;
 pub mod core;
 
 // Re-exports for FFI generated code
+pub use api::auth::{AuthError, User};
 pub use core::matrix_client::OwnedUserId;
 pub use core::storage::InMemoryStorage;
 
