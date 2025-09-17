@@ -3,26 +3,26 @@
 
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
+import 'api/secure_storage.dart';
+import 'core/matrix_client/structs.dart';
+import 'core/storage.dart';
+import 'core/storage/factory.dart';
+import 'core/storage/keychain.dart';
+import 'core/storage/memory.dart';
 import 'dart:async';
 import 'dart:convert';
-
-import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
-import 'package:skiffy/rust/api/secure_storage.dart';
-import 'package:skiffy/rust/core/matrix_client/structs.dart';
-import 'package:skiffy/rust/core/storage.dart';
-import 'package:skiffy/rust/core/storage/factory.dart';
-import 'package:skiffy/rust/core/storage/keychain.dart';
-import 'package:skiffy/rust/core/storage/memory.dart';
-import 'package:skiffy/rust/frb_generated.dart';
-import 'package:skiffy/rust/frb_generated.io.dart'
+import 'frb_generated.dart';
+import 'frb_generated.io.dart'
     if (dart.library.js_interop) 'frb_generated.web.dart';
-import 'package:skiffy/rust/lib.dart';
+import 'lib.dart';
+import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 /// Main entrypoint of the Rust API
 class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
-  RustLib._();
   @internal
   static final instance = RustLib._();
+
+  RustLib._();
 
   /// Initialize flutter_rust_bridge
   static Future<void> init({
@@ -252,7 +252,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateCoreStorageMemoryInMemoryStorageDefaultConstMeta =>
       const TaskConstMeta(
-        debugName: 'InMemoryStorage_default',
+        debugName: "InMemoryStorage_default",
         argNames: [],
       );
 
@@ -289,8 +289,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta
   get kCrateCoreStorageMemoryInMemoryStorageIsPersistentConstMeta =>
       const TaskConstMeta(
-        debugName: 'InMemoryStorage_is_persistent',
-        argNames: ['that'],
+        debugName: "InMemoryStorage_is_persistent",
+        argNames: ["that"],
       );
 
   @override
@@ -320,7 +320,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateCoreStorageMemoryInMemoryStorageNewConstMeta =>
       const TaskConstMeta(
-        debugName: 'InMemoryStorage_new',
+        debugName: "InMemoryStorage_new",
         argNames: [],
       );
 
@@ -359,8 +359,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta
   get kCrateCoreMatrixClientStructsMatrixClientGetUserInfoConstMeta =>
       const TaskConstMeta(
-        debugName: 'MatrixClient_get_user_info',
-        argNames: ['that'],
+        debugName: "MatrixClient_get_user_info",
+        argNames: ["that"],
       );
 
   @override
@@ -396,8 +396,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta
   get kCrateCoreMatrixClientStructsMatrixClientIsLoggedInConstMeta =>
       const TaskConstMeta(
-        debugName: 'MatrixClient_is_logged_in',
-        argNames: ['that'],
+        debugName: "MatrixClient_is_logged_in",
+        argNames: ["that"],
       );
 
   @override
@@ -436,8 +436,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateCoreMatrixClientStructsMatrixClientLoginConstMeta =>
       const TaskConstMeta(
-        debugName: 'MatrixClient_login',
-        argNames: ['that', 'username', 'password'],
+        debugName: "MatrixClient_login",
+        argNames: ["that", "username", "password"],
       );
 
   @override
@@ -472,8 +472,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateCoreMatrixClientStructsMatrixClientNewConstMeta =>
       const TaskConstMeta(
-        debugName: 'MatrixClient_new',
-        argNames: ['homeServerUrl', 'disableRetries'],
+        debugName: "MatrixClient_new",
+        argNames: ["homeServerUrl", "disableRetries"],
       );
 
   @override
@@ -514,8 +514,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta
   get kCrateCoreMatrixClientStructsMatrixClientSendMessageConstMeta =>
       const TaskConstMeta(
-        debugName: 'MatrixClient_send_message',
-        argNames: ['that', 'roomId', 'message'],
+        debugName: "MatrixClient_send_message",
+        argNames: ["that", "roomId", "message"],
       );
 
   @override
@@ -550,8 +550,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateCoreMatrixClientStructsMatrixClientSyncConstMeta =>
       const TaskConstMeta(
-        debugName: 'MatrixClient_sync',
-        argNames: ['that'],
+        debugName: "MatrixClient_sync",
+        argNames: ["that"],
       );
 
   @override
@@ -581,7 +581,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateCoreStorageFactoryCreateMemoryStorageConstMeta =>
       const TaskConstMeta(
-        debugName: 'create_memory_storage',
+        debugName: "create_memory_storage",
         argNames: [],
       );
 
@@ -612,7 +612,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateCoreStorageFactoryCreateSecureStorageConstMeta =>
       const TaskConstMeta(
-        debugName: 'create_secure_storage',
+        debugName: "create_secure_storage",
         argNames: [],
       );
 
@@ -642,7 +642,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateApiSecureStorageInitializeSecureStorageConstMeta =>
       const TaskConstMeta(
-        debugName: 'initialize_secure_storage',
+        debugName: "initialize_secure_storage",
         argNames: [],
       );
 
@@ -672,7 +672,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateApiSecureStorageIsSecureStorageInitializedConstMeta =>
       const TaskConstMeta(
-        debugName: 'is_secure_storage_initialized',
+        debugName: "is_secure_storage_initialized",
         argNames: [],
       );
 
@@ -702,7 +702,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateCoreStorageKeychainKeychainStorageDefaultConstMeta =>
       const TaskConstMeta(
-        debugName: 'keychain_storage_default',
+        debugName: "keychain_storage_default",
         argNames: [],
       );
 
@@ -737,8 +737,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta
   get kCrateCoreStorageKeychainKeychainStorageIsPersistentConstMeta =>
       const TaskConstMeta(
-        debugName: 'keychain_storage_is_persistent',
-        argNames: ['that'],
+        debugName: "keychain_storage_is_persistent",
+        argNames: ["that"],
       );
 
   @override
@@ -767,7 +767,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateCoreStorageKeychainKeychainStorageNewConstMeta =>
       const TaskConstMeta(
-        debugName: 'keychain_storage_new',
+        debugName: "keychain_storage_new",
         argNames: [],
       );
 
@@ -803,8 +803,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta
   get kCrateCoreStorageKeychainKeychainStorageWithServiceNameConstMeta =>
       const TaskConstMeta(
-        debugName: 'keychain_storage_with_service_name',
-        argNames: ['serviceName'],
+        debugName: "keychain_storage_with_service_name",
+        argNames: ["serviceName"],
       );
 
   @override
@@ -839,8 +839,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta
   get kCrateApiSecureStorageSecureStorageApiErrorAccessDeniedConstMeta =>
       const TaskConstMeta(
-        debugName: 'secure_storage_api_error_access_denied',
-        argNames: ['key'],
+        debugName: "secure_storage_api_error_access_denied",
+        argNames: ["key"],
       );
 
   @override
@@ -875,8 +875,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta
   get kCrateApiSecureStorageSecureStorageApiErrorBackendNotAvailableConstMeta =>
       const TaskConstMeta(
-        debugName: 'secure_storage_api_error_backend_not_available',
-        argNames: ['reason'],
+        debugName: "secure_storage_api_error_backend_not_available",
+        argNames: ["reason"],
       );
 
   @override
@@ -911,8 +911,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta
   get kCrateApiSecureStorageSecureStorageApiErrorInternalErrorConstMeta =>
       const TaskConstMeta(
-        debugName: 'secure_storage_api_error_internal_error',
-        argNames: ['message'],
+        debugName: "secure_storage_api_error_internal_error",
+        argNames: ["message"],
       );
 
   @override
@@ -947,8 +947,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta
   get kCrateApiSecureStorageSecureStorageApiErrorInvalidInputConstMeta =>
       const TaskConstMeta(
-        debugName: 'secure_storage_api_error_invalid_input',
-        argNames: ['message'],
+        debugName: "secure_storage_api_error_invalid_input",
+        argNames: ["message"],
       );
 
   @override
@@ -981,8 +981,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta
   get kCrateApiSecureStorageSecureStorageApiErrorKeyNotFoundConstMeta =>
       const TaskConstMeta(
-        debugName: 'secure_storage_api_error_key_not_found',
-        argNames: ['key'],
+        debugName: "secure_storage_api_error_key_not_found",
+        argNames: ["key"],
       );
 
   @override
@@ -1016,8 +1016,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateApiSecureStorageSecureStorageApiErrorNewConstMeta =>
       const TaskConstMeta(
-        debugName: 'secure_storage_api_error_new',
-        argNames: ['message', 'errorType'],
+        debugName: "secure_storage_api_error_new",
+        argNames: ["message", "errorType"],
       );
 
   @override
@@ -1046,7 +1046,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateApiSecureStorageSecureStorageClearConstMeta =>
       const TaskConstMeta(
-        debugName: 'secure_storage_clear',
+        debugName: "secure_storage_clear",
         argNames: [],
       );
 
@@ -1077,8 +1077,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateApiSecureStorageSecureStorageDeleteConstMeta =>
       const TaskConstMeta(
-        debugName: 'secure_storage_delete',
-        argNames: ['key'],
+        debugName: "secure_storage_delete",
+        argNames: ["key"],
       );
 
   @override
@@ -1108,8 +1108,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateApiSecureStorageSecureStorageGetConstMeta =>
       const TaskConstMeta(
-        debugName: 'secure_storage_get',
-        argNames: ['key'],
+        debugName: "secure_storage_get",
+        argNames: ["key"],
       );
 
   @override
@@ -1138,7 +1138,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateApiSecureStorageSecureStorageSessionStatusConstMeta =>
       const TaskConstMeta(
-        debugName: 'secure_storage_session_status',
+        debugName: "secure_storage_session_status",
         argNames: [],
       );
 
@@ -1173,8 +1173,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateApiSecureStorageSecureStorageSetConstMeta =>
       const TaskConstMeta(
-        debugName: 'secure_storage_set',
-        argNames: ['key', 'value'],
+        debugName: "secure_storage_set",
+        argNames: ["key", "value"],
       );
 
   RustArcIncrementStrongCountFnType
@@ -1440,7 +1440,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           message: dco_decode_String(raw[1]),
         );
       default:
-        throw Exception('unreachable');
+        throw Exception("unreachable");
     }
   }
 
@@ -1471,7 +1471,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @protected
   AnyhowException sse_decode_AnyhowException(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    final inner = sse_decode_String(deserializer);
+    var inner = sse_decode_String(deserializer);
     return AnyhowException(inner);
   }
 
@@ -1610,7 +1610,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @protected
   String sse_decode_String(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    final inner = sse_decode_list_prim_u_8_strict(deserializer);
+    var inner = sse_decode_list_prim_u_8_strict(deserializer);
     return utf8.decoder.convert(inner);
   }
 
@@ -1626,15 +1626,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     SseDeserializer deserializer,
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerOwnedUserId(
+    return (sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerOwnedUserId(
       deserializer,
-    );
+    ));
   }
 
   @protected
   bool sse_decode_box_autoadd_bool(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return sse_decode_bool(deserializer);
+    return (sse_decode_bool(deserializer));
   }
 
   @protected
@@ -1642,13 +1642,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     SseDeserializer deserializer,
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return sse_decode_keychain_storage(deserializer);
+    return (sse_decode_keychain_storage(deserializer));
   }
 
   @protected
   FfiSessionStatus sse_decode_ffi_session_status(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    final inner = sse_decode_i_32(deserializer);
+    var inner = sse_decode_i_32(deserializer);
     return FfiSessionStatus.values[inner];
   }
 
@@ -1661,14 +1661,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @protected
   KeychainStorage sse_decode_keychain_storage(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    final var_serviceName = sse_decode_String(deserializer);
+    var var_serviceName = sse_decode_String(deserializer);
     return KeychainStorage(serviceName: var_serviceName);
   }
 
   @protected
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    final len_ = sse_decode_i_32(deserializer);
+    var len_ = sse_decode_i_32(deserializer);
     return deserializer.buffer.getUint8List(len_);
   }
 
@@ -1680,9 +1680,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
     if (sse_decode_bool(deserializer)) {
-      return sse_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerOwnedUserId(
+      return (sse_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerOwnedUserId(
         deserializer,
-      );
+      ));
     } else {
       return null;
     }
@@ -1693,7 +1693,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
     if (sse_decode_bool(deserializer)) {
-      return sse_decode_box_autoadd_bool(deserializer);
+      return (sse_decode_box_autoadd_bool(deserializer));
     } else {
       return null;
     }
@@ -1704,8 +1704,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     SseDeserializer deserializer,
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    final var_message = sse_decode_String(deserializer);
-    final var_errorType = sse_decode_String(deserializer);
+    var var_message = sse_decode_String(deserializer);
+    var var_errorType = sse_decode_String(deserializer);
     return SecureStorageApiError(
       message: var_message,
       errorType: var_errorType,
@@ -1718,22 +1718,22 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
-    final tag_ = sse_decode_i_32(deserializer);
+    var tag_ = sse_decode_i_32(deserializer);
     switch (tag_) {
       case 0:
-        final var_key = sse_decode_String(deserializer);
+        var var_key = sse_decode_String(deserializer);
         return SecureStorageError_KeyNotFound(key: var_key);
       case 1:
-        final var_key = sse_decode_String(deserializer);
+        var var_key = sse_decode_String(deserializer);
         return SecureStorageError_AccessDenied(key: var_key);
       case 2:
-        final var_reason = sse_decode_String(deserializer);
+        var var_reason = sse_decode_String(deserializer);
         return SecureStorageError_BackendNotAvailable(reason: var_reason);
       case 3:
-        final var_message = sse_decode_String(deserializer);
+        var var_message = sse_decode_String(deserializer);
         return SecureStorageError_InvalidInput(message: var_message);
       case 4:
-        final var_message = sse_decode_String(deserializer);
+        var var_message = sse_decode_String(deserializer);
         return SecureStorageError_Internal(message: var_message);
       default:
         throw UnimplementedError('');
@@ -1743,7 +1743,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @protected
   SessionStatus sse_decode_session_status(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    final inner = sse_decode_i_32(deserializer);
+    var inner = sse_decode_i_32(deserializer);
     return SessionStatus.values[inner];
   }
 
@@ -1872,7 +1872,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
-      (self as ArcSecureStorageImpl).frbInternalSseEncode(),
+      (self as ArcSecureStorageImpl).frbInternalSseEncode(move: null),
       serializer,
     );
   }
@@ -1885,7 +1885,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
-      (self as InMemoryStorageImpl).frbInternalSseEncode(),
+      (self as InMemoryStorageImpl).frbInternalSseEncode(move: null),
       serializer,
     );
   }
@@ -1898,7 +1898,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
-      (self as MatrixClientImpl).frbInternalSseEncode(),
+      (self as MatrixClientImpl).frbInternalSseEncode(move: null),
       serializer,
     );
   }
@@ -1911,7 +1911,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
-      (self as OwnedUserIdImpl).frbInternalSseEncode(),
+      (self as OwnedUserIdImpl).frbInternalSseEncode(move: null),
       serializer,
     );
   }
@@ -2088,7 +2088,7 @@ class ArcSecureStorageImpl extends RustOpaque implements ArcSecureStorage {
     int externalSizeOnNative,
   ) : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
 
-  static final RustArcStaticData _kStaticData = RustArcStaticData(
+  static final _kStaticData = RustArcStaticData(
     rustArcIncrementStrongCount:
         RustLib.instance.api.rust_arc_increment_strong_count_ArcSecureStorage,
     rustArcDecrementStrongCount:
@@ -2110,7 +2110,7 @@ class InMemoryStorageImpl extends RustOpaque implements InMemoryStorage {
   InMemoryStorageImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
     : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
 
-  static final RustArcStaticData _kStaticData = RustArcStaticData(
+  static final _kStaticData = RustArcStaticData(
     rustArcIncrementStrongCount:
         RustLib.instance.api.rust_arc_increment_strong_count_InMemoryStorage,
     rustArcDecrementStrongCount:
@@ -2135,7 +2135,7 @@ class MatrixClientImpl extends RustOpaque implements MatrixClient {
   MatrixClientImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
     : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
 
-  static final RustArcStaticData _kStaticData = RustArcStaticData(
+  static final _kStaticData = RustArcStaticData(
     rustArcIncrementStrongCount:
         RustLib.instance.api.rust_arc_increment_strong_count_MatrixClient,
     rustArcDecrementStrongCount:
@@ -2184,7 +2184,7 @@ class OwnedUserIdImpl extends RustOpaque implements OwnedUserId {
   OwnedUserIdImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
     : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
 
-  static final RustArcStaticData _kStaticData = RustArcStaticData(
+  static final _kStaticData = RustArcStaticData(
     rustArcIncrementStrongCount:
         RustLib.instance.api.rust_arc_increment_strong_count_OwnedUserId,
     rustArcDecrementStrongCount:

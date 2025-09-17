@@ -58,7 +58,10 @@ class SecureStorageService {
       throw SecureStorageException('Failed to store key "$key"', e.errorType);
     } catch (e) {
       debugPrint('SecureStorageService: Failed to store key "$key": $e');
-      throw SecureStorageException('Failed to store key "$key"', 'UnknownError');
+      throw SecureStorageException(
+        'Failed to store key "$key"',
+        'UnknownError',
+      );
     }
   }
 

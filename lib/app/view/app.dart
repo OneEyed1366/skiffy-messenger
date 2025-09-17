@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:skiffy/app/design_system/theme.dart';
 import 'package:skiffy/app/router/router.dart';
 import 'package:skiffy/l10n/l10n.dart';
 
@@ -13,12 +14,8 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       routerConfig: _appRouter.config(),
-      theme: ThemeData(
-        appBarTheme: AppBarTheme(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        ),
-        useMaterial3: true,
-      ),
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
     );

@@ -49,7 +49,7 @@ class KeychainStorage {
   /// # Arguments
   ///
   /// * `service_name` - Optional service name to use for keychain entries.
-  ///                    If None, uses the application bundle identifier.
+  ///   If None, uses the application bundle identifier.
   ///
   /// # Returns
   ///
