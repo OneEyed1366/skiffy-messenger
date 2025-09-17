@@ -1,7 +1,91 @@
 {
     "@@locale": "en",
-    "counterAppBarTitle": "Counter",
+    "counterAppBarTitle": "SkiffyMessenger",
     "@counterAppBarTitle": {
         "description": "Text shown in the AppBar of the Counter Page"
+    },
+    "textFieldSearchHint": "Search...",
+    "@textFieldSearchHint": {
+        "description": "Hint text for search text fields"
+    },
+    "textFieldShowPassword": "Show password",
+    "@textFieldShowPassword": {
+        "description": "Tooltip for showing password"
+    },
+    "textFieldHidePassword": "Hide password",
+    "@textFieldHidePassword": {
+        "description": "Tooltip for hiding password"
+    },
+    "validatorEmailRequired": "Enter email address",
+    "@validatorEmailRequired": {
+        "description": "Error message when email is required"
+    },
+    "validatorEmailInvalid": "Enter valid email address",
+    "@validatorEmailInvalid": {
+        "description": "Error message when email format is invalid"
+    },
+    "validatorPasswordRequired": "Enter password",
+    "@validatorPasswordRequired": {
+        "description": "Error message when password is required"
+    },
+    "validatorPasswordMinLength": "Password must contain at least {minLength} characters",
+    "@validatorPasswordMinLength": {
+        "description": "Error message when password is too short",
+        "placeholders": {
+            "minLength": {
+                "type": "Object",
+                "example": "8"
+            }
+        }
+    },
+    "validatorPasswordUppercase": "Password must contain an uppercase letter",
+    "@validatorPasswordUppercase": {
+        "description": "Error message when password lacks uppercase letter"
+    },
+    "validatorPasswordLowercase": "Password must contain a lowercase letter",
+    "@validatorPasswordLowercase": {
+        "description": "Error message when password lacks lowercase letter"
+    },
+    "validatorPasswordDigit": "Password must contain a digit",
+    "@validatorPasswordDigit": {
+        "description": "Error message when password lacks digit"
+    },
+    "validatorMatrixIdRequired": "Enter Matrix ID",
+    "@validatorMatrixIdRequired": {
+        "description": "Error message when Matrix ID is required"
+    },
+    "validatorMatrixIdInvalid": "Enter valid Matrix ID (@user:server.com)",
+    "@validatorMatrixIdInvalid": {
+        "description": "Error message when Matrix ID format is invalid"
+    },
+    "validatorFieldRequired": "Field{fieldName} is required",
+    "@validatorFieldRequired": {
+        "description": "Error message when a field is required",
+        "placeholders": {
+            "fieldName": {
+                "type": "Object",
+                "example": " \"Name\""
+            }
+        }
+    },
+    "validatorMinLength": "Minimum length: {minLength} characters",
+    "@validatorMinLength": {
+        "description": "Error message when input is too short",
+        "placeholders": {
+            "minLength": {
+                "type": "Object",
+                "example": "3"
+            }
+        }
+    },
+    "validatorMaxLength": "Maximum length: {maxLength} characters",
+    "@validatorMaxLength": {
+        "description": "Error message when input is too long",
+        "placeholders": {
+            "maxLength": {
+                "type": "Object",
+                "example": "50"
+            }
+        }
     }
 }

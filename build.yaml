@@ -1,0 +1,15 @@
+targets:
+  $default:
+    builders:
+      flutter_gen_runner:
+        options:
+          output: lib/app/design_system/gen # Optional (default: lib/gen/)
+          integrations:
+            flutter_svg: true
+          assets:
+            enabled: true
+            exclude:
+              - .env
+              - .env.development
+              - .env.staging
+              - .env.production
