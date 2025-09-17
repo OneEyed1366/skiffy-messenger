@@ -1,7 +1,9 @@
 #[cfg(test)]
 mod tests {
     use crate::core::matrix_client::structs::MatrixClient;
+    use crate::core::storage::{InMemoryStorage, SecureStorage};
     use mockito::Server;
+    use std::sync::Arc;
 
     #[tokio::test]
     async fn test_sdk_import_resolution() {
@@ -58,9 +60,14 @@ mod tests {
             .await;
 
         let mut client = MatrixClient::new(&url, Some(false)).await.unwrap();
-        client.login("test_user", "test_password").await.unwrap();
+        let storage: Arc<dyn SecureStorage> = Arc::new(InMemoryStorage::new());
+        client.login("test_user", "test_password", &*storage).await.unwrap();
         assert!(client.is_logged_in());
         assert!(client.get_user_info().await.is_some());
+
+        // Verify tokens are stored in SecureStorage
+        assert!(storage.get("skiffy__access_token").await.is_ok());
+        assert!(storage.get("skiffy__user_id").await.is_ok());
     }
 
     #[tokio::test]
@@ -106,7 +113,8 @@ mod tests {
             .await;
 
         let mut client = MatrixClient::new(&url, Some(true)).await.unwrap();
-        client.login("test_user", "test_password").await.unwrap();
+        let storage: Arc<dyn SecureStorage> = Arc::new(InMemoryStorage::new());
+        client.login("test_user", "test_password", &*storage).await.unwrap();
 
         // Test message sending - we'll accept that it might fail due to room not found
         // but verify the HTTP call was made
@@ -134,10 +142,14 @@ mod tests {
 
         // Don't mock login endpoint to simulate network error
         let mut client = MatrixClient::new(&url, Some(false)).await.unwrap();
+        let storage: Arc<dyn SecureStorage> = Arc::new(InMemoryStorage::new());
 
         // This should fail quickly since login endpoint is not mocked
-        let result = client.login("test_user", "test_password").await;
+        let result = client.login("test_user", "test_password", &*storage).await;
         assert!(result.is_err());
+
+        // Storage should remain empty since login failed
+        assert!(storage.get("skiffy__access_token").await.is_err());
     }
 
     #[tokio::test]
@@ -164,8 +176,12 @@ mod tests {
             .await;
 
         let mut client = MatrixClient::new(&url, Some(false)).await.unwrap();
-        let result = client.login("invalid_user", "wrong_password").await;
+        let storage: Arc<dyn SecureStorage> = Arc::new(InMemoryStorage::new());
+        let result = client.login("invalid_user", "wrong_password", &*storage).await;
         assert!(result.is_err());
         assert!(!client.is_logged_in());
+
+        // Storage should remain empty since login failed
+        assert!(storage.get("skiffy__access_token").await.is_err());
     }
 }

@@ -24,7 +24,7 @@ pub use memory::InMemoryStorage;
 pub use keychain::KeychainStorage;
 
 /// Errors that can occur during secure storage operations
-#[derive(Error, Debug)]
+#[derive(Error, Debug, Clone)]
 pub enum SecureStorageError {
     /// The key was not found in storage
     #[error("Key not found: {key}")]
