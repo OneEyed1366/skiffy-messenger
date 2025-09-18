@@ -121,7 +121,7 @@ lib/l10n/gen/
 .env.*.local
 
 # Documentation directories
-docs/lovable-propmts/
+docs/lovable-prompts
 docs/epics/
 docs/qa/
-docs/storeis/
+docs/stories
