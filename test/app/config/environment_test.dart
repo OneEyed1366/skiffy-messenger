@@ -6,13 +6,13 @@ void main() {
   group('Environment', () {
     tearDown(() {
       // Clear dotenv after each test
-      dotenv.testLoad(fileInput: '');
+      dotenv.testLoad();
     });
 
     test(
       'should create Environment with default values when no env vars set',
       () {
-        dotenv.testLoad(fileInput: '');
+        dotenv.testLoad();
 
         final env = Environment.fromDotEnv();
 

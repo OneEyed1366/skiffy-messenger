@@ -143,5 +143,45 @@
     "resetToDefaultButton": "Reset to Default",
     "@resetToDefaultButton": {
         "description": "Button text to reset to default server"
+    },
+    "homeserverCapabilityDetectionInProgress": "Detecting supported login methods...",
+    "@homeserverCapabilityDetectionInProgress": {
+        "description": "Loading message while detecting homeserver capabilities"
+    },
+    "homeserverCapabilityDetectionRetrying": "Retrying connection...",
+    "@homeserverCapabilityDetectionRetrying": {
+        "description": "Message shown when retrying capability detection"
+    },
+    "homeserverCapabilityDetectionTimeout": "Detection taking longer than expected. Please check your connection.",
+    "@homeserverCapabilityDetectionTimeout": {
+        "description": "Message when capability detection times out"
+    },
+    "homeserverCapabilityNetworkError": "Network error. Please check your connection and try again.",
+    "@homeserverCapabilityNetworkError": {
+        "description": "Error message for network issues during capability detection"
+    },
+    "homeserverCapabilityInvalidHomeserver": "Cannot determine authentication methods. Please verify your homeserver URL.",
+    "@homeserverCapabilityInvalidHomeserver": {
+        "description": "Error message when homeserver URL is invalid for capability detection"
+    },
+    "homeserverCapabilityServerUnreachableError": "Cannot reach homeserver. Please check the URL and your connection.",
+    "@homeserverCapabilityServerUnreachableError": {
+        "description": "Error message when homeserver is unreachable during capability detection"
+    },
+    "homeserverCapabilityTimeoutError": "Connection timeout. Please check your network and try again.",
+    "@homeserverCapabilityTimeoutError": {
+        "description": "Error message when capability detection times out"
+    },
+    "authSignInWithPassword": "Sign in with password",
+    "@authSignInWithPassword": {
+        "description": "Label for password authentication method"
+    },
+    "authSignInWithSSO": "Sign in with SSO",
+    "@authSignInWithSSO": {
+        "description": "Label for SSO authentication method"
+    },
+    "authNoMethodsAvailable": "No authentication methods available for this homeserver",
+    "@authNoMethodsAvailable": {
+        "description": "Message when no supported authentication methods are found"
     }
 }

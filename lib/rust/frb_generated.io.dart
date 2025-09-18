@@ -39,6 +39,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   FfiSessionStatus dco_decode_ffi_session_status(dynamic raw);
 
   @protected
+  HomeserverCapabilities dco_decode_homeserver_capabilities(dynamic raw);
+
+  @protected
   HomeserverError dco_decode_homeserver_error(dynamic raw);
 
   @protected
@@ -48,6 +51,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
 
   @protected
+  List<SsoProvider> dco_decode_list_sso_provider(dynamic raw);
+
+  @protected
   User? dco_decode_opt_box_autoadd_user(dynamic raw);
 
   @protected
@@ -55,6 +61,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   SecureStorageError dco_decode_secure_storage_error(dynamic raw);
+
+  @protected
+  SsoProvider dco_decode_sso_provider(dynamic raw);
 
   @protected
   int dco_decode_u_16(dynamic raw);
@@ -89,6 +98,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   FfiSessionStatus sse_decode_ffi_session_status(SseDeserializer deserializer);
 
   @protected
+  HomeserverCapabilities sse_decode_homeserver_capabilities(
+    SseDeserializer deserializer,
+  );
+
+  @protected
   HomeserverError sse_decode_homeserver_error(SseDeserializer deserializer);
 
   @protected
@@ -96,6 +110,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
+
+  @protected
+  List<SsoProvider> sse_decode_list_sso_provider(SseDeserializer deserializer);
 
   @protected
   User? sse_decode_opt_box_autoadd_user(SseDeserializer deserializer);
@@ -109,6 +126,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   SecureStorageError sse_decode_secure_storage_error(
     SseDeserializer deserializer,
   );
+
+  @protected
+  SsoProvider sse_decode_sso_provider(SseDeserializer deserializer);
 
   @protected
   int sse_decode_u_16(SseDeserializer deserializer);
@@ -147,6 +167,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   );
 
   @protected
+  void sse_encode_homeserver_capabilities(
+    HomeserverCapabilities self,
+    SseSerializer serializer,
+  );
+
+  @protected
   void sse_encode_homeserver_error(
     HomeserverError self,
     SseSerializer serializer,
@@ -158,6 +184,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_list_prim_u_8_strict(
     Uint8List self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_list_sso_provider(
+    List<SsoProvider> self,
     SseSerializer serializer,
   );
 
@@ -175,6 +207,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
     SecureStorageError self,
     SseSerializer serializer,
   );
+
+  @protected
+  void sse_encode_sso_provider(SsoProvider self, SseSerializer serializer);
 
   @protected
   void sse_encode_u_16(int self, SseSerializer serializer);

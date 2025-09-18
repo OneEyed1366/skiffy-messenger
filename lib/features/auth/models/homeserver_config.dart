@@ -9,6 +9,11 @@ class HomeserverConfig extends Equatable {
     this.displayName,
   });
 
+  /// Creates an unverified config from URL
+  factory HomeserverConfig.unverified(String url) {
+    return HomeserverConfig(url: url);
+  }
+
   /// The homeserver URL
   final String url;
 
@@ -29,11 +34,6 @@ class HomeserverConfig extends Equatable {
       isVerified: isVerified ?? this.isVerified,
       displayName: displayName ?? this.displayName,
     );
-  }
-
-  /// Creates an unverified config from URL
-  factory HomeserverConfig.unverified(String url) {
-    return HomeserverConfig(url: url, isVerified: false);
   }
 
   @override

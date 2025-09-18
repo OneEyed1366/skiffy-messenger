@@ -37,7 +37,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.11.1";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 1124453273;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -35543368;
 
 // Section: executor
 
@@ -45,6 +45,44 @@ flutter_rust_bridge::frb_generated_default_handler!();
 
 // Section: wire_funcs
 
+fn wire__crate__api__auth__check_homeserver_capabilities_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "check_homeserver_capabilities",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_home_server_url = <String>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse::<_, crate::api::auth::AuthError>(
+                    (move || async move {
+                        let output_ok =
+                            crate::api::auth::check_homeserver_capabilities(api_home_server_url)
+                                .await?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
+            }
+        },
+    )
+}
 fn wire__crate__api__auth__has_stored_session_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -772,6 +810,24 @@ impl SseDecode for crate::api::secure_storage::FfiSessionStatus {
     }
 }
 
+impl SseDecode for crate::api::auth::HomeserverCapabilities {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_supportsPasswordLogin = <bool>::sse_decode(deserializer);
+        let mut var_supportsSso = <bool>::sse_decode(deserializer);
+        let mut var_ssoProviders = <Vec<crate::api::auth::SsoProvider>>::sse_decode(deserializer);
+        let mut var_supportsRegistration = <bool>::sse_decode(deserializer);
+        let mut var_supportsGuestAccess = <bool>::sse_decode(deserializer);
+        return crate::api::auth::HomeserverCapabilities {
+            supports_password_login: var_supportsPasswordLogin,
+            supports_sso: var_supportsSso,
+            sso_providers: var_ssoProviders,
+            supports_registration: var_supportsRegistration,
+            supports_guest_access: var_supportsGuestAccess,
+        };
+    }
+}
+
 impl SseDecode for crate::api::auth::HomeserverError {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -829,6 +885,18 @@ impl SseDecode for Vec<u8> {
         let mut ans_ = vec![];
         for idx_ in 0..len_ {
             ans_.push(<u8>::sse_decode(deserializer));
+        }
+        return ans_;
+    }
+}
+
+impl SseDecode for Vec<crate::api::auth::SsoProvider> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = vec![];
+        for idx_ in 0..len_ {
+            ans_.push(<crate::api::auth::SsoProvider>::sse_decode(deserializer));
         }
         return ans_;
     }
@@ -895,6 +963,21 @@ impl SseDecode for crate::core::storage::SecureStorageError {
     }
 }
 
+impl SseDecode for crate::api::auth::SsoProvider {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <i32>::sse_decode(deserializer);
+        return match inner {
+            0 => crate::api::auth::SsoProvider::Google,
+            1 => crate::api::auth::SsoProvider::Apple,
+            2 => crate::api::auth::SsoProvider::GitHub,
+            3 => crate::api::auth::SsoProvider::GitLab,
+            4 => crate::api::auth::SsoProvider::Facebook,
+            _ => unreachable!("Invalid variant for SsoProvider: {}", inner),
+        };
+    }
+}
+
 impl SseDecode for u16 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -935,89 +1018,95 @@ fn pde_ffi_dispatcher_primary_impl(
 ) {
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
-        1 => wire__crate__api__auth__has_stored_session_impl(port, ptr, rust_vec_len, data_len),
-        2 => wire__crate__api__secure_storage__initialize_secure_storage_impl(
+        1 => wire__crate__api__auth__check_homeserver_capabilities_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        3 => wire__crate__api__secure_storage__is_secure_storage_initialized_impl(
+        2 => wire__crate__api__auth__has_stored_session_impl(port, ptr, rust_vec_len, data_len),
+        3 => wire__crate__api__secure_storage__initialize_secure_storage_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        4 => wire__crate__api__auth__login_impl(port, ptr, rust_vec_len, data_len),
-        5 => wire__crate__api__auth__logout_impl(port, ptr, rust_vec_len, data_len),
-        6 => wire__crate__api__auth__restore_session_impl(port, ptr, rust_vec_len, data_len),
-        7 => wire__crate__api__secure_storage__secure_storage_api_error_access_denied_impl(
+        4 => wire__crate__api__secure_storage__is_secure_storage_initialized_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        8 => wire__crate__api__secure_storage__secure_storage_api_error_backend_not_available_impl(
+        5 => wire__crate__api__auth__login_impl(port, ptr, rust_vec_len, data_len),
+        6 => wire__crate__api__auth__logout_impl(port, ptr, rust_vec_len, data_len),
+        7 => wire__crate__api__auth__restore_session_impl(port, ptr, rust_vec_len, data_len),
+        8 => wire__crate__api__secure_storage__secure_storage_api_error_access_denied_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        9 => wire__crate__api__secure_storage__secure_storage_api_error_internal_error_impl(
+        9 => wire__crate__api__secure_storage__secure_storage_api_error_backend_not_available_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        10 => wire__crate__api__secure_storage__secure_storage_api_error_invalid_input_impl(
+        10 => wire__crate__api__secure_storage__secure_storage_api_error_internal_error_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        11 => wire__crate__api__secure_storage__secure_storage_api_error_key_not_found_impl(
+        11 => wire__crate__api__secure_storage__secure_storage_api_error_invalid_input_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        12 => wire__crate__api__secure_storage__secure_storage_api_error_new_impl(
+        12 => wire__crate__api__secure_storage__secure_storage_api_error_key_not_found_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        13 => wire__crate__api__secure_storage__secure_storage_clear_impl(
+        13 => wire__crate__api__secure_storage__secure_storage_api_error_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        14 => wire__crate__api__secure_storage__secure_storage_delete_impl(
+        14 => wire__crate__api__secure_storage__secure_storage_clear_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        15 => wire__crate__api__secure_storage__secure_storage_get_impl(
+        15 => wire__crate__api__secure_storage__secure_storage_delete_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        16 => wire__crate__api__secure_storage__secure_storage_session_status_impl(
+        16 => wire__crate__api__secure_storage__secure_storage_get_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        17 => wire__crate__api__secure_storage__secure_storage_set_impl(
+        17 => wire__crate__api__secure_storage__secure_storage_session_status_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        18 => wire__crate__api__auth__verify_homeserver_impl(port, ptr, rust_vec_len, data_len),
+        18 => wire__crate__api__secure_storage__secure_storage_set_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        19 => wire__crate__api__auth__verify_homeserver_impl(port, ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -1085,6 +1174,30 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::secure_storage::FfiSessionSta
     for crate::api::secure_storage::FfiSessionStatus
 {
     fn into_into_dart(self) -> crate::api::secure_storage::FfiSessionStatus {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::auth::HomeserverCapabilities {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.supports_password_login.into_into_dart().into_dart(),
+            self.supports_sso.into_into_dart().into_dart(),
+            self.sso_providers.into_into_dart().into_dart(),
+            self.supports_registration.into_into_dart().into_dart(),
+            self.supports_guest_access.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::auth::HomeserverCapabilities
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::auth::HomeserverCapabilities>
+    for crate::api::auth::HomeserverCapabilities
+{
+    fn into_into_dart(self) -> crate::api::auth::HomeserverCapabilities {
         self
     }
 }
@@ -1179,6 +1292,27 @@ impl flutter_rust_bridge::IntoIntoDart<crate::core::storage::SecureStorageError>
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::auth::SsoProvider {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self {
+            Self::Google => 0.into_dart(),
+            Self::Apple => 1.into_dart(),
+            Self::GitHub => 2.into_dart(),
+            Self::GitLab => 3.into_dart(),
+            Self::Facebook => 4.into_dart(),
+            _ => unreachable!(),
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive for crate::api::auth::SsoProvider {}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::auth::SsoProvider>
+    for crate::api::auth::SsoProvider
+{
+    fn into_into_dart(self) -> crate::api::auth::SsoProvider {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for crate::api::auth::User {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
@@ -1255,6 +1389,17 @@ impl SseEncode for crate::api::secure_storage::FfiSessionStatus {
     }
 }
 
+impl SseEncode for crate::api::auth::HomeserverCapabilities {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.supports_password_login, serializer);
+        <bool>::sse_encode(self.supports_sso, serializer);
+        <Vec<crate::api::auth::SsoProvider>>::sse_encode(self.sso_providers, serializer);
+        <bool>::sse_encode(self.supports_registration, serializer);
+        <bool>::sse_encode(self.supports_guest_access, serializer);
+    }
+}
+
 impl SseEncode for crate::api::auth::HomeserverError {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -1314,6 +1459,16 @@ impl SseEncode for Vec<u8> {
     }
 }
 
+impl SseEncode for Vec<crate::api::auth::SsoProvider> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <crate::api::auth::SsoProvider>::sse_encode(item, serializer);
+        }
+    }
+}
+
 impl SseEncode for Option<crate::api::auth::User> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -1360,6 +1515,25 @@ impl SseEncode for crate::core::storage::SecureStorageError {
                 unimplemented!("");
             }
         }
+    }
+}
+
+impl SseEncode for crate::api::auth::SsoProvider {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(
+            match self {
+                crate::api::auth::SsoProvider::Google => 0,
+                crate::api::auth::SsoProvider::Apple => 1,
+                crate::api::auth::SsoProvider::GitHub => 2,
+                crate::api::auth::SsoProvider::GitLab => 3,
+                crate::api::auth::SsoProvider::Facebook => 4,
+                _ => {
+                    unimplemented!("");
+                }
+            },
+            serializer,
+        );
     }
 }
 

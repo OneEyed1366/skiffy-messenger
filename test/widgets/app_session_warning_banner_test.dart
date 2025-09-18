@@ -58,7 +58,7 @@ void main() {
 
     testWidgets('should be dismissible when onDismissed is provided',
         (WidgetTester tester) async {
-      bool wasDismissed = false;
+      var wasDismissed = false;
 
       // Build the widget with dismiss callback
       await tester.pumpWidget(
@@ -155,7 +155,7 @@ void main() {
     group('edge cases', () {
       testWidgets('should rebuild correctly when visibility changes',
           (WidgetTester tester) async {
-        bool isVisible = false;
+        var isVisible = false;
 
         await tester.pumpWidget(
           MaterialApp(

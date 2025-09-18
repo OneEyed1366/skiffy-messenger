@@ -7,6 +7,7 @@ import 'package:skiffy/rust/frb_generated.dart';
 
 /// Mock implementations for testing without FFI linking issues
 class MockRustLibApi extends Mock implements RustLibApi {}
+
 class MockAppLocalizations extends Mock implements AppLocalizations {}
 
 void main() {
@@ -26,9 +27,11 @@ void main() {
 
     test('ServerSelectionBloc can be created with mock dependencies', () {
       // Mock the verification call
-      when(() => mockRustApi.crateApiAuthVerifyHomeserver(
-            homeServerUrl: 'https://matrix.org',
-          )).thenAnswer((_) async => true);
+      when(
+        () => mockRustApi.crateApiAuthVerifyHomeserver(
+          homeServerUrl: 'https://matrix.org',
+        ),
+      ).thenAnswer((_) async => true);
 
       // Create a mock l10n for testing
       final mockL10n = MockAppLocalizations();
@@ -45,9 +48,11 @@ void main() {
       // We can now run tests that use the ServerSelectionBloc
       // without encountering the macOS system configuration linking errors
 
-      when(() => mockRustApi.crateApiAuthVerifyHomeserver(
-            homeServerUrl: any(named: 'homeServerUrl'),
-          )).thenAnswer((_) async => true);
+      when(
+        () => mockRustApi.crateApiAuthVerifyHomeserver(
+          homeServerUrl: any(named: 'homeServerUrl'),
+        ),
+      ).thenAnswer((_) async => true);
 
       final mockL10n = MockAppLocalizations();
       final bloc = ServerSelectionBloc(localizations: mockL10n);

@@ -16,17 +16,57 @@ It is designed such that all generated functions must eventually call methods in
 Or, think of it like a "central dispatcher".
 Therefore, as long as you mocked this class, everything related to the Rust side is under your mock.
 
-Please refer to [this file](https://github.com/fzyzcjy/flutter_rust_bridge/blob/master/frb_example/pure_dart/test/mockability_test.dart)
-for an example (and it is tested on the CI).
-The code may look like:
+### Critical: Initialize RustLib Mock in Tests
+
+**IMPORTANT**: When testing BLoCs or any code that calls Rust FFI functions, you MUST initialize the mock RustLib API in `setUpAll()` to avoid runtime errors:
+
+```dart
+import 'package:mocktail/mocktail.dart';
+import 'package:skiffy/rust/frb_generated.dart';
+
+class MockRustLibApi extends Mock implements RustLibApi {}
+
+void main() {
+  late MockRustLibApi mockRustApi;
+
+  setUpAll(() async {
+    // CRITICAL: Initialize mock Rust API to avoid FFI linking issues
+    mockRustApi = MockRustLibApi();
+    RustLib.initMock(api: mockRustApi);
+  });
+
+  group('Your Tests', () {
+    setUp(() {
+      // Setup default mock behaviors
+      when(() => mockRustApi.crateApiAuthVerifyHomeserver(
+            homeServerUrl: any(named: 'homeServerUrl'),
+          )).thenThrow(Exception('Connection failed'));
+    });
+
+    // Your tests here...
+  });
+}
+```
+
+**Common Error Without Mock Initialization:**
+```
+Bad state: flutter_rust_bridge has not been initialized.
+Did you forget to call `await RustLib.init();`?
+```
+
+### Complete Example with BLoC Testing
 
 ```dart
 // Surely, you can use Mockito or whatever other mocking packages
 class MockRustLibApi extends Mock implements RustLibApi {}
 
-Future<void> main() async {
-  final mockApi = MockRustLibApi();
-  await RustLib.init(api: mockApi);
+void main() {
+  late MockRustLibApi mockApi;
+
+  setUpAll(() async {
+    mockApi = MockRustLibApi();
+    await RustLib.initMock(api: mockApi);  // Use initMock for testing
+  });
 
   test('can mock Rust calls', () async {
     when(() => mockApi.simpleAdderTwinNormal(a: 1, b: 2))
@@ -62,6 +102,7 @@ When testing BLoC state management logic in Flutter applications, use `blocTest`
 ## Performance Issues with testWidgets + expectLater
 
 **❌ Problematic Pattern:**
+
 ```dart
 testWidgets('Server verification scenarios', (tester) async {
   final bloc = ServerSelectionBloc(localizations: l10n);
@@ -81,6 +122,7 @@ testWidgets('Server verification scenarios', (tester) async {
 ```
 
 **Issues:**
+
 - Tests may timeout (15+ seconds) waiting for state changes that never come
 - `expectLater` with `emitsInOrder` can miss initial state transitions
 - Difficult to debug when state sequence doesn't match expectations
@@ -89,6 +131,7 @@ testWidgets('Server verification scenarios', (tester) async {
 ## Recommended Solution: blocTest
 
 **✅ Correct Pattern:**
+
 ```dart
 blocTest<ServerSelectionBloc, ServerSelectionState>(
   'handles valid Matrix server',
@@ -109,6 +152,7 @@ blocTest<ServerSelectionBloc, ServerSelectionState>(
 ```
 
 **Benefits:**
+
 - **8-10x faster execution** (1-3 seconds vs 15+ second timeouts)
 - Built-in support for async operations with `wait` parameter
 - Proper lifecycle management (automatic bloc creation/disposal)
@@ -136,6 +180,7 @@ class MockAppLocalizations extends Mock implements AppLocalizations {
 ```
 
 Initialize mocks in `setUp()`:
+
 ```dart
 setUp(() {
   mockL10n = MockAppLocalizations();
@@ -153,3 +198,115 @@ setUp(() {
 6. **Create comprehensive mocks** for all dependencies the BLoC uses
 
 This approach resolved critical test performance issues in Story 2.0 homeserver setup, reducing test execution time from 2+ minutes to under 5 seconds.
+
+# Linting and Code Style Fixes
+
+## Why Fix Linting Issues
+
+Linting issues, while often non-blocking for functionality, impact code quality and maintainability:
+
+1. **Consistency**: Uniform code style makes the codebase easier to read and maintain
+2. **Future-proofing**: Deprecated APIs (like `withOpacity`) will eventually be removed
+3. **Best practices**: Linting rules encode community-agreed best practices
+4. **Team velocity**: Clean code with no warnings reduces cognitive load
+
+## How to Fix Common Flutter Linting Issues
+
+### 1. Deprecated API Usage
+
+**Issue**: `'withOpacity' is deprecated and shouldn't be used`
+
+**Fix**: Replace with modern API
+
+```dart
+// Before
+color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7)
+
+// After
+color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7)
+```
+
+**Why**: Flutter is moving to `withValues()` for better precision and consistency with the new color system.
+
+### 2. Catch Clauses Without Type Specification
+
+**Issue**: `Catch clause should use 'on' to specify the type of exception being caught`
+
+**Fix**: Add exception type specification
+
+```dart
+// Before
+} catch (error) {
+  handleError(error);
+}
+
+// After
+} on Exception catch (error) {
+  handleError(error);
+}
+```
+
+**Why**: Specific exception handling prevents catching system errors unintentionally and makes error handling more predictable.
+
+### 3. Missing End-of-File Newlines
+
+**Issue**: `Missing a newline at the end of the file`
+
+**Fix**: Ensure files end with a newline character
+
+**Why**: POSIX standard requires text files to end with newline; helps with git diffs and concatenation.
+
+### 4. Line Length Violations
+
+**Issue**: `The line length exceeds the 80-character limit`
+
+**Fix**: Break long lines appropriately
+
+```dart
+// Before
+final veryLongVariableName = someVeryLongMethodCall(withMany, parameters, thatMakeTheLineTooLong);
+
+// After
+final veryLongVariableName = someVeryLongMethodCall(
+  withMany,
+  parameters,
+  thatMakeTheLineTooLong,
+);
+```
+
+**Why**: 80-character limit improves readability on various screen sizes and in side-by-side diffs.
+
+## Systematic Approach to Fixing Linting Issues
+
+1. **Start with automated fixes**: Run `dart fix --apply` first
+2. **Fix deprecated APIs**: These are most likely to break in future updates
+3. **Address type safety issues**: Like untyped catch clauses
+4. **Handle style issues last**: Line length, formatting, etc.
+
+## When to Apply Fixes
+
+- **During QA fixes**: Address linting issues found during quality gates
+- **Before PR submission**: Clean code should be the default
+- **NOT during feature development**: Focus on functionality first, then clean up
+
+## Bulk Fixing with Edit Tools
+
+When fixing multiple instances of the same issue:
+
+```dart
+// Use replace_all parameter for consistent fixes
+Edit(
+  file_path: "/path/to/file.dart",
+  old_string: "withOpacity(0.7)",
+  new_string: "withValues(alpha: 0.7)",
+  replace_all: true  // Fix all instances at once
+)
+```
+
+## Verification After Fixes
+
+Always verify after applying fixes:
+
+1. Run `flutter analyze` to confirm issue reduction
+2. Run tests to ensure no functionality broken
+3. Document the changes in the story file

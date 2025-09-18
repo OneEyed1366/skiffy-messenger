@@ -8,6 +8,39 @@ part 'environment.g.dart';
 /// Uses json_serializable for compile-time type safety and runtime validation
 @JsonSerializable(createToJson: false)
 class Environment {
+  const Environment({
+    required this.enableDebugLogs,
+    required this.enableAnalytics,
+    required this.enableCrashReporting,
+    required this.enableFlutterInspector,
+    required this.enablePerformanceOverlay,
+    required this.enableTestFeatures,
+    required this.enablePerformanceMonitoring,
+    required this.enableErrorTracking,
+    required this.enforceTls,
+    required this.logLevel,
+  });
+
+  /// Create Environment from dotenv with validation
+  factory Environment.fromDotEnv() {
+    // Convert string values to expected types for json_serializable
+    final envMap = <String, dynamic>{};
+
+    for (final entry in dotenv.env.entries) {
+      final key = entry.key;
+      final value = entry.value;
+
+      // Convert boolean strings to actual booleans
+      if (_booleanKeys.contains(key)) {
+        envMap[key] = value.toLowerCase() == 'true';
+      } else {
+        envMap[key] = value;
+      }
+    }
+
+    return _$EnvironmentFromJson(envMap);
+  }
+
   /// Feature Flags
   @JsonKey(name: 'ENABLE_DEBUG_LOGS', defaultValue: false)
   final bool enableDebugLogs;
@@ -42,39 +75,6 @@ class Environment {
   /// Logging Configuration
   @JsonKey(name: 'LOG_LEVEL', defaultValue: 'info')
   final String logLevel;
-
-  const Environment({
-    required this.enableDebugLogs,
-    required this.enableAnalytics,
-    required this.enableCrashReporting,
-    required this.enableFlutterInspector,
-    required this.enablePerformanceOverlay,
-    required this.enableTestFeatures,
-    required this.enablePerformanceMonitoring,
-    required this.enableErrorTracking,
-    required this.enforceTls,
-    required this.logLevel,
-  });
-
-  /// Create Environment from dotenv with validation
-  factory Environment.fromDotEnv() {
-    // Convert string values to expected types for json_serializable
-    final envMap = <String, dynamic>{};
-
-    for (final entry in dotenv.env.entries) {
-      final key = entry.key;
-      final value = entry.value;
-
-      // Convert boolean strings to actual booleans
-      if (_booleanKeys.contains(key)) {
-        envMap[key] = value.toLowerCase() == 'true';
-      } else {
-        envMap[key] = value;
-      }
-    }
-
-    return _$EnvironmentFromJson(envMap);
-  }
 
   /// Keys that should be treated as booleans
   static const _booleanKeys = {
