@@ -4,7 +4,7 @@ repos:
     hooks:
       - id: flutter-lint
         name: Lint
-        entry: bash -c 'export PATH="/Users/andrejprokopenko/develop/flutter/bin:$PATH" && make lint'
+        entry: bash -c 'export PATH="$(which flutter):$PATH" && make lint'
         language: system
         files: '\.dart$'
         exclude: '^(lib/app/design_system/|test/app/design_system/)'
@@ -13,7 +13,7 @@ repos:
 
       - id: flutter-test
         name: Test
-        entry: bash -c 'export PATH="/Users/andrejprokopenko/develop/flutter/bin:$PATH" && make test'
+        entry: bash -c 'export PATH="$(which flutter):$PATH" && make test'
         language: system
         files: '\.dart$'
         pass_filenames: false
