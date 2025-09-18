@@ -18,5 +18,19 @@
     "validatorMatrixIdInvalid": "Ingrese Matrix ID válido (@user:server.com)",
     "validatorFieldRequired": "Campo{fieldName} es requerido",
     "validatorMinLength": "Longitud mínima: {minLength} caracteres",
-    "validatorMaxLength": "Longitud máxima: {maxLength} caracteres"
+    "validatorMaxLength": "Longitud máxima: {maxLength} caracteres",
+    "homeserverUrlLabel": "URL del servidor doméstico",
+    "homeserverUrlPlaceholder": "https://matrix.org",
+    "homeserverUrlHint": "Ingrese la dirección de su servidor Matrix",
+    "homeserverUrlRequired": "Se requiere la URL del servidor doméstico",
+    "homeserverInvalidUrlError": "Por favor ingrese una URL HTTPS válida",
+    "homeserverNotHttpsError": "La URL debe comenzar con https://",
+    "homeserverConnectionError": "No se puede conectar al servidor",
+    "homeserverNotMatrixError": "La dirección especificada no es un servidor Matrix",
+    "homeserverVerifying": "Verificando servidor...",
+    "homeserverNetworkOfflineError": "Sin conexión a internet. Verifique su conexión de red.",
+    "homeserverServerUnreachableError": "No se puede alcanzar el servidor. Verifique la URL o intente más tarde.",
+    "homeserverVerifiedMessage": "Servidor verificado exitosamente",
+    "continueButton": "Continuar",
+    "resetToDefaultButton": "Restablecer al predeterminado"
 }

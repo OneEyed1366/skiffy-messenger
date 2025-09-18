@@ -37,7 +37,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.11.1";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 407460483;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 1124453273;
 
 // Section: executor
 
@@ -673,6 +673,43 @@ fn wire__crate__api__secure_storage__secure_storage_set_impl(
         },
     )
 }
+fn wire__crate__api__auth__verify_homeserver_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "verify_homeserver",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_home_server_url = <String>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse::<_, crate::api::auth::HomeserverError>(
+                    (move || async move {
+                        let output_ok =
+                            crate::api::auth::verify_homeserver(api_home_server_url).await?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
+            }
+        },
+    )
+}
 
 // Section: dart2rust
 
@@ -732,6 +769,49 @@ impl SseDecode for crate::api::secure_storage::FfiSessionStatus {
             1 => crate::api::secure_storage::FfiSessionStatus::NonPersistent,
             _ => unreachable!("Invalid variant for FfiSessionStatus: {}", inner),
         };
+    }
+}
+
+impl SseDecode for crate::api::auth::HomeserverError {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut tag_ = <i32>::sse_decode(deserializer);
+        match tag_ {
+            0 => {
+                return crate::api::auth::HomeserverError::ConnectionTimeout;
+            }
+            1 => {
+                return crate::api::auth::HomeserverError::ReadTimeout;
+            }
+            2 => {
+                return crate::api::auth::HomeserverError::DnsResolutionFailed;
+            }
+            3 => {
+                return crate::api::auth::HomeserverError::NetworkUnavailable;
+            }
+            4 => {
+                return crate::api::auth::HomeserverError::InvalidUrl;
+            }
+            5 => {
+                return crate::api::auth::HomeserverError::NotHttps;
+            }
+            6 => {
+                return crate::api::auth::HomeserverError::NotMatrixServer;
+            }
+            7 => {
+                return crate::api::auth::HomeserverError::MalformedResponse;
+            }
+            8 => {
+                return crate::api::auth::HomeserverError::UnsupportedVersion;
+            }
+            9 => {
+                let mut var_field0 = <u16>::sse_decode(deserializer);
+                return crate::api::auth::HomeserverError::ServerError(var_field0);
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
     }
 }
 
@@ -812,6 +892,13 @@ impl SseDecode for crate::core::storage::SecureStorageError {
                 unimplemented!("");
             }
         }
+    }
+}
+
+impl SseDecode for u16 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        deserializer.cursor.read_u16::<NativeEndian>().unwrap()
     }
 }
 
@@ -930,6 +1017,7 @@ fn pde_ffi_dispatcher_primary_impl(
             rust_vec_len,
             data_len,
         ),
+        18 => wire__crate__api__auth__verify_homeserver_impl(port, ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -997,6 +1085,39 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::secure_storage::FfiSessionSta
     for crate::api::secure_storage::FfiSessionStatus
 {
     fn into_into_dart(self) -> crate::api::secure_storage::FfiSessionStatus {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::auth::HomeserverError {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self {
+            crate::api::auth::HomeserverError::ConnectionTimeout => [0.into_dart()].into_dart(),
+            crate::api::auth::HomeserverError::ReadTimeout => [1.into_dart()].into_dart(),
+            crate::api::auth::HomeserverError::DnsResolutionFailed => [2.into_dart()].into_dart(),
+            crate::api::auth::HomeserverError::NetworkUnavailable => [3.into_dart()].into_dart(),
+            crate::api::auth::HomeserverError::InvalidUrl => [4.into_dart()].into_dart(),
+            crate::api::auth::HomeserverError::NotHttps => [5.into_dart()].into_dart(),
+            crate::api::auth::HomeserverError::NotMatrixServer => [6.into_dart()].into_dart(),
+            crate::api::auth::HomeserverError::MalformedResponse => [7.into_dart()].into_dart(),
+            crate::api::auth::HomeserverError::UnsupportedVersion => [8.into_dart()].into_dart(),
+            crate::api::auth::HomeserverError::ServerError(field0) => {
+                [9.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::auth::HomeserverError
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::auth::HomeserverError>
+    for crate::api::auth::HomeserverError
+{
+    fn into_into_dart(self) -> crate::api::auth::HomeserverError {
         self
     }
 }
@@ -1134,6 +1255,48 @@ impl SseEncode for crate::api::secure_storage::FfiSessionStatus {
     }
 }
 
+impl SseEncode for crate::api::auth::HomeserverError {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        match self {
+            crate::api::auth::HomeserverError::ConnectionTimeout => {
+                <i32>::sse_encode(0, serializer);
+            }
+            crate::api::auth::HomeserverError::ReadTimeout => {
+                <i32>::sse_encode(1, serializer);
+            }
+            crate::api::auth::HomeserverError::DnsResolutionFailed => {
+                <i32>::sse_encode(2, serializer);
+            }
+            crate::api::auth::HomeserverError::NetworkUnavailable => {
+                <i32>::sse_encode(3, serializer);
+            }
+            crate::api::auth::HomeserverError::InvalidUrl => {
+                <i32>::sse_encode(4, serializer);
+            }
+            crate::api::auth::HomeserverError::NotHttps => {
+                <i32>::sse_encode(5, serializer);
+            }
+            crate::api::auth::HomeserverError::NotMatrixServer => {
+                <i32>::sse_encode(6, serializer);
+            }
+            crate::api::auth::HomeserverError::MalformedResponse => {
+                <i32>::sse_encode(7, serializer);
+            }
+            crate::api::auth::HomeserverError::UnsupportedVersion => {
+                <i32>::sse_encode(8, serializer);
+            }
+            crate::api::auth::HomeserverError::ServerError(field0) => {
+                <i32>::sse_encode(9, serializer);
+                <u16>::sse_encode(field0, serializer);
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
+    }
+}
+
 impl SseEncode for i32 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -1197,6 +1360,13 @@ impl SseEncode for crate::core::storage::SecureStorageError {
                 unimplemented!("");
             }
         }
+    }
+}
+
+impl SseEncode for u16 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        serializer.cursor.write_u16::<NativeEndian>(self).unwrap();
     }
 }
 

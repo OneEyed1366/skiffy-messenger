@@ -54,5 +54,19 @@
                 "example": "50"
             }
         }
-    }
+    },
+    "homeserverUrlLabel": "URL домашнего сервера",
+    "homeserverUrlPlaceholder": "https://matrix.org",
+    "homeserverUrlHint": "Введите адрес вашего Matrix сервера",
+    "homeserverUrlRequired": "URL домашнего сервера обязателен",
+    "homeserverInvalidUrlError": "Пожалуйста, введите корректный HTTPS URL",
+    "homeserverNotHttpsError": "URL должен начинаться с https://",
+    "homeserverConnectionError": "Не удается подключиться к серверу",
+    "homeserverNotMatrixError": "Указанный адрес не является сервером Matrix",
+    "homeserverVerifying": "Проверка сервера...",
+    "homeserverNetworkOfflineError": "Нет подключения к интернету. Проверьте ваше сетевое соединение.",
+    "homeserverServerUnreachableError": "Не удается достичь сервер. Проверьте URL или попробуйте позже.",
+    "homeserverVerifiedMessage": "Сервер успешно проверен",
+    "continueButton": "Продолжить",
+    "resetToDefaultButton": "Сбросить на стандартный"
 }
