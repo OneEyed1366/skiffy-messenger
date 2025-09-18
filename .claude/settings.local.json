@@ -15,7 +15,9 @@
       "WebSearch",
       "Bash(flutter:*)",
       "WebFetch(domain:stackoverflow.com)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(mkdir:*)",
+      "Bash(dart fix:*)"
     ],
     "deny": [],
     "ask": []

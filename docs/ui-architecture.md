@@ -1195,6 +1195,7 @@ SkiffyMessenger implements a multi-layered testing architecture designed for UI 
 #### Testing Philosophy
 
 **Core Principles:**
+
 - ✅ **BLoC-First Testing**: Use `blocTest` instead of `testWidgets` with `expectLater` for 8-10x better performance
 - ✅ **FFI Mock Strategy**: `RustLib.initMock(api: mockRustApi)` prevents macOS linking issues
 - ✅ **Integration Over Unit**: Prioritize full user flow testing over isolated component testing
@@ -1252,6 +1253,7 @@ SkiffyMessenger implements a multi-layered testing architecture designed for UI 
 #### Release Blockers - Critical Test Requirements
 
 **Performance Blockers:**
+
 ```dart
 // Must pass before any release
 test('message scrolling maintains 60 FPS with 1000+ messages', () async {
@@ -1276,6 +1278,7 @@ test('search response time under 200ms for large message history', () async {
 ```
 
 **Accessibility Blockers:**
+
 ```dart
 testWidgets('VoIP call controls meet WCAG AA requirements', (tester) async {
   await tester.pumpApp(VideoCallControls());
@@ -1297,6 +1300,7 @@ testWidgets('VoIP call controls meet WCAG AA requirements', (tester) async {
 ```
 
 **System Integration Blockers:**
+
 ```dart
 testWidgets('push notifications work in background mode', (tester) async {
   // Simulate app backgrounding

@@ -413,8 +413,8 @@ class _AppTextFieldState extends State<AppTextField> {
     final colorScheme = theme.colorScheme;
 
     // Determine hint text - use provided hint or default for search field
-    String? hintText = widget.hintText;
-    if (hintText == null && widget.leadingIcon is Icon && (widget.leadingIcon as Icon).icon == Icons.search) {
+    var hintText = widget.hintText;
+    if (hintText == null && widget.leadingIcon is Icon && (widget.leadingIcon! as Icon).icon == Icons.search) {
       hintText = context.l10n.textFieldSearchHint;
     }
 

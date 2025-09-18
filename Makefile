@@ -32,8 +32,9 @@ design-system-check:
 	@echo "🎨 Checking design system compliance..."
 	dart scripts/check_colors.dart
 
-# Run flutter analyze
+# Run dart fix and flutter analyze
 analyze:
+	dart fix --apply
 	flutter analyze --no-fatal-infos
 
 # Run tests

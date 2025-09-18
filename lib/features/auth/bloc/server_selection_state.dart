@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import '../models/homeserver_config.dart';
+import 'package:skiffy/features/auth/models/homeserver_config.dart';
 
 /// Base class for server selection states
 abstract class ServerSelectionState extends Equatable {

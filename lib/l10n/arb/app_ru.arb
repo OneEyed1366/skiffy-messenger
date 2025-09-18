@@ -68,5 +68,15 @@
     "homeserverServerUnreachableError": "Не удается достичь сервер. Проверьте URL или попробуйте позже.",
     "homeserverVerifiedMessage": "Сервер успешно проверен",
     "continueButton": "Продолжить",
-    "resetToDefaultButton": "Сбросить на стандартный"
+    "resetToDefaultButton": "Сбросить на стандартный",
+    "homeserverCapabilityDetectionInProgress": "Определение поддерживаемых методов входа...",
+    "homeserverCapabilityDetectionRetrying": "Повторная попытка подключения...",
+    "homeserverCapabilityDetectionTimeout": "Определение занимает больше времени, чем ожидалось. Проверьте ваше соединение.",
+    "homeserverCapabilityNetworkError": "Ошибка сети. Проверьте ваше соединение и попробуйте снова.",
+    "homeserverCapabilityInvalidHomeserver": "Не удается определить методы аутентификации. Проверьте URL домашнего сервера.",
+    "homeserverCapabilityServerUnreachableError": "Не удается достичь домашний сервер. Проверьте URL и ваше соединение.",
+    "homeserverCapabilityTimeoutError": "Превышено время ожидания подключения. Проверьте вашу сеть и попробуйте снова.",
+    "authSignInWithPassword": "Войти с паролем",
+    "authSignInWithSSO": "Войти через SSO",
+    "authNoMethodsAvailable": "Нет доступных методов аутентификации для этого домашнего сервера"
 }
