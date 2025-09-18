@@ -1,1 +1,0 @@
-/Users/andrejprokopenko/Library/Mobile Documents/iCloud~md~obsidian/Documents/notes/Skiffy/PRD.md

@@ -70,7 +70,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.11.1';
 
   @override
-  int get rustContentHash => 407460483;
+  int get rustContentHash => 1124453273;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -135,6 +135,8 @@ abstract class RustLibApi extends BaseApi {
     required String key,
     required String value,
   });
+
+  Future<bool> crateApiAuthVerifyHomeserver({required String homeServerUrl});
 }
 
 class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
@@ -701,6 +703,37 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         argNames: ["key", "value"],
       );
 
+  @override
+  Future<bool> crateApiAuthVerifyHomeserver({required String homeServerUrl}) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_String(homeServerUrl, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 18,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_bool,
+          decodeErrorData: sse_decode_homeserver_error,
+        ),
+        constMeta: kCrateApiAuthVerifyHomeserverConstMeta,
+        argValues: [homeServerUrl],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiAuthVerifyHomeserverConstMeta =>
+      const TaskConstMeta(
+        debugName: "verify_homeserver",
+        argNames: ["homeServerUrl"],
+      );
+
   @protected
   String dco_decode_String(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
@@ -756,6 +789,37 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   FfiSessionStatus dco_decode_ffi_session_status(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return FfiSessionStatus.values[raw as int];
+  }
+
+  @protected
+  HomeserverError dco_decode_homeserver_error(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    switch (raw[0]) {
+      case 0:
+        return HomeserverError_ConnectionTimeout();
+      case 1:
+        return HomeserverError_ReadTimeout();
+      case 2:
+        return HomeserverError_DnsResolutionFailed();
+      case 3:
+        return HomeserverError_NetworkUnavailable();
+      case 4:
+        return HomeserverError_InvalidUrl();
+      case 5:
+        return HomeserverError_NotHttps();
+      case 6:
+        return HomeserverError_NotMatrixServer();
+      case 7:
+        return HomeserverError_MalformedResponse();
+      case 8:
+        return HomeserverError_UnsupportedVersion();
+      case 9:
+        return HomeserverError_ServerError(
+          dco_decode_u_16(raw[1]),
+        );
+      default:
+        throw Exception("unreachable");
+    }
   }
 
   @protected
@@ -815,6 +879,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       default:
         throw Exception("unreachable");
     }
+  }
+
+  @protected
+  int dco_decode_u_16(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as int;
   }
 
   @protected
@@ -903,6 +973,38 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  HomeserverError sse_decode_homeserver_error(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var tag_ = sse_decode_i_32(deserializer);
+    switch (tag_) {
+      case 0:
+        return HomeserverError_ConnectionTimeout();
+      case 1:
+        return HomeserverError_ReadTimeout();
+      case 2:
+        return HomeserverError_DnsResolutionFailed();
+      case 3:
+        return HomeserverError_NetworkUnavailable();
+      case 4:
+        return HomeserverError_InvalidUrl();
+      case 5:
+        return HomeserverError_NotHttps();
+      case 6:
+        return HomeserverError_NotMatrixServer();
+      case 7:
+        return HomeserverError_MalformedResponse();
+      case 8:
+        return HomeserverError_UnsupportedVersion();
+      case 9:
+        var var_field0 = sse_decode_u_16(deserializer);
+        return HomeserverError_ServerError(var_field0);
+      default:
+        throw UnimplementedError('');
+    }
+  }
+
+  @protected
   int sse_decode_i_32(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return deserializer.buffer.getInt32();
@@ -965,6 +1067,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       default:
         throw UnimplementedError('');
     }
+  }
+
+  @protected
+  int sse_decode_u_16(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getUint16();
   }
 
   @protected
@@ -1044,6 +1152,37 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_homeserver_error(
+    HomeserverError self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    switch (self) {
+      case HomeserverError_ConnectionTimeout():
+        sse_encode_i_32(0, serializer);
+      case HomeserverError_ReadTimeout():
+        sse_encode_i_32(1, serializer);
+      case HomeserverError_DnsResolutionFailed():
+        sse_encode_i_32(2, serializer);
+      case HomeserverError_NetworkUnavailable():
+        sse_encode_i_32(3, serializer);
+      case HomeserverError_InvalidUrl():
+        sse_encode_i_32(4, serializer);
+      case HomeserverError_NotHttps():
+        sse_encode_i_32(5, serializer);
+      case HomeserverError_NotMatrixServer():
+        sse_encode_i_32(6, serializer);
+      case HomeserverError_MalformedResponse():
+        sse_encode_i_32(7, serializer);
+      case HomeserverError_UnsupportedVersion():
+        sse_encode_i_32(8, serializer);
+      case HomeserverError_ServerError(field0: final field0):
+        sse_encode_i_32(9, serializer);
+        sse_encode_u_16(field0, serializer);
+    }
+  }
+
+  @protected
   void sse_encode_i_32(int self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putInt32(self);
@@ -1102,6 +1241,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_i_32(4, serializer);
         sse_encode_String(message, serializer);
     }
+  }
+
+  @protected
+  void sse_encode_u_16(int self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putUint16(self);
   }
 
   @protected

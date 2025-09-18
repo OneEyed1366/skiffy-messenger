@@ -119,9 +119,10 @@ lib/l10n/gen/
 # Environment files (keep templates in VCS, exclude sensitive overrides)
 .env.local
 .env.*.local
-# AI Agents and BMAD framework
-.bmad-core/
-.claude/
-.clinerules/
-.crush/
-.cursor/
+
+# Documentation directories
+docs/lovable-prompts
+docs/epics/
+docs/qa/
+docs/stories/
+docs/prd/

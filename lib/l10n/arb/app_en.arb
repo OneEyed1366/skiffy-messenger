@@ -87,5 +87,61 @@
                 "example": "50"
             }
         }
+    },
+    "homeserverUrlLabel": "Homeserver URL",
+    "@homeserverUrlLabel": {
+        "description": "Label for homeserver URL input field"
+    },
+    "homeserverUrlPlaceholder": "https://matrix.org",
+    "@homeserverUrlPlaceholder": {
+        "description": "Placeholder text for homeserver URL input field"
+    },
+    "homeserverUrlHint": "Enter your Matrix server address",
+    "@homeserverUrlHint": {
+        "description": "Hint text for homeserver URL input field"
+    },
+    "homeserverUrlRequired": "Homeserver URL is required",
+    "@homeserverUrlRequired": {
+        "description": "Error message when homeserver URL is empty"
+    },
+    "homeserverInvalidUrlError": "Please enter a valid HTTPS URL",
+    "@homeserverInvalidUrlError": {
+        "description": "Error message for invalid URL format"
+    },
+    "homeserverNotHttpsError": "URL must start with https://",
+    "@homeserverNotHttpsError": {
+        "description": "Error message when URL doesn't use HTTPS"
+    },
+    "homeserverConnectionError": "Unable to connect to server",
+    "@homeserverConnectionError": {
+        "description": "Error message when server connection fails"
+    },
+    "homeserverNotMatrixError": "The specified address is not a Matrix server",
+    "@homeserverNotMatrixError": {
+        "description": "Error message when URL is not a Matrix server"
+    },
+    "homeserverVerifying": "Verifying server...",
+    "@homeserverVerifying": {
+        "description": "Status message during server verification"
+    },
+    "homeserverNetworkOfflineError": "No internet connection. Please check your network.",
+    "@homeserverNetworkOfflineError": {
+        "description": "Error message when device is offline"
+    },
+    "homeserverServerUnreachableError": "Cannot reach server. Check URL or try again later.",
+    "@homeserverServerUnreachableError": {
+        "description": "Error message when server is unreachable"
+    },
+    "homeserverVerifiedMessage": "Server verified successfully",
+    "@homeserverVerifiedMessage": {
+        "description": "Success message when homeserver is verified"
+    },
+    "continueButton": "Continue",
+    "@continueButton": {
+        "description": "Button text to continue to next step"
+    },
+    "resetToDefaultButton": "Reset to Default",
+    "@resetToDefaultButton": {
+        "description": "Button text to reset to default server"
     }
 }

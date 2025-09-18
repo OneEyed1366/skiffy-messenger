@@ -494,4 +494,566 @@ as String,
 
 }
 
+/// @nodoc
+mixin _$HomeserverError {
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeserverError);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'HomeserverError()';
+}
+
+
+}
+
+/// @nodoc
+class $HomeserverErrorCopyWith<$Res>  {
+$HomeserverErrorCopyWith(HomeserverError _, $Res Function(HomeserverError) __);
+}
+
+
+/// Adds pattern-matching-related methods to [HomeserverError].
+extension HomeserverErrorPatterns on HomeserverError {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( HomeserverError_ConnectionTimeout value)?  connectionTimeout,TResult Function( HomeserverError_ReadTimeout value)?  readTimeout,TResult Function( HomeserverError_DnsResolutionFailed value)?  dnsResolutionFailed,TResult Function( HomeserverError_NetworkUnavailable value)?  networkUnavailable,TResult Function( HomeserverError_InvalidUrl value)?  invalidUrl,TResult Function( HomeserverError_NotHttps value)?  notHttps,TResult Function( HomeserverError_NotMatrixServer value)?  notMatrixServer,TResult Function( HomeserverError_MalformedResponse value)?  malformedResponse,TResult Function( HomeserverError_UnsupportedVersion value)?  unsupportedVersion,TResult Function( HomeserverError_ServerError value)?  serverError,required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case HomeserverError_ConnectionTimeout() when connectionTimeout != null:
+return connectionTimeout(_that);case HomeserverError_ReadTimeout() when readTimeout != null:
+return readTimeout(_that);case HomeserverError_DnsResolutionFailed() when dnsResolutionFailed != null:
+return dnsResolutionFailed(_that);case HomeserverError_NetworkUnavailable() when networkUnavailable != null:
+return networkUnavailable(_that);case HomeserverError_InvalidUrl() when invalidUrl != null:
+return invalidUrl(_that);case HomeserverError_NotHttps() when notHttps != null:
+return notHttps(_that);case HomeserverError_NotMatrixServer() when notMatrixServer != null:
+return notMatrixServer(_that);case HomeserverError_MalformedResponse() when malformedResponse != null:
+return malformedResponse(_that);case HomeserverError_UnsupportedVersion() when unsupportedVersion != null:
+return unsupportedVersion(_that);case HomeserverError_ServerError() when serverError != null:
+return serverError(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( HomeserverError_ConnectionTimeout value)  connectionTimeout,required TResult Function( HomeserverError_ReadTimeout value)  readTimeout,required TResult Function( HomeserverError_DnsResolutionFailed value)  dnsResolutionFailed,required TResult Function( HomeserverError_NetworkUnavailable value)  networkUnavailable,required TResult Function( HomeserverError_InvalidUrl value)  invalidUrl,required TResult Function( HomeserverError_NotHttps value)  notHttps,required TResult Function( HomeserverError_NotMatrixServer value)  notMatrixServer,required TResult Function( HomeserverError_MalformedResponse value)  malformedResponse,required TResult Function( HomeserverError_UnsupportedVersion value)  unsupportedVersion,required TResult Function( HomeserverError_ServerError value)  serverError,}){
+final _that = this;
+switch (_that) {
+case HomeserverError_ConnectionTimeout():
+return connectionTimeout(_that);case HomeserverError_ReadTimeout():
+return readTimeout(_that);case HomeserverError_DnsResolutionFailed():
+return dnsResolutionFailed(_that);case HomeserverError_NetworkUnavailable():
+return networkUnavailable(_that);case HomeserverError_InvalidUrl():
+return invalidUrl(_that);case HomeserverError_NotHttps():
+return notHttps(_that);case HomeserverError_NotMatrixServer():
+return notMatrixServer(_that);case HomeserverError_MalformedResponse():
+return malformedResponse(_that);case HomeserverError_UnsupportedVersion():
+return unsupportedVersion(_that);case HomeserverError_ServerError():
+return serverError(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( HomeserverError_ConnectionTimeout value)?  connectionTimeout,TResult? Function( HomeserverError_ReadTimeout value)?  readTimeout,TResult? Function( HomeserverError_DnsResolutionFailed value)?  dnsResolutionFailed,TResult? Function( HomeserverError_NetworkUnavailable value)?  networkUnavailable,TResult? Function( HomeserverError_InvalidUrl value)?  invalidUrl,TResult? Function( HomeserverError_NotHttps value)?  notHttps,TResult? Function( HomeserverError_NotMatrixServer value)?  notMatrixServer,TResult? Function( HomeserverError_MalformedResponse value)?  malformedResponse,TResult? Function( HomeserverError_UnsupportedVersion value)?  unsupportedVersion,TResult? Function( HomeserverError_ServerError value)?  serverError,}){
+final _that = this;
+switch (_that) {
+case HomeserverError_ConnectionTimeout() when connectionTimeout != null:
+return connectionTimeout(_that);case HomeserverError_ReadTimeout() when readTimeout != null:
+return readTimeout(_that);case HomeserverError_DnsResolutionFailed() when dnsResolutionFailed != null:
+return dnsResolutionFailed(_that);case HomeserverError_NetworkUnavailable() when networkUnavailable != null:
+return networkUnavailable(_that);case HomeserverError_InvalidUrl() when invalidUrl != null:
+return invalidUrl(_that);case HomeserverError_NotHttps() when notHttps != null:
+return notHttps(_that);case HomeserverError_NotMatrixServer() when notMatrixServer != null:
+return notMatrixServer(_that);case HomeserverError_MalformedResponse() when malformedResponse != null:
+return malformedResponse(_that);case HomeserverError_UnsupportedVersion() when unsupportedVersion != null:
+return unsupportedVersion(_that);case HomeserverError_ServerError() when serverError != null:
+return serverError(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  connectionTimeout,TResult Function()?  readTimeout,TResult Function()?  dnsResolutionFailed,TResult Function()?  networkUnavailable,TResult Function()?  invalidUrl,TResult Function()?  notHttps,TResult Function()?  notMatrixServer,TResult Function()?  malformedResponse,TResult Function()?  unsupportedVersion,TResult Function( int field0)?  serverError,required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case HomeserverError_ConnectionTimeout() when connectionTimeout != null:
+return connectionTimeout();case HomeserverError_ReadTimeout() when readTimeout != null:
+return readTimeout();case HomeserverError_DnsResolutionFailed() when dnsResolutionFailed != null:
+return dnsResolutionFailed();case HomeserverError_NetworkUnavailable() when networkUnavailable != null:
+return networkUnavailable();case HomeserverError_InvalidUrl() when invalidUrl != null:
+return invalidUrl();case HomeserverError_NotHttps() when notHttps != null:
+return notHttps();case HomeserverError_NotMatrixServer() when notMatrixServer != null:
+return notMatrixServer();case HomeserverError_MalformedResponse() when malformedResponse != null:
+return malformedResponse();case HomeserverError_UnsupportedVersion() when unsupportedVersion != null:
+return unsupportedVersion();case HomeserverError_ServerError() when serverError != null:
+return serverError(_that.field0);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  connectionTimeout,required TResult Function()  readTimeout,required TResult Function()  dnsResolutionFailed,required TResult Function()  networkUnavailable,required TResult Function()  invalidUrl,required TResult Function()  notHttps,required TResult Function()  notMatrixServer,required TResult Function()  malformedResponse,required TResult Function()  unsupportedVersion,required TResult Function( int field0)  serverError,}) {final _that = this;
+switch (_that) {
+case HomeserverError_ConnectionTimeout():
+return connectionTimeout();case HomeserverError_ReadTimeout():
+return readTimeout();case HomeserverError_DnsResolutionFailed():
+return dnsResolutionFailed();case HomeserverError_NetworkUnavailable():
+return networkUnavailable();case HomeserverError_InvalidUrl():
+return invalidUrl();case HomeserverError_NotHttps():
+return notHttps();case HomeserverError_NotMatrixServer():
+return notMatrixServer();case HomeserverError_MalformedResponse():
+return malformedResponse();case HomeserverError_UnsupportedVersion():
+return unsupportedVersion();case HomeserverError_ServerError():
+return serverError(_that.field0);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  connectionTimeout,TResult? Function()?  readTimeout,TResult? Function()?  dnsResolutionFailed,TResult? Function()?  networkUnavailable,TResult? Function()?  invalidUrl,TResult? Function()?  notHttps,TResult? Function()?  notMatrixServer,TResult? Function()?  malformedResponse,TResult? Function()?  unsupportedVersion,TResult? Function( int field0)?  serverError,}) {final _that = this;
+switch (_that) {
+case HomeserverError_ConnectionTimeout() when connectionTimeout != null:
+return connectionTimeout();case HomeserverError_ReadTimeout() when readTimeout != null:
+return readTimeout();case HomeserverError_DnsResolutionFailed() when dnsResolutionFailed != null:
+return dnsResolutionFailed();case HomeserverError_NetworkUnavailable() when networkUnavailable != null:
+return networkUnavailable();case HomeserverError_InvalidUrl() when invalidUrl != null:
+return invalidUrl();case HomeserverError_NotHttps() when notHttps != null:
+return notHttps();case HomeserverError_NotMatrixServer() when notMatrixServer != null:
+return notMatrixServer();case HomeserverError_MalformedResponse() when malformedResponse != null:
+return malformedResponse();case HomeserverError_UnsupportedVersion() when unsupportedVersion != null:
+return unsupportedVersion();case HomeserverError_ServerError() when serverError != null:
+return serverError(_that.field0);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+
+
+class HomeserverError_ConnectionTimeout extends HomeserverError {
+  const HomeserverError_ConnectionTimeout(): super._();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeserverError_ConnectionTimeout);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'HomeserverError.connectionTimeout()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class HomeserverError_ReadTimeout extends HomeserverError {
+  const HomeserverError_ReadTimeout(): super._();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeserverError_ReadTimeout);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'HomeserverError.readTimeout()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class HomeserverError_DnsResolutionFailed extends HomeserverError {
+  const HomeserverError_DnsResolutionFailed(): super._();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeserverError_DnsResolutionFailed);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'HomeserverError.dnsResolutionFailed()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class HomeserverError_NetworkUnavailable extends HomeserverError {
+  const HomeserverError_NetworkUnavailable(): super._();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeserverError_NetworkUnavailable);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'HomeserverError.networkUnavailable()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class HomeserverError_InvalidUrl extends HomeserverError {
+  const HomeserverError_InvalidUrl(): super._();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeserverError_InvalidUrl);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'HomeserverError.invalidUrl()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class HomeserverError_NotHttps extends HomeserverError {
+  const HomeserverError_NotHttps(): super._();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeserverError_NotHttps);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'HomeserverError.notHttps()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class HomeserverError_NotMatrixServer extends HomeserverError {
+  const HomeserverError_NotMatrixServer(): super._();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeserverError_NotMatrixServer);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'HomeserverError.notMatrixServer()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class HomeserverError_MalformedResponse extends HomeserverError {
+  const HomeserverError_MalformedResponse(): super._();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeserverError_MalformedResponse);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'HomeserverError.malformedResponse()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class HomeserverError_UnsupportedVersion extends HomeserverError {
+  const HomeserverError_UnsupportedVersion(): super._();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeserverError_UnsupportedVersion);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'HomeserverError.unsupportedVersion()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class HomeserverError_ServerError extends HomeserverError {
+  const HomeserverError_ServerError(this.field0): super._();
+  
+
+ final  int field0;
+
+/// Create a copy of HomeserverError
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$HomeserverError_ServerErrorCopyWith<HomeserverError_ServerError> get copyWith => _$HomeserverError_ServerErrorCopyWithImpl<HomeserverError_ServerError>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeserverError_ServerError&&(identical(other.field0, field0) || other.field0 == field0));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,field0);
+
+@override
+String toString() {
+  return 'HomeserverError.serverError(field0: $field0)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $HomeserverError_ServerErrorCopyWith<$Res> implements $HomeserverErrorCopyWith<$Res> {
+  factory $HomeserverError_ServerErrorCopyWith(HomeserverError_ServerError value, $Res Function(HomeserverError_ServerError) _then) = _$HomeserverError_ServerErrorCopyWithImpl;
+@useResult
+$Res call({
+ int field0
+});
+
+
+
+
+}
+/// @nodoc
+class _$HomeserverError_ServerErrorCopyWithImpl<$Res>
+    implements $HomeserverError_ServerErrorCopyWith<$Res> {
+  _$HomeserverError_ServerErrorCopyWithImpl(this._self, this._then);
+
+  final HomeserverError_ServerError _self;
+  final $Res Function(HomeserverError_ServerError) _then;
+
+/// Create a copy of HomeserverError
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? field0 = null,}) {
+  return _then(HomeserverError_ServerError(
+null == field0 ? _self.field0 : field0 // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+
+}
+
 // dart format on

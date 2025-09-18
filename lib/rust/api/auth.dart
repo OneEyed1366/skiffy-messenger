@@ -10,7 +10,7 @@ import 'package:skiffy/rust/frb_generated.dart';
 
 part 'auth.freezed.dart';
 
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `fmt`, `fmt`, `fmt`, `from`, `from`, `source`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `from`, `from`, `from`, `source`
 
 /// Login with username and password
 Future<User> login({
@@ -37,6 +37,12 @@ Future<void> logout({required String homeServerUrl}) =>
 Future<bool> hasStoredSession() =>
     RustLib.instance.api.crateApiAuthHasStoredSession();
 
+/// Verify that a homeserver URL is valid and points to a Matrix server
+Future<bool> verifyHomeserver({required String homeServerUrl}) => RustLib
+    .instance
+    .api
+    .crateApiAuthVerifyHomeserver(homeServerUrl: homeServerUrl);
+
 @freezed
 sealed class AuthError with _$AuthError implements FrbException {
   const AuthError._();
@@ -54,6 +60,30 @@ sealed class AuthError with _$AuthError implements FrbException {
   const factory AuthError.invalidInput(
     String field0,
   ) = AuthError_InvalidInput;
+}
+
+@freezed
+sealed class HomeserverError with _$HomeserverError implements FrbException {
+  const HomeserverError._();
+
+  const factory HomeserverError.connectionTimeout() =
+      HomeserverError_ConnectionTimeout;
+  const factory HomeserverError.readTimeout() = HomeserverError_ReadTimeout;
+  const factory HomeserverError.dnsResolutionFailed() =
+      HomeserverError_DnsResolutionFailed;
+  const factory HomeserverError.networkUnavailable() =
+      HomeserverError_NetworkUnavailable;
+  const factory HomeserverError.invalidUrl() = HomeserverError_InvalidUrl;
+  const factory HomeserverError.notHttps() = HomeserverError_NotHttps;
+  const factory HomeserverError.notMatrixServer() =
+      HomeserverError_NotMatrixServer;
+  const factory HomeserverError.malformedResponse() =
+      HomeserverError_MalformedResponse;
+  const factory HomeserverError.unsupportedVersion() =
+      HomeserverError_UnsupportedVersion;
+  const factory HomeserverError.serverError(
+    int field0,
+  ) = HomeserverError_ServerError;
 }
 
 /// User information returned after successful authentication

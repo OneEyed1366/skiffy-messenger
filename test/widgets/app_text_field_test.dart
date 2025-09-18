@@ -105,19 +105,14 @@ void main() {
     });
 
     testWidgets('validates required fields correctly', (tester) async {
-      String? validationError;
-
       await tester.pumpWidget(
         MaterialApp(
           theme: AppTheme.lightTheme,
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          home: Scaffold(
+          home: const Scaffold(
             body: AppTextField.filled(
-              validator: (value) {
-                validationError = TextFieldValidators.required(value);
-                return validationError;
-              },
+              validator: TextFieldValidators.required,
             ),
           ),
         ),
