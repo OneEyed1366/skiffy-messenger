@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cargo test:*)",
+      "Bash(cargo clippy:*)",
+      "Bash(find:*)",
+      "Bash(tree:*)",
+      "Bash(cargo check:*)",
+      "Bash(flutter test:*)",
+      "Bash(cargo fmt:*)",
+      "Bash(flutter analyze:*)",
+      "Read(//Users/andrejprokopenko/Library/Mobile Documents/iCloud~md~obsidian/Documents/notes/Skiffy/**)",
+      "Bash(flutter gen-l10n:*)",
+      "Bash(grep:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

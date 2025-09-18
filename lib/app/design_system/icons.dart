@@ -52,7 +52,7 @@ class AppIcons {
     String? semanticLabel,
   }) {
     return SvgPicture.asset(
-      Assets.images.icons.send,
+      Assets.images.icons.send.path,
       width: size,
       height: size,
       colorFilter: color != null
@@ -77,7 +77,7 @@ class AppIcons {
     String? semanticLabel,
   }) {
     return SvgPicture.asset(
-      Assets.images.icons.chat,
+      Assets.images.icons.chat.path,
       width: size,
       height: size,
       colorFilter: color != null
@@ -106,7 +106,7 @@ class AppIcons {
     String? semanticLabel,
   }) {
     return SvgPicture.asset(
-      Assets.images.icons.settings,
+      Assets.images.icons.settings.path,
       width: size,
       height: size,
       colorFilter: color != null
@@ -131,7 +131,7 @@ class AppIcons {
     String? semanticLabel,
   }) {
     return SvgPicture.asset(
-      Assets.images.icons.user,
+      Assets.images.icons.user.path,
       width: size,
       height: size,
       colorFilter: color != null
@@ -160,7 +160,7 @@ class AppIcons {
     String? semanticLabel,
   }) {
     return SvgPicture.asset(
-      Assets.images.icons.lock,
+      Assets.images.icons.lock.path,
       width: size,
       height: size,
       colorFilter: color != null
