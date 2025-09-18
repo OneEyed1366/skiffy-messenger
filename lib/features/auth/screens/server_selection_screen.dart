@@ -137,7 +137,7 @@ class _ServerSelectionScreenState extends State<ServerSelectionScreen> {
                                     borderRadius: BorderRadius.circular(8),
                                     border: Border.all(
                                       color: theme.colorScheme.outline
-                                          .withOpacity(0.12),
+                                          .withValues(alpha: 0.12),
                                     ),
                                   ),
                                   child: Row(

@@ -52,7 +52,7 @@ Future<void> _loadEnvironmentConfiguration() async {
     await dotenv.load(fileName: flavorEnvFile);
 
     // Then merge base configuration for missing keys only
-    await dotenv.load(fileName: '.env', mergeWith: dotenv.env);
+    await dotenv.load(mergeWith: dotenv.env);
 
     // Initialize type-safe global environment instance
     ENV = Environment.fromDotEnv();

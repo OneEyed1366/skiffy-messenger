@@ -6,13 +6,24 @@ import 'package:skiffy/features/auth/bloc/server_selection_bloc.dart';
 import 'package:skiffy/features/auth/bloc/server_selection_event.dart';
 import 'package:skiffy/features/auth/bloc/server_selection_state.dart';
 import 'package:skiffy/l10n/l10n.dart';
+import 'package:skiffy/rust/frb_generated.dart';
 import 'package:skiffy/services/secure_storage_service.dart';
+
+class MockRustLibApi extends Mock implements RustLibApi {}
 
 class MockAppLocalizations extends Mock implements AppLocalizations {}
 
 class MockSecureStorageService extends Mock implements SecureStorageService {}
 
 void main() {
+  late MockRustLibApi mockRustApi;
+
+  setUpAll(() async {
+    // Initialize mock Rust API to avoid FFI linking issues
+    mockRustApi = MockRustLibApi();
+    RustLib.initMock(api: mockRustApi);
+  });
+
   group('ServerSelectionBloc', () {
     late MockAppLocalizations mockL10n;
     late MockSecureStorageService mockStorageService;
@@ -49,6 +60,12 @@ void main() {
         () => mockStorageService.get(any()),
       ).thenThrow(Exception('Key not found'));
       when(() => mockStorageService.set(any(), any())).thenAnswer((_) async {});
+
+      // Setup default mock for verification API calls
+      // This prevents real network calls in tests
+      when(() => mockRustApi.crateApiAuthVerifyHomeserver(
+            homeServerUrl: any(named: 'homeServerUrl'),
+          )).thenThrow(Exception('Connection failed'));
     });
 
     group('constructor', () {
@@ -121,11 +138,10 @@ void main() {
         act: (bloc) => bloc.add(const ServerUrlChanged('https://matrix.org')),
         expect: () => [
           const ServerVerifying('https://matrix.org'),
-          // In tests, real network calls will fail, expect ServerInvalid
           const ServerInvalid(
             url: 'https://matrix.org',
-            errorMessage: 'Unable to connect to server',
-            errorType: ServerErrorType.unknown,
+            errorMessage: 'Cannot reach server. Check URL or try again later.',
+            errorType: ServerErrorType.network,
           ),
         ],
       );
@@ -140,11 +156,10 @@ void main() {
             bloc.add(const ServerUrlChanged('  https://matrix.org  ')),
         expect: () => [
           const ServerVerifying('https://matrix.org'),
-          // In tests, real network calls will fail, expect ServerInvalid
           const ServerInvalid(
             url: 'https://matrix.org',
-            errorMessage: 'Unable to connect to server',
-            errorType: ServerErrorType.unknown,
+            errorMessage: 'Cannot reach server. Check URL or try again later.',
+            errorType: ServerErrorType.network,
           ),
         ],
       );
@@ -161,11 +176,10 @@ void main() {
             bloc.add(const ServerVerificationRequested('https://matrix.org')),
         expect: () => [
           const ServerVerifying('https://matrix.org'),
-          // In tests, real network calls will fail, expect ServerInvalid
           const ServerInvalid(
             url: 'https://matrix.org',
-            errorMessage: 'Unable to connect to server',
-            errorType: ServerErrorType.unknown,
+            errorMessage: 'Cannot reach server. Check URL or try again later.',
+            errorType: ServerErrorType.network,
           ),
         ],
       );

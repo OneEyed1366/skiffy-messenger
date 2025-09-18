@@ -81,7 +81,7 @@ class ServerSelectionBloc
           ),
         );
       }
-    } catch (error) {
+    } on Exception catch (error) {
       // Map Rust errors to user-friendly messages
       final (errorMessage, errorType) = _mapErrorToUserMessage(error);
 
@@ -144,7 +144,7 @@ class ServerSelectionBloc
   Future<void> _storeHomeserverUrl(String url) async {
     try {
       await _storageService.set(_homeserverUrlKey, url);
-    } catch (e) {
+    } on Exception {
       // Log error but don't fail the verification process
       // In a production app, you might want to use a logging service here
     }
@@ -154,7 +154,7 @@ class ServerSelectionBloc
   Future<String?> _getStoredHomeserverUrl() async {
     try {
       return await _storageService.get(_homeserverUrlKey);
-    } catch (e) {
+    } on Exception {
       return null;
     }
   }
@@ -162,14 +162,15 @@ class ServerSelectionBloc
   /// Gets the currently selected or verified homeserver URL
   String? get currentHomeserverUrl {
     final currentState = state;
-    if (currentState is ServerValid) {
-      return currentState.config.url;
-    } else if (currentState is ServerVerifying) {
-      return currentState.url;
-    } else if (currentState is ServerInvalid) {
-      return currentState.url;
-    } else if (currentState is ServerSelectionInitial) {
-      return currentState.defaultUrl;
+    switch (currentState) {
+      case ServerValid():
+        return currentState.config.url;
+      case ServerVerifying():
+        return currentState.url;
+      case ServerInvalid():
+        return currentState.url;
+      case ServerSelectionInitial():
+        return currentState.defaultUrl;
     }
     return null;
   }

@@ -32,5 +32,15 @@
     "homeserverServerUnreachableError": "No se puede alcanzar el servidor. Verifique la URL o intente más tarde.",
     "homeserverVerifiedMessage": "Servidor verificado exitosamente",
     "continueButton": "Continuar",
-    "resetToDefaultButton": "Restablecer al predeterminado"
+    "resetToDefaultButton": "Restablecer al predeterminado",
+    "homeserverCapabilityDetectionInProgress": "Detectando métodos de inicio de sesión compatibles...",
+    "homeserverCapabilityDetectionRetrying": "Reintentando conexión...",
+    "homeserverCapabilityDetectionTimeout": "La detección está tardando más de lo esperado. Por favor, verifique su conexión.",
+    "homeserverCapabilityNetworkError": "Error de red. Por favor, verifique su conexión e intente nuevamente.",
+    "homeserverCapabilityInvalidHomeserver": "No se pueden determinar los métodos de autenticación. Por favor, verifique la URL de su servidor doméstico.",
+    "homeserverCapabilityServerUnreachableError": "No se puede alcanzar el servidor doméstico. Por favor, verifique la URL y su conexión.",
+    "homeserverCapabilityTimeoutError": "Tiempo de conexión agotado. Por favor, verifique su red e intente nuevamente.",
+    "authSignInWithPassword": "Iniciar sesión con contraseña",
+    "authSignInWithSSO": "Iniciar sesión con SSO",
+    "authNoMethodsAvailable": "No hay métodos de autenticación disponibles para este servidor doméstico"
 }

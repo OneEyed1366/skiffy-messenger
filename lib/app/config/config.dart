@@ -1,5 +1,6 @@
 import 'package:skiffy/app/config/environment/environment.dart';
 
+export 'constants.dart';
 export 'environment/environment.dart';
 
 /// Global environment instance

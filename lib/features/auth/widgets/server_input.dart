@@ -72,7 +72,6 @@ class _ServerInputState extends State<ServerInput> {
       helperText: l10n.homeserverUrlHint,
       errorText: widget.errorText,
       keyboardType: TextInputType.url,
-      textInputAction: TextInputAction.done,
       enabled: widget.enabled,
       autofocus: widget.autofocus,
       validator: (value) => HomeserverValidator.validate(value, l10n),

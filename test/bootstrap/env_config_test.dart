@@ -6,7 +6,7 @@ void main() {
   group('Environment Configuration', () {
     setUp(() {
       // Reset dotenv before each test
-      dotenv.testLoad(fileInput: '');
+      dotenv.testLoad();
     });
 
     test('FlavorConfig sets and gets flavor correctly', () {

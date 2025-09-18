@@ -10,7 +10,7 @@ import 'package:skiffy/rust/frb_generated.dart';
 
 part 'auth.freezed.dart';
 
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `from`, `from`, `from`, `source`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `clone`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `from`, `from`, `from`, `source`
 
 /// Login with username and password
 Future<User> login({
@@ -43,6 +43,13 @@ Future<bool> verifyHomeserver({required String homeServerUrl}) => RustLib
     .api
     .crateApiAuthVerifyHomeserver(homeServerUrl: homeServerUrl);
 
+/// Check homeserver capabilities to determine supported authentication methods
+Future<HomeserverCapabilities> checkHomeserverCapabilities({
+  required String homeServerUrl,
+}) => RustLib.instance.api.crateApiAuthCheckHomeserverCapabilities(
+  homeServerUrl: homeServerUrl,
+);
+
 @freezed
 sealed class AuthError with _$AuthError implements FrbException {
   const AuthError._();
@@ -60,6 +67,41 @@ sealed class AuthError with _$AuthError implements FrbException {
   const factory AuthError.invalidInput(
     String field0,
   ) = AuthError_InvalidInput;
+}
+
+/// Capabilities supported by a Matrix homeserver
+class HomeserverCapabilities {
+  const HomeserverCapabilities({
+    required this.supportsPasswordLogin,
+    required this.supportsSso,
+    required this.ssoProviders,
+    required this.supportsRegistration,
+    required this.supportsGuestAccess,
+  });
+  final bool supportsPasswordLogin;
+  final bool supportsSso;
+  final List<SsoProvider> ssoProviders;
+  final bool supportsRegistration;
+  final bool supportsGuestAccess;
+
+  @override
+  int get hashCode =>
+      supportsPasswordLogin.hashCode ^
+      supportsSso.hashCode ^
+      ssoProviders.hashCode ^
+      supportsRegistration.hashCode ^
+      supportsGuestAccess.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is HomeserverCapabilities &&
+          runtimeType == other.runtimeType &&
+          supportsPasswordLogin == other.supportsPasswordLogin &&
+          supportsSso == other.supportsSso &&
+          ssoProviders == other.ssoProviders &&
+          supportsRegistration == other.supportsRegistration &&
+          supportsGuestAccess == other.supportsGuestAccess;
 }
 
 @freezed
@@ -84,6 +126,15 @@ sealed class HomeserverError with _$HomeserverError implements FrbException {
   const factory HomeserverError.serverError(
     int field0,
   ) = HomeserverError_ServerError;
+}
+
+/// SSO provider types supported by Matrix servers
+enum SsoProvider {
+  google,
+  apple,
+  gitHub,
+  gitLab,
+  facebook,
 }
 
 /// User information returned after successful authentication

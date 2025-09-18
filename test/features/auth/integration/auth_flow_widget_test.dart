@@ -255,6 +255,8 @@ void main() {
         when(() => mockRustApi.crateApiAuthVerifyHomeserver(
               homeServerUrl: 'https://chat.matrix.org',
             )).thenAnswer((_) => Future.value(true));
+        when(() => mockStorageService.set('homeserver_url', any()))
+            .thenAnswer((_) async {});
       },
       build: () => ServerSelectionBloc(
         localizations: mockL10n,
@@ -300,6 +302,8 @@ void main() {
           when(() => mockRustApi.crateApiAuthVerifyHomeserver(
                 homeServerUrl: testUrl,
               )).thenThrow(const HomeserverError.notMatrixServer());
+          when(() => mockStorageService.get('homeserver_url'))
+              .thenAnswer((_) async => testUrl);
         },
         build: () => ServerSelectionBloc(
           localizations: mockL10n,
