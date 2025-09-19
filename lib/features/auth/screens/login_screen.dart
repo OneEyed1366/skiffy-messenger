@@ -57,16 +57,22 @@ class LoginScreen extends StatelessWidget {
                     // Header
                     Text(
                       'Sign In',
-                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: Theme.of(context)
+                          .textTheme
+                          .headlineMedium
+                          ?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 8),
                     Text(
                       homeserverUrl,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onSurface
+                            .withValues(alpha: 0.7),
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -79,7 +85,10 @@ class LoginScreen extends StatelessWidget {
                       Text(
                         l10n.homeserverCapabilityDetectionInProgress,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onSurface
+                              .withValues(alpha: 0.7),
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -102,15 +111,22 @@ class LoginScreen extends StatelessWidget {
                           children: [
                             Icon(
                               Icons.error_outline,
-                              color: Theme.of(context).colorScheme.onErrorContainer,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onErrorContainer,
                               size: 48,
                             ),
                             const SizedBox(height: 16),
                             Text(
                               state.message,
-                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                color: Theme.of(context).colorScheme.onErrorContainer,
-                              ),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onErrorContainer,
+                                  ),
                               textAlign: TextAlign.center,
                             ),
                             const SizedBox(height: 16),
@@ -127,7 +143,7 @@ class LoginScreen extends StatelessWidget {
                       ),
                     ]
 
-                    // Initial state - should not happen as we trigger capability check immediately
+                    // Initial state - capability check triggered immediately
                     else ...[
                       const Center(child: CircularProgressIndicator()),
                     ],

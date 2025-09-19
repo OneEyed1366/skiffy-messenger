@@ -42,5 +42,19 @@
     "homeserverCapabilityTimeoutError": "Tiempo de conexión agotado. Por favor, verifique su red e intente nuevamente.",
     "authSignInWithPassword": "Iniciar sesión con contraseña",
     "authSignInWithSSO": "Iniciar sesión con SSO",
-    "authNoMethodsAvailable": "No hay métodos de autenticación disponibles para este servidor doméstico"
+    "authNoMethodsAvailable": "No hay métodos de autenticación disponibles para este servidor doméstico",
+    "authMatrixIdLabel": "Matrix ID",
+    "authMatrixIdHint": "@usuario:servidor.com",
+    "authPasswordLabel": "Contraseña",
+    "authPasswordHint": "Ingrese su contraseña",
+    "authLoginButton": "Iniciar Sesión",
+    "authLoggingIn": "Iniciando sesión...",
+    "authInvalidCredentialsError": "Nombre de usuario o contraseña inválido",
+    "authNetworkError": "Error de red, verifique su conexión a internet",
+    "authServerError": "Error del servidor. Por favor, inténtelo más tarde",
+    "authTimeoutError": "Tiempo de conexión agotado. Por favor, inténtelo de nuevo",
+    "authInvalidMatrixIdError": "Por favor ingrese un Matrix ID válido",
+    "authLoginSuccess": "Sesión iniciada exitosamente",
+    "authSessionRestored": "¡Bienvenido de vuelta!",
+    "authAutoLoginInProgress": "Restaurando su sesión..."
 }

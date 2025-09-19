@@ -310,3 +310,235 @@ Always verify after applying fixes:
 1. Run `flutter analyze` to confirm issue reduction
 2. Run tests to ensure no functionality broken
 3. Document the changes in the story file
+
+# Flutter Localization (l10n) Implementation
+
+## Critical Rule: Never Use Hardcoded Strings
+
+**NEVER** use hardcoded strings in UI components. Always use localization keys, even during development.
+
+**❌ Wrong:**
+```dart
+Text('Sign In')
+labelText: 'Password'
+hintText: 'Enter your password'
+```
+
+**✅ Correct:**
+```dart
+Text(l10n.authLoginButton)
+labelText: l10n.authPasswordLabel
+hintText: l10n.authPasswordHint
+```
+
+## Complete Localization Workflow
+
+### 1. Add Keys to ALL ARB Files
+
+When adding localization keys, you MUST add them to **all** language files, not just `app_en.arb`.
+
+**Required Files:**
+- `/lib/l10n/arb/app_en.arb` - English (base)
+- `/lib/l10n/arb/app_es.arb` - Spanish
+- `/lib/l10n/arb/app_ru.arb` - Russian
+
+**Example: Adding authentication keys**
+
+`app_en.arb`:
+```json
+{
+  "authMatrixIdLabel": "Matrix ID",
+  "authPasswordLabel": "Password",
+  "authLoginButton": "Sign In",
+  "authInvalidCredentialsError": "Invalid username or password"
+}
+```
+
+`app_es.arb`:
+```json
+{
+  "authMatrixIdLabel": "Matrix ID",
+  "authPasswordLabel": "Contraseña",
+  "authLoginButton": "Iniciar Sesión",
+  "authInvalidCredentialsError": "Nombre de usuario o contraseña inválido"
+}
+```
+
+`app_ru.arb`:
+```json
+{
+  "authMatrixIdLabel": "Matrix ID",
+  "authPasswordLabel": "Пароль",
+  "authLoginButton": "Войти",
+  "authInvalidCredentialsError": "Неверное имя пользователя или пароль"
+}
+```
+
+### 2. Regenerate Localization Files
+
+After adding keys to all ARB files:
+
+```bash
+flutter gen-l10n
+```
+
+**Common Issue**: If keys don't appear in generated files, ensure:
+- All ARB files have the same keys
+- JSON syntax is valid in all files
+- No trailing commas or syntax errors
+
+### 3. Update UI Components
+
+Replace all hardcoded strings with l10n calls:
+
+```dart
+// Before
+decoration: const InputDecoration(
+  labelText: 'Password',
+  hintText: 'Enter your password',
+),
+
+// After
+decoration: InputDecoration(
+  labelText: l10n.authPasswordLabel,
+  hintText: l10n.authPasswordHint,
+),
+```
+
+### 4. Update Error Handling
+
+Use localized error messages in BLoCs and services:
+
+```dart
+// Before
+return (
+  'Authentication failed. Please check your credentials.',
+  AuthErrorType.authentication,
+);
+
+// After
+return (
+  localizations.authInvalidCredentialsError,
+  AuthErrorType.authentication,
+);
+```
+
+## Localization Key Naming Conventions
+
+Use consistent, descriptive naming patterns:
+
+### UI Element Labels
+- `auth*Label` - Form field labels
+- `auth*Hint` - Placeholder/hint text
+- `auth*Button` - Button text
+
+### Messages
+- `auth*Error` - Error messages
+- `auth*Success` - Success messages
+- `auth*InProgress` - Loading/progress messages
+
+### Examples
+```
+authMatrixIdLabel: "Matrix ID"
+authMatrixIdHint: "@user:server.com"
+authPasswordLabel: "Password"
+authLoginButton: "Sign In"
+authInvalidCredentialsError: "Invalid username or password"
+authLoginSuccess: "Successfully signed in"
+authLoggingIn: "Signing in..."
+```
+
+## Testing with Localization
+
+### Mock AppLocalizations in Tests
+
+Always create comprehensive mocks for testing:
+
+```dart
+class MockAppLocalizations extends Mock implements AppLocalizations {
+  @override
+  String get authMatrixIdLabel => 'Matrix ID';
+
+  @override
+  String get authPasswordLabel => 'Password';
+
+  @override
+  String get authLoginButton => 'Sign In';
+
+  @override
+  String get authInvalidCredentialsError => 'Invalid username or password';
+
+  // Include ALL keys your component uses
+}
+```
+
+### Test Localization Keys
+
+Verify UI components use correct l10n keys:
+
+```dart
+testWidgets('login form uses localized labels', (tester) async {
+  await tester.pumpWidget(
+    MaterialApp(
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+      ],
+      home: LoginForm(homeserverUrl: 'https://matrix.org'),
+    ),
+  );
+
+  // Verify localized text appears
+  expect(find.text('Matrix ID'), findsOneWidget);
+  expect(find.text('Password'), findsOneWidget);
+  expect(find.text('Sign In'), findsOneWidget);
+});
+```
+
+## Common Localization Pitfalls
+
+### 1. Missing Keys in Secondary Languages
+
+**Problem**: Adding keys only to `app_en.arb`
+**Solution**: Always add to all language files simultaneously
+
+### 2. Hardcoded Strings During Development
+
+**Problem**: Using `Text('Debug text')` during development
+**Solution**: Always use l10n, even for temporary text
+
+### 3. Inconsistent Key Naming
+
+**Problem**: Mixed naming like `loginBtn`, `authPasswordLabel`, `signInError`
+**Solution**: Follow consistent patterns: `auth*Label`, `auth*Button`, `auth*Error`
+
+### 4. Not Regenerating l10n Files
+
+**Problem**: Adding ARB keys but forgetting `flutter gen-l10n`
+**Solution**: Always regenerate after ARB changes
+
+### 5. Missing Mock Localization in Tests
+
+**Problem**: Tests failing because real AppLocalizations not available
+**Solution**: Always mock AppLocalizations in test setup
+
+## Localization Verification Checklist
+
+Before completing a feature with new UI text:
+
+- [ ] All user-visible strings use l10n keys
+- [ ] Keys added to ALL ARB files (en, es, ru)
+- [ ] Translations are contextually appropriate
+- [ ] `flutter gen-l10n` executed successfully
+- [ ] UI components updated to use l10n
+- [ ] Error messages use localized strings
+- [ ] Tests mock AppLocalizations properly
+- [ ] All tests pass with localization
+
+## Performance Considerations
+
+- **l10n calls are lightweight** - no performance impact
+- **Regeneration is fast** - `flutter gen-l10n` completes in ~500ms
+- **Build-time generation** - no runtime overhead
+- **Type-safe access** - compile-time verification of key existence
+
+This localization implementation ensures the app properly supports multiple languages and follows Flutter best practices for internationalization.

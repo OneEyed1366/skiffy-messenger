@@ -78,5 +78,19 @@
     "homeserverCapabilityTimeoutError": "Превышено время ожидания подключения. Проверьте вашу сеть и попробуйте снова.",
     "authSignInWithPassword": "Войти с паролем",
     "authSignInWithSSO": "Войти через SSO",
-    "authNoMethodsAvailable": "Нет доступных методов аутентификации для этого домашнего сервера"
+    "authNoMethodsAvailable": "Нет доступных методов аутентификации для этого домашнего сервера",
+    "authMatrixIdLabel": "Matrix ID",
+    "authMatrixIdHint": "@пользователь:сервер.com",
+    "authPasswordLabel": "Пароль",
+    "authPasswordHint": "Введите ваш пароль",
+    "authLoginButton": "Войти",
+    "authLoggingIn": "Выполняется вход...",
+    "authInvalidCredentialsError": "Неверное имя пользователя или пароль",
+    "authNetworkError": "Ошибка сети, проверьте подключение к интернету",
+    "authServerError": "Ошибка сервера. Пожалуйста, попробуйте позже",
+    "authTimeoutError": "Превышено время ожидания. Пожалуйста, попробуйте снова",
+    "authInvalidMatrixIdError": "Пожалуйста, введите корректный Matrix ID",
+    "authLoginSuccess": "Успешный вход в систему",
+    "authSessionRestored": "С возвращением!",
+    "authAutoLoginInProgress": "Восстановление вашей сессии..."
 }

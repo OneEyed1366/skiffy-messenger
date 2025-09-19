@@ -14,6 +14,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }) : super(const AuthInitial()) {
     on<CheckHomeserverCapabilities>(_onCheckHomeserverCapabilities);
     on<LoginRequested>(_onLoginRequested);
+    on<RestoreSession>(_onRestoreSession);
     on<AuthReset>(_onAuthReset);
   }
 
@@ -27,7 +28,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(const AuthLoading());
 
     try {
-      // Call Rust function to check homeserver capabilities with 30-second timeout
+      // Call Rust function to check homeserver capabilities with timeout
       final capabilities = await auth_api
           .checkHomeserverCapabilities(homeServerUrl: event.homeserverUrl)
           .timeout(
@@ -99,6 +100,35 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
+  /// Handles session restoration events
+  Future<void> _onRestoreSession(
+    RestoreSession event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(const AuthLoading());
+
+    try {
+      final user = await auth_api.restoreSession(
+        homeServerUrl: event.homeserverUrl,
+      );
+
+      if (user != null) {
+        emit(AuthSuccess(user));
+      } else {
+        // No saved session found, return to initial state
+        emit(const AuthInitial());
+      }
+    } on Exception catch (error) {
+      final (errorMessage, errorType) = _mapErrorToUserMessage(error);
+      emit(
+        AuthError(
+          message: errorMessage,
+          errorType: errorType,
+        ),
+      );
+    }
+  }
+
   /// Handles authentication reset events
   Future<void> _onAuthReset(
     AuthReset event,
@@ -145,9 +175,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       );
     } else if (errorString.contains('authentication') ||
         errorString.contains('login') ||
-        errorString.contains('credentials')) {
+        errorString.contains('credentials') ||
+        errorString.contains('invalid credentials')) {
       return (
-        'Authentication failed. Please check your credentials.',
+        localizations.authInvalidCredentialsError,
+        AuthErrorType.authentication,
+      );
+    } else if (errorString.contains('server error')) {
+      return (
+        localizations.authServerError,
         AuthErrorType.authentication,
       );
     } else {
