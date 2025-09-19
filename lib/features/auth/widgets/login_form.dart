@@ -9,7 +9,8 @@ import 'package:skiffy/utils/validators/auth_validator.dart';
 /// Widget for password-based authentication form
 class LoginForm extends StatefulWidget {
   const LoginForm({
-    required this.homeserverUrl, super.key,
+    required this.homeserverUrl,
+    super.key,
   });
 
   final String homeserverUrl;
@@ -59,13 +60,14 @@ class _LoginFormState extends State<LoginForm> {
                 enabled: !isLoading,
                 keyboardType: TextInputType.text,
                 textInputAction: TextInputAction.next,
-                decoration: const InputDecoration(
-                  labelText: 'Username or Matrix ID',
-                  hintText: '@user:server.com or user',
-                  prefixIcon: Icon(Icons.person_outline),
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  labelText: l10n.authMatrixIdLabel,
+                  hintText: l10n.authMatrixIdHint,
+                  prefixIcon: const Icon(Icons.person_outline),
+                  border: const OutlineInputBorder(),
                 ),
-                validator: (value) => AuthValidator.validateUsername(value, l10n),
+                validator: (value) =>
+                    AuthValidator.validateUsername(value, l10n),
               ),
               const SizedBox(height: 16),
 
@@ -77,12 +79,14 @@ class _LoginFormState extends State<LoginForm> {
                 keyboardType: TextInputType.visiblePassword,
                 textInputAction: TextInputAction.done,
                 decoration: InputDecoration(
-                  labelText: 'Password',
-                  hintText: 'Enter your password',
+                  labelText: l10n.authPasswordLabel,
+                  hintText: l10n.authPasswordHint,
                   prefixIcon: const Icon(Icons.lock_outline),
                   suffixIcon: IconButton(
                     icon: Icon(
-                      _isPasswordVisible ? Icons.visibility_off : Icons.visibility,
+                      _isPasswordVisible
+                          ? Icons.visibility_off
+                          : Icons.visibility,
                     ),
                     onPressed: () {
                       setState(() {
@@ -95,8 +99,11 @@ class _LoginFormState extends State<LoginForm> {
                   ),
                   border: const OutlineInputBorder(),
                 ),
-                validator: (value) => AuthValidator.validatePassword(value, l10n),
-                onFieldSubmitted: isLoading ? null : (_) => _submitForm(context),
+                validator: (value) =>
+                    AuthValidator.validatePassword(value, l10n),
+                onFieldSubmitted: isLoading
+                    ? null
+                    : (_) => _submitForm(context),
               ),
               const SizedBox(height: 24),
 
@@ -112,7 +119,7 @@ class _LoginFormState extends State<LoginForm> {
                         width: 20,
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
-                    : const Text('Sign In'),
+                    : Text(l10n.authLoginButton),
               ),
             ],
           ),

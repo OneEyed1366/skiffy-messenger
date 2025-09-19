@@ -39,6 +39,19 @@ class LoginRequested extends AuthEvent {
   String toString() => 'LoginRequested(username: $username)';
 }
 
+/// Event to restore session from secure storage
+class RestoreSession extends AuthEvent {
+  const RestoreSession(this.homeserverUrl);
+
+  final String homeserverUrl;
+
+  @override
+  List<Object?> get props => [homeserverUrl];
+
+  @override
+  String toString() => 'RestoreSession(homeserverUrl: $homeserverUrl)';
+}
+
 /// Event to reset the authentication state
 class AuthReset extends AuthEvent {
   const AuthReset();

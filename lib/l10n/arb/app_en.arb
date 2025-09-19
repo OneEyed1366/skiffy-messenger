@@ -183,5 +183,61 @@
     "authNoMethodsAvailable": "No authentication methods available for this homeserver",
     "@authNoMethodsAvailable": {
         "description": "Message when no supported authentication methods are found"
+    },
+    "authMatrixIdLabel": "Matrix ID",
+    "@authMatrixIdLabel": {
+        "description": "Label for Matrix ID input field"
+    },
+    "authMatrixIdHint": "@username:homeserver.com",
+    "@authMatrixIdHint": {
+        "description": "Hint text for Matrix ID input field"
+    },
+    "authPasswordLabel": "Password",
+    "@authPasswordLabel": {
+        "description": "Label for password input field"
+    },
+    "authPasswordHint": "Enter your password",
+    "@authPasswordHint": {
+        "description": "Hint text for password input field"
+    },
+    "authLoginButton": "Sign In",
+    "@authLoginButton": {
+        "description": "Text for login button"
+    },
+    "authLoggingIn": "Signing in...",
+    "@authLoggingIn": {
+        "description": "Text shown during login process"
+    },
+    "authInvalidCredentialsError": "Invalid username or password",
+    "@authInvalidCredentialsError": {
+        "description": "Error message for incorrect credentials"
+    },
+    "authNetworkError": "Network error, check your internet connection",
+    "@authNetworkError": {
+        "description": "Error message for network issues during authentication"
+    },
+    "authServerError": "Server error. Please try again later",
+    "@authServerError": {
+        "description": "Error message for server errors during authentication"
+    },
+    "authTimeoutError": "Connection timeout. Please try again",
+    "@authTimeoutError": {
+        "description": "Error message for connection timeouts during authentication"
+    },
+    "authInvalidMatrixIdError": "Please enter a valid Matrix ID",
+    "@authInvalidMatrixIdError": {
+        "description": "Error message for invalid Matrix ID format"
+    },
+    "authLoginSuccess": "Successfully signed in",
+    "@authLoginSuccess": {
+        "description": "Success message after successful login"
+    },
+    "authSessionRestored": "Welcome back!",
+    "@authSessionRestored": {
+        "description": "Message when session is restored from storage"
+    },
+    "authAutoLoginInProgress": "Restoring your session...",
+    "@authAutoLoginInProgress": {
+        "description": "Message shown during automatic login process"
     }
 }

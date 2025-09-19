@@ -39,7 +39,8 @@ class HomeserverCapabilitiesLoaded extends AuthState {
   List<Object?> get props => [homeserverUrl, capabilities];
 
   @override
-  String toString() => 'HomeserverCapabilitiesLoaded(homeserverUrl: $homeserverUrl, capabilities: $capabilities)';
+  String toString() => 'HomeserverCapabilitiesLoaded('
+      'homeserverUrl: $homeserverUrl, capabilities: $capabilities)';
 }
 
 /// State when authentication is successful
