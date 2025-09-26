@@ -7,7 +7,7 @@ environment:
   sdk: ^3.8.0
 
 dependencies:
-  bloc: ^9.0.0
+  bloc: ^9.0.1
   flutter_bloc: ^9.1.1
   intl: ^0.20.2
   flutter_localizations:
