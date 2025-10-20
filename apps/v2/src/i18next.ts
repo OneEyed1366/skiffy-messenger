@@ -3,11 +3,11 @@ import i18next, { Resource } from "i18next";
 import Backend from "i18next-chained-backend";
 import AsyncStoragePlugin from "i18next-react-native-async-storage";
 import { initReactI18next } from "react-i18next";
-import { ILanguage, LANGUAGES_ARRAY, LANGUAGE_KEYS_SET } from "./locales";
+import { ILanguageKey, LANGUAGES_ARRAY, LANGUAGE_KEYS_SET } from "./locales";
 
-function getMyLocale(): ILanguage {
+function getMyLocale(): ILanguageKey {
   const { languageCode } = (Localization.getLocales().at(0) ?? {}) as {
-    languageCode?: ILanguage;
+    languageCode?: ILanguageKey;
   };
   if (!languageCode || !LANGUAGE_KEYS_SET.has(languageCode)) return "en";
   return languageCode;
@@ -25,10 +25,10 @@ i18next
         ({
           ...acc,
           [value]: { translation: url },
-        }) satisfies Record<ILanguage, Resource>,
-      {} as Record<ILanguage, Resource>,
+        }) satisfies Record<ILanguageKey, Resource>,
+      {} as Record<ILanguageKey, Resource>,
     ),
-    fallbackLng: "en" satisfies ILanguage,
+    fallbackLng: "en" satisfies ILanguageKey,
     interpolation: {
       escapeValue: false,
     },

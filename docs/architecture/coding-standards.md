@@ -36,26 +36,45 @@ import { theme } from "../../../theme";
 import { UserService } from "./services/UserService";
 ```
 
-### Type Safety
+### Type Safety and Naming Conventions
 
 - **No `any` types**: Use proper TypeScript types
-- **Interface over type**: Prefer interfaces for object shapes
+- **Type over interface**: Prefer `type` for all type definitions (consistency and flexibility)
+- **'I' Prefix for Types**: All custom types must use 'I' prefix (e.g., `IUser`, `ILanguage`, `IButtonProps`)
 - **Generics**: Use generics for reusable components
 
 ```typescript
-// ✅ Good - Proper typing
-interface UserProps {
-  user: User;
+// ✅ Good - Proper typing with 'I' prefix and 'type'
+type IProps = {
+  user: IUser;
   onSelect: (userId: string) => void;
-}
+};
 
-function UserComponent({ user, onSelect }: UserProps) {
+type IUser = {
+  id: string;
+  name: string;
+  email: string;
+};
+
+function UserComponent({ user, onSelect }: IProps) {
   return <Text onPress={() => onSelect(user.id)}>{user.name}</Text>;
 }
 
 // ❌ Bad - Any types
 function UserComponent({ user, onSelect }: any) {
   return <Text onPress={() => onSelect(user.id)}>{user.name}</Text>;
+}
+
+// ❌ Bad - No 'I' prefix and using interface
+interface UserProps {
+  user: User;
+  onSelect: (userId: string) => void;
+}
+
+// ❌ Bad - Too specific name for internal props
+type IUserComponentProps = {
+  user: IUser;
+  onSelect: (userId: string) => void;
 }
 ```
 
@@ -67,33 +86,63 @@ Each component should follow the component-per-folder structure based on Stories
 
 #### Required Files in Each Component Folder:
 
-1. **`ComponentName.tsx`** - Main React component implementation
-2. **`styles.ts`** - Co-located Unistyles with exported styles constant and `UnistylesVariant` types
-3. **`ComponentName.spec.tsx`** - Jest tests using React Native Testing Library
-4. **`index.ts`** - Barrel export for external consumption
+1. **`ComponentName.tsx`** - Main React component implementation (includes types, styles, component logic)
+2. **`ComponentName.spec.tsx`** - Jest tests using React Native Testing Library
+3. **`index.ts`** - Barrel export for external consumption
 
 #### Optional Files (when applicable):
 
-5. **`LocalSubComponent.tsx`** - Sub-components specific to this component
-6. **`ComponentName.stories.tsx`** - Storybook stories demonstrating component states
-7. **`types.ts`** - Component-specific TypeScript interfaces
+4. **`LocalSubComponent.tsx`** - Sub-components specific to this component
+5. **`ComponentName.stories.tsx`** - Storybook stories demonstrating component states
+
+#### Co-location Principle
+
+**Core Rule**: Types and styles should be as close to their source as possible - **keep everything in the component file**.
+
+- **All types**: Define directly in the component file using generic `IProps` for internal types
+- **Exported types**: Export directly from the component file when needed by other components
+- **Styles**: Define at the bottom of the component file using `StyleSheet.create()`
+- **No separate files**: Don't create separate `styles.ts` or `types.ts` files unless absolutely necessary
+- **Single source of truth**: Each component file contains its types, styles, and logic
+
+#### Export Conventions
+
+- **Components**: Use **named exports** (e.g., `export function Button()`)
+- **Pages**: Use **default exports** (required for expo-router)
+- **Types**: Export from component file when shared (e.g., `export type IButtonProps`)
+
+This approach ensures maximum co-location, reduces file proliferation, and makes components completely self-contained.
 
 #### Component Implementation Standards:
 
 - **Functional Components**: Use function declarations with explicit types
+- **Named Exports**: Use named exports for components (not default)
 - **Hooks Order**: useState, useEffect, custom hooks, then callbacks
-- **File Organization**: Props interface, component logic, then export
-- **Styles**: Always in separate `styles.ts` file with theme integration
+- **File Organization**: Types, component logic, styles, then export
+- **Complete Co-location**: Types, styles, and logic all in the same file
 
 ```typescript
-// ✅ Good - React 19 component structure
-interface MessageProps {
-  message: Message;
+// ✅ Good - Complete co-location with proper export conventions
+
+// Types defined at the top of the component file
+type IProps = {
+  message: IMessage;
   onEdit?: (id: string) => void;
   ref?: React.Ref<View>; // ref as regular prop in React 19
-}
+};
 
-export function MessageComponent({ message, onEdit, ref }: MessageProps) {
+type IMessage = {
+  id: string;
+  content: string;
+  userId: string;
+  timestamp: Date;
+};
+
+// Export types that other components might need
+export type { IMessage }; // Available for other components
+
+// Component implementation
+export function MessageComponent({ message, onEdit, ref }: IProps) {
   const [isEditing, setIsEditing] = useState(false);
   const { t } = useTranslation();
 
@@ -108,19 +157,57 @@ export function MessageComponent({ message, onEdit, ref }: MessageProps) {
       <Text style={styles.text}>{message.content}</Text>
       {onEdit && (
         <Pressable onPress={handleEdit}>
-          <Text>{t('message.edit')}</Text>
+          <Text>{t('renderer.components.message.edit')}</Text>
         </Pressable>
       )}
     </View>
   );
 }
 
+// Styles defined at the bottom of the component file
 const styles = StyleSheet.create((theme) => ({
   container: {
     padding: theme.gap(2),
     backgroundColor: theme.colors.centerChannelBg,
   },
   text: {
+    color: theme.colors.centerChannelColor,
+  },
+}));
+```
+
+#### Page Implementation Standards (Expo Router):
+
+```typescript
+// ✅ Good - Page with default export for expo-router
+
+// Types defined at the top
+type IPageProps = {
+  // Page-specific props if any
+};
+
+// Page component (default export required for expo-router)
+export default function SettingsPage({ }: IPageProps) {
+  const { t } = useTranslation();
+  const [isLoading, setIsLoading] = useState(false);
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>{t('renderer.components.settingsPage.header')}</Text>
+      {/* Page content */}
+    </View>
+  );
+}
+
+// Styles co-located in the same file
+const styles = StyleSheet.create((theme) => ({
+  container: {
+    flex: 1,
+    backgroundColor: theme.colors.centerChannelBg,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: theme.fontWeights.bold,
     color: theme.colors.centerChannelColor,
   },
 }));
@@ -173,7 +260,11 @@ function Component() {
 **Modern Form Handling**:
 
 ```typescript
-function ContactForm() {
+type IProps = {
+  onSuccess?: () => void;
+};
+
+function ContactForm({ onSuccess }: IProps) {
   const [result, submitAction, isPending] = useActionState(
     async (prevState, formData) => {
       const name = formData.get('name');
@@ -185,6 +276,7 @@ function ContactForm() {
       }
 
       await submitForm({ name, email });
+      onSuccess?.();
       return { success: 'Form submitted successfully' };
     },
     null
@@ -363,11 +455,11 @@ const styles = StyleSheet.create((theme) => ({
 ### Translation Usage
 
 - **useTranslation Hook**: Use `useTranslation()` in components
-- **Namespace Organization**: Group related translations logically
-- **Key Naming**: Use descriptive, hierarchical keys
+- **Flat Structure**: Use dot-notation keys with **no nested objects** (1-level approach)
+- **Key Naming**: Use descriptive, hierarchical dot-separated keys
 
 ```typescript
-// ✅ Good - Proper i18n usage
+// ✅ Good - Proper i18n usage with flat keys
 import { useTranslation } from 'react-i18next';
 
 function SettingsModal() {
@@ -375,10 +467,10 @@ function SettingsModal() {
 
   return (
     <View>
-      <Text>{t('settings.modal.title')}</Text>
-      <Text>{t('settings.modal.description')}</Text>
-      <Button title={t('common.save')} onPress={handleSave} />
-      <Button title={t('common.cancel')} onPress={handleCancel} />
+      <Text>{t('renderer.components.settingsPage.header')}</Text>
+      <Text>{t('renderer.components.settingsPage.general')}</Text>
+      <Button title={t('label.save')} onPress={handleSave} />
+      <Button title={t('label.cancel')} onPress={handleCancel} />
     </View>
   );
 }
@@ -396,29 +488,102 @@ function SettingsModal() {
 }
 ```
 
-### Translation Key Structure
+### Translation Key Structure (Flat, 1-Level Approach)
+
+**✅ Correct Structure** - All keys at root level with dot notation:
+
+```json
+{
+  "app.menus.contextMenu.openInNewTab": "Open in new tab",
+  "app.menus.contextMenu.openInNewWindow": "Open in new window",
+  "app.navigationManager.viewLimitReached": "View limit reached",
+  "app.navigationManager.viewLimitReached.description": "You have reached the maximum number of open windows and tabs for this server.",
+  "label.add": "Add",
+  "label.allow": "Allow",
+  "label.cancel": "Cancel",
+  "label.close": "Close",
+  "label.save": "Save",
+  "renderer.components.settingsPage.header": "Desktop App Settings",
+  "renderer.components.settingsPage.general": "General",
+  "renderer.components.settingsPage.advanced": "Advanced",
+  "renderer.components.settingsPage.changesSaved": "Changes saved",
+  "modal.cancel": "Cancel",
+  "modal.confirm": "Confirm"
+}
+```
+
+**❌ Incorrect Structure** - Nested objects:
 
 ```json
 {
   "app": {
-    "navigationManager": {
-      "viewLimitReached": "View limit reached",
-      "viewLimitReached.description": "You have reached the maximum number of open windows and tabs for this server."
+    "menus": {
+      "contextMenu": {
+        "openInNewTab": "Open in new tab"
+      }
     }
   },
-  "common": {
+  "label": {
     "save": "Save",
-    "cancel": "Cancel",
-    "loading": "Loading..."
-  },
-  "settings": {
-    "modal": {
-      "title": "Settings",
-      "description": "Configure your application settings"
-    }
+    "cancel": "Cancel"
   }
 }
 ```
+
+### Key Naming Conventions
+
+1. **Component-based keys**: `renderer.components.{componentName}.{specific}`
+   - Example: `renderer.components.settingsPage.header`
+
+2. **Feature-based keys**: `{feature}.{section}.{specific}`
+   - Example: `app.navigationManager.viewLimitReached`
+
+3. **Common labels**: `label.{action}`
+   - Example: `label.save`, `label.cancel`, `label.close`
+
+4. **Modal actions**: `modal.{action}`
+   - Example: `modal.cancel`, `modal.confirm`
+
+5. **Main process keys**: `main.{module}.{specific}`
+   - Example: `main.menus.app.file.settings`
+
+### Adding New Translation Keys
+
+When adding new translation keys, follow the established patterns:
+
+```typescript
+// ✅ Good - Follow existing patterns
+const keys = {
+  // For component-specific text
+  header: "renderer.components.myComponent.header",
+  description: "renderer.components.myComponent.description",
+
+  // For common actions
+  save: "label.save",
+  cancel: "label.cancel",
+
+  // For modal-specific actions
+  confirm: "modal.confirm",
+
+  // For app-specific features
+  feature: "app.myFeature.specificAction",
+};
+
+// ❌ Bad - Inconsistent patterns
+const keys = {
+  header: "myComponent.header", // Missing standard prefix
+  save: "common.save", // Use 'label.save' instead
+  confirm: "buttons.confirm", // Use 'modal.confirm' instead
+};
+```
+
+### Key Organization Guidelines
+
+- **Consistency**: Follow existing key patterns in the codebase
+- **Granularity**: Use specific keys rather than generic ones
+- **Reusability**: Use common label keys (`label.*`) for repeated actions
+- **Context**: Include component/feature context in key names
+- **No Nesting**: Keep all keys at the root level with dot notation
 
 ## Import Standards
 
@@ -457,13 +622,460 @@ import { View, Text } from "react-native";
 {
   "compilerOptions": {
     "paths": {
-      "@/*": ["./src/*"],
-      "@/components/*": ["./src/components/*"],
-      "@/services/*": ["./src/services/*"],
-      "@/types/*": ["./src/types/*"]
+      "@/*": ["./src/*"]
     }
   }
 }
+```
+
+### TypeScript Naming Conventions
+
+#### Type Definitions
+
+All custom types must follow these naming conventions:
+
+**✅ Correct Patterns:**
+
+```typescript
+// Use 'type' instead of 'interface' for consistency
+type IUser = {
+  id: string;
+  name: string;
+  email: string;
+};
+
+// Internal component props (not exported) - use generic 'IProps'
+type IProps = {
+  titleKey: string;
+  variant?: "primary" | "secondary" | "danger";
+  onPress: () => void;
+  disabled?: boolean;
+};
+
+// Exported component props - use unique descriptive names
+export type IButtonProps = {
+  titleKey: string;
+  variant?: "primary" | "secondary" | "danger";
+  onPress: () => void;
+  disabled?: boolean;
+};
+
+// Use React's PropsWithChildren for components that accept children
+import { PropsWithChildren } from "react";
+
+type IProps = PropsWithChildren<{
+  title: string;
+  isOpen: boolean;
+}>;
+
+// API response types
+type IApiResponse<T> = {
+  data: T;
+  status: "success" | "error";
+  message?: string;
+};
+
+// Configuration types
+type ILanguage = {
+  code: string;
+  name: string;
+  flag: string;
+};
+
+// Event handler types
+type IMessageHandler = (message: IMessage) => void;
+type IFormSubmitHandler = (data: IFormData) => Promise<void>;
+
+// Utility types with 'I' prefix
+type IOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
+type IWithId<T> = T & { id: string };
+```
+
+**❌ Incorrect Patterns:**
+
+```typescript
+// Don't use 'interface' - use 'type' instead
+interface UserProps {
+  // ❌ Wrong
+  user: User;
+}
+
+// Don't omit 'I' prefix
+type User = {
+  // ❌ Wrong - missing 'I' prefix
+  id: string;
+  name: string;
+};
+
+type ButtonProps = {
+  // ❌ Wrong - missing 'I' prefix
+  title: string;
+};
+
+// Don't use inconsistent naming
+interface IUser {
+  // ❌ Wrong - should use 'type'
+  id: string;
+}
+
+// Don't manually declare children prop
+type IProps = {
+  // ❌ Wrong - manually declaring children
+  children: React.ReactNode;
+  title: string;
+};
+
+// Don't use descriptive names for internal props
+type IModalContainerProps = {
+  // ❌ Wrong - too specific for internal use
+  isOpen: boolean;
+};
+```
+
+#### Type Organization Patterns (Maximum Co-location)
+
+**Co-location Priority**: Keep everything in the component file itself.
+
+```typescript
+// Button/Button.tsx - Everything in one file (PREFERRED APPROACH)
+import React from 'react';
+import { Pressable, Text } from 'react-native';
+import { StyleSheet } from 'react-native-unistyles';
+import { useTranslation } from 'react-i18next';
+
+// All types defined in component file
+type IProps = {
+  titleKey: string;
+  variant?: IButtonVariant;
+  onPress: () => void;
+  disabled?: boolean;
+};
+
+type IButtonVariant = "primary" | "secondary" | "danger";
+
+// Export types that other components need
+export type IButtonProps = IProps; // For external consumption
+export type { IButtonVariant };    // For other components
+
+// Component implementation with named export
+export function Button({ titleKey, variant = 'primary', onPress, disabled }: IProps) {
+  const { t } = useTranslation();
+
+  return (
+    <Pressable
+      style={[styles.button, styles[variant], disabled && styles.disabled]}
+      onPress={onPress}
+      disabled={disabled}
+    >
+      <Text style={[styles.text, styles[`${variant}Text`]}>
+        {t(titleKey)}
+      </Text>
+    </Pressable>
+  );
+}
+
+// Styles defined at bottom of component file
+const styles = StyleSheet.create((theme) => ({
+  button: {
+    paddingHorizontal: theme.gap(3),
+    paddingVertical: theme.gap(1.5),
+    borderRadius: theme.radius.m,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  primary: {
+    backgroundColor: theme.colors.buttonBg,
+  },
+  secondary: {
+    backgroundColor: theme.colors.centerChannelBg,
+    borderWidth: 1,
+    borderColor: theme.colors.borderDefault,
+  },
+  danger: {
+    backgroundColor: theme.colors.errorBg,
+  },
+  disabled: {
+    opacity: 0.6,
+  },
+  text: {
+    fontWeight: theme.fontWeights.semiBold,
+  },
+  primaryText: {
+    color: theme.colors.buttonColor,
+  },
+  secondaryText: {
+    color: theme.colors.centerChannelColor,
+  },
+  dangerText: {
+    color: theme.colors.errorColor,
+  },
+}));
+```
+
+**For Pages (Expo Router):**
+
+```typescript
+// app/settings.tsx - Page with default export
+import React, { useState } from 'react';
+import { View, Text, ScrollView } from 'react-native';
+import { StyleSheet } from 'react-native-unistyles';
+import { useTranslation } from 'react-i18next';
+
+// Page types (internal to page)
+type ISettingsData = {
+  theme: 'light' | 'dark' | 'auto';
+  notifications: boolean;
+  language: string;
+};
+
+// Default export required for expo-router
+export default function SettingsPage() {
+  const { t } = useTranslation();
+  const [settings, setSettings] = useState<ISettingsData>({
+    theme: 'auto',
+    notifications: true,
+    language: 'en',
+  });
+
+  return (
+    <ScrollView style={styles.container}>
+      <Text style={styles.title}>
+        {t('renderer.components.settingsPage.header')}
+      </Text>
+      {/* Page content */}
+    </ScrollView>
+  );
+}
+
+// Styles co-located in the same file
+const styles = StyleSheet.create((theme) => ({
+  container: {
+    flex: 1,
+    backgroundColor: theme.colors.centerChannelBg,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: theme.fontWeights.bold,
+    color: theme.colors.centerChannelColor,
+    padding: theme.gap(3),
+  },
+}));
+```
+
+**Global types only when truly shared across many files:**
+
+```typescript
+// src/types/global.ts - Only for widely shared entities
+export type IUser = {
+  id: string;
+  username: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+};
+
+export type ITeam = {
+  id: string;
+  name: string;
+  displayName: string;
+  description: string;
+};
+```
+
+#### Component Props Naming Rules
+
+**Internal Props (Not Exported):**
+
+- Use generic `IProps` name
+- Keep the type definition within the component file
+- Don't export unless needed by other components
+
+**Exported Props (Shared Between Components):**
+
+- Use descriptive unique names (`IButtonProps`, `IModalProps`)
+- Export from component's `types.ts` file or main component file
+- Include in barrel exports when needed
+
+**Children Prop Handling:**
+
+- Use React's `PropsWithChildren<T>` instead of manually declaring `children`
+- Provides proper typing for React children
+- Cleaner and more maintainable
+
+```typescript
+// ✅ Good - Internal props with PropsWithChildren
+import { PropsWithChildren } from 'react';
+
+type IProps = PropsWithChildren<{
+  title: string;
+  isVisible: boolean;
+  onClose: () => void;
+}>;
+
+function Modal({ children, title, isVisible, onClose }: IProps) {
+  return (
+    <div className={`modal ${isVisible ? 'open' : ''}`}>
+      <h2>{title}</h2>
+      <button onClick={onClose}>×</button>
+      {children}
+    </div>
+  );
+}
+
+// ✅ Good - Exported props for reuse
+export type IButtonProps = {
+  titleKey: string;
+  variant?: 'primary' | 'secondary';
+  onPress: () => void;
+  disabled?: boolean;
+};
+
+// ✅ Good - Internal props without children
+type IProps = {
+  message: IMessage;
+  onEdit?: (id: string) => void;
+};
+
+// ❌ Bad - Manually declaring children
+type IProps = {
+  children: React.ReactNode;  // ❌ Use PropsWithChildren instead
+  title: string;
+};
+
+// ❌ Bad - Too specific name for internal use
+type IModalContainerProps = {  // ❌ Just use IProps
+  title: string;
+};
+```
+
+#### Migration Rules for Legacy Types
+
+When encountering legacy types, follow this migration pattern:
+
+```typescript
+// Legacy patterns to migrate:
+
+// ❌ Legacy - interface without prefix
+interface User {
+  id: string;
+  name: string;
+}
+
+// ❌ Legacy - type without prefix
+type User = {
+  id: string;
+  name: string;
+};
+
+// ✅ Migrated - type with 'I' prefix
+type IUser = {
+  id: string;
+  name: string;
+};
+
+// ❌ Legacy - mixed interface/type usage
+interface UserProps {
+  user: User;
+}
+
+// ✅ Migrated - consistent type usage with 'I' prefix
+type IUserProps = {
+  user: IUser;
+};
+```
+
+## General Naming Conventions
+
+### Code Element Naming
+
+Follow these consistent naming patterns throughout the codebase:
+
+- **Functions**: camelCase (e.g., `getUserData`, `formatMessage`, `handleSubmit`)
+- **Constants**: SCREAMING_SNAKE_CASE (e.g., `API_BASE_URL`, `MAX_RETRY_COUNT`, `DEFAULT_THEME`)
+- **Components**: PascalCase (e.g., `Button`, `UserProfile`, `MessageList`)
+- **Variables**: camelCase (e.g., `userData`, `isLoading`, `currentTheme`)
+- **Types**: PascalCase with 'I' prefix (e.g., `IUser`, `IApiResponse`, `IButtonProps`)
+
+### Examples
+
+```typescript
+// ✅ Good - Proper naming conventions
+const API_BASE_URL = 'https://api.example.com' as const;
+const MAX_RETRY_COUNT = 3 as const;
+const DEFAULT_CONFIG: IAppConfig = {
+  theme: 'light',
+  retries: MAX_RETRY_COUNT,
+} as const;
+
+function getUserData(userId: string): Promise<IUser> {
+  // Function implementation
+}
+
+function UserProfile({ user, onEdit }: IProps) {
+  const [isEditing, setIsEditing] = useState(false);
+  const currentUser = user;
+
+  const handleEditClick = () => {
+    setIsEditing(true);
+    onEdit?.(user.id);
+  };
+
+  return <div>{/* Component JSX */}</div>;
+}
+
+type IProps = {
+  user: IUser;
+  onEdit?: (id: string) => void;
+};
+
+// ❌ Bad - Inconsistent naming
+const apiBaseUrl = 'https://api.example.com'; // Should be SCREAMING_SNAKE_CASE
+const Max_Retry_Count = 3; // Should be SCREAMING_SNAKE_CASE
+const default_config = { theme: 'light' }; // Should be camelCase
+
+function GetUserData(userId: string) { // Should be camelCase
+  // ...
+}
+
+function userProfile({ User, OnEdit }) { // Should be PascalCase, props should be camelCase
+  // ...
+}
+```
+
+### Constant Declaration Best Practices
+
+```typescript
+// ✅ Good - Properly typed constants with SCREAMING_SNAKE_CASE
+const API_ENDPOINTS = {
+  USERS: "/api/users",
+  MESSAGES: "/api/messages",
+  SETTINGS: "/api/settings",
+} as const satisfies Record<string, string>;
+
+const THEME_COLORS = {
+  PRIMARY: "#007bff",
+  SECONDARY: "#6c757d",
+  SUCCESS: "#28a745",
+  DANGER: "#dc3545",
+} as const satisfies Record<string, string>;
+
+const VALIDATION_RULES = {
+  MIN_PASSWORD_LENGTH: 8,
+  MAX_USERNAME_LENGTH: 50,
+  ALLOWED_FILE_EXTENSIONS: ["jpg", "png", "gif", "webp"],
+} as const;
+
+// ❌ Bad - Inconsistent naming and typing
+const apiEndpoints = {
+  // Should be SCREAMING_SNAKE_CASE
+  users: "/api/users",
+  messages: "/api/messages",
+}; // Missing 'as const' and type annotation
+
+const themeColors = {
+  // Should be SCREAMING_SNAKE_CASE
+  primary: "#007bff",
+}; // Missing satisfies and as const
 ```
 
 ## File Naming Conventions
@@ -473,68 +1085,139 @@ import { View, Text } from "react-native";
 - **Component Folders**: PascalCase (e.g., `Button/`, `MessageList/`, `UserProfile/`)
 - **Main Components**: PascalCase matching folder name (e.g., `Button/Button.tsx`)
 - **Sub-components**: PascalCase with descriptive names (e.g., `Button/ButtonIcon.tsx`)
-- **Styles**: Always `styles.ts` (e.g., `Button/styles.ts`)
 - **Tests**: Component name + `.spec.tsx` (e.g., `Button/Button.spec.tsx`)
 - **Stories**: Component name + `.stories.tsx` (e.g., `Button/Button.stories.tsx`)
-- **Types**: Always `types.ts` (e.g., `Button/types.ts`)
 - **Barrel Export**: Always `index.ts` (e.g., `Button/index.ts`)
+
+### Page Files (Expo Router)
+
+- **Pages**: camelCase matching route (e.g., `app/settings.tsx`, `app/profile.tsx`)
+- **Layout Files**: `_layout.tsx`
+- **Dynamic Routes**: `[id].tsx`, `[...slug].tsx`
 
 ### Other Files
 
 - **Hooks**: camelCase with "use" prefix (e.g., `useUserProfile.ts`)
 - **Services**: PascalCase with "Service" suffix (e.g., `UserService.ts`)
-- **Global Types**: PascalCase (e.g., `User.ts`, `ApiResponse.ts`)
+- **Global Types**: PascalCase with 'I' prefix (e.g., `IUser.ts`, `IApiResponse.ts`)
 - **Utilities**: camelCase with co-located tests (e.g., `formatDate.ts`, `formatDate.spec.ts`)
+
+### Export Examples
+
+```typescript
+// Button/Button.tsx - Complete co-location with named export
+type IProps = {
+  titleKey: string;
+  variant?: IButtonVariant;
+  onPress: () => void;
+};
+
+type IButtonVariant = "primary" | "secondary" | "danger";
+
+// Export types that other components need
+export type IButtonProps = IProps;
+export type { IButtonVariant };
+
+// Named export for components
+export function Button({ titleKey, variant = "primary", onPress }: IProps) {
+  // Component implementation + styles in same file
+}
+
+// Button/index.ts - Barrel export
+export { Button, type IButtonProps, type IButtonVariant } from "./Button";
+
+// app/settings.tsx - Page with default export
+type ISettingsState = {
+  theme: "light" | "dark";
+  notifications: boolean;
+};
+
+// Default export required for expo-router
+export default function SettingsPage() {
+  // Page implementation + styles in same file
+}
+
+// Modal/Modal.tsx - Component with children
+import { PropsWithChildren } from "react";
+
+type IProps = PropsWithChildren<{
+  title: string;
+  isVisible: boolean;
+  onClose: () => void;
+}>;
+
+// Named export for components
+export function Modal({ children, title, isVisible, onClose }: IProps) {
+  // Component + styles in same file
+}
+
+// src/types/global.ts - Only for truly global types
+export type IUser = {
+  id: string;
+  username: string;
+  email: string;
+};
+
+export type ITeam = {
+  id: string;
+  name: string;
+  displayName: string;
+};
+```
+
+### Export Convention Summary
+
+- **✅ Components**: Named exports (`export function Button()`)
+- **✅ Pages**: Default exports (`export default function SettingsPage()`)
+- **✅ Types**: Export from component file when needed by others
+- **✅ Barrel exports**: Re-export from `index.ts` for clean imports
+- **❌ Avoid**: Separate `styles.ts` or `types.ts` files unless absolutely necessary
 
 ### Directory Structure (Component-Per-Folder Pattern)
 
-Based on Stories 1.2 (Jest Testing) and 1.3 (Storybook Integration), each component should be organized in its own folder with co-located files:
+Based on Stories 1.2 (Jest Testing) and 1.3 (Storybook Integration), each component should be organized in its own folder with maximum co-location:
 
 ```
 src/
-├── components/                    # Component-per-folder structure
+├── app/                          # Expo Router pages (default exports)
+│   ├── (tabs)/                   # Tab layout
+│   │   ├── settings.tsx          # Page with default export + co-located styles/types
+│   │   └── profile.tsx           # Page with default export + co-located styles/types
+│   ├── _layout.tsx               # Root layout
+│   └── index.tsx                 # Home page
+├── components/                   # Component-per-folder structure
 │   ├── common/                   # Shared components
 │   │   ├── Button/               # Button component folder
-│   │   │   ├── Button.tsx        # Main component
-│   │   │   ├── styles.ts         # Co-located Unistyles
+│   │   │   ├── Button.tsx        # Component + types + styles + named export
 │   │   │   ├── Button.spec.tsx   # Jest tests
-│   │   │   ├── Button.stories.tsx # Storybook stories
-│   │   │   ├── types.ts          # Component types
-│   │   │   └── index.ts          # Barrel export
+│   │   │   ├── Button.stories.tsx # Storybook stories (optional)
+│   │   │   └── index.ts          # Barrel export: export { Button } from './Button'
 │   │   ├── Input/                # Input component folder
-│   │   │   ├── Input.tsx         # Main component
-│   │   │   ├── styles.ts         # Co-located Unistyles
-│   │   │   ├── InputLabel.tsx    # Sub-component
-│   │   │   ├── InputError.tsx    # Sub-component
+│   │   │   ├── Input.tsx         # Main component + types + styles + named export
+│   │   │   ├── InputLabel.tsx    # Sub-component + its own types + styles + named export
+│   │   │   ├── InputError.tsx    # Sub-component + its own types + styles + named export
 │   │   │   ├── Input.spec.tsx    # Jest tests
-│   │   │   ├── Input.stories.tsx # Storybook stories
-│   │   │   ├── types.ts          # Component types
-│   │   │   └── index.ts          # Barrel export
+│   │   │   ├── Input.stories.tsx # Storybook stories (optional)
+│   │   │   └── index.ts          # Barrel export: export { Input, InputLabel, InputError }
 │   │   └── Modal/                # Modal component folder
-│   │       ├── Modal.tsx         # Main component
-│   │       ├── styles.ts         # Co-located Unistyles
-│   │       ├── ModalHeader.tsx   # Sub-component
-│   │       ├── ModalFooter.tsx   # Sub-component
+│   │       ├── Modal.tsx         # Component + types + styles + named export
+│   │       ├── ModalHeader.tsx   # Sub-component + its own types + styles + named export
+│   │       ├── ModalFooter.tsx   # Sub-component + its own types + styles + named export
 │   │       ├── Modal.spec.tsx    # Jest tests
-│   │       ├── Modal.stories.tsx # Storybook stories
-│   │       ├── types.ts          # Component types
-│   │       └── index.ts          # Barrel export
+│   │       ├── Modal.stories.tsx # Storybook stories (optional)
+│   │       └── index.ts          # Barrel export: export { Modal, ModalHeader, ModalFooter }
 │   ├── chat/                     # Chat-specific components
 │   │   ├── MessageList/          # Message list component folder
-│   │   │   ├── MessageList.tsx   # Main component
-│   │   │   ├── styles.ts         # Co-located Unistyles
-│   │   │   ├── MessageItem.tsx   # Sub-component
+│   │   │   ├── MessageList.tsx   # Component + types + styles + named export
+│   │   │   ├── MessageItem.tsx   # Sub-component + its own types + styles + named export
 │   │   │   ├── MessageList.spec.tsx # Jest tests
-│   │   │   ├── MessageList.stories.tsx # Storybook stories
-│   │   │   ├── types.ts          # Component types
-│   │   │   └── index.ts          # Barrel export
+│   │   │   ├── MessageList.stories.tsx # Storybook stories (optional)
+│   │   │   └── index.ts          # Barrel export: export { MessageList, MessageItem }
 │   │   └── MessageInput/         # Message input component folder
-│   │       ├── MessageInput.tsx  # Main component
-│   │       ├── styles.ts         # Co-located Unistyles
+│   │       ├── MessageInput.tsx  # Component + types + styles + named export
 │   │       ├── MessageInput.spec.tsx # Jest tests
-│   │       ├── MessageInput.stories.tsx # Storybook stories
-│   │       ├── types.ts          # Component types
-│   │       └── index.ts          # Barrel export
+│   │       ├── MessageInput.stories.tsx # Storybook stories (optional)
+│   │       └── index.ts          # Barrel export: export { MessageInput }
 │   ├── forms/                    # Form-specific components
 │   └── layout/                   # Layout components
 ├── services/                     # Business logic and API calls
@@ -552,28 +1235,324 @@ src/
 
 ## Validation Standards
 
-### Form Validation (Valibot)
+### Joi → Valibot Migration
 
-- **Schema Definition**: Define validation schemas with Valibot
-- **Type Safety**: Use schema types for TypeScript integration
-- **Error Handling**: Provide clear validation error messages
+**CRITICAL:** When encountering Joi validation schemas, always migrate to Valibot for better TypeScript integration and performance.
+
+#### ❌ Legacy Joi Patterns to Migrate
 
 ```typescript
-// ✅ Good - Valibot validation
-import * as v from "valibot";
+// Legacy Joi validation
+import Joi from "joi";
 
-const UserSchema = v.object({
-  name: v.pipe(v.string(), v.minLength(2), v.maxLength(50)),
-  email: v.pipe(v.string(), v.email()),
-  age: v.pipe(v.number(), v.minValue(18), v.maxValue(120)),
+const userSchema = Joi.object({
+  name: Joi.string().min(2).max(50).required(),
+  email: Joi.string().email().required(),
+  age: Joi.number().integer().min(18).max(120).optional(),
+  roles: Joi.array().items(Joi.string().valid("admin", "user")).default([]),
 });
 
-type User = v.InferInput<typeof UserSchema>;
-
-function validateUser(userData: unknown): User {
-  return v.parse(UserSchema, userData);
+// Validate with Joi
+const { error, value } = userSchema.validate(userData);
+if (error) {
+  throw new Error(error.details[0].message);
 }
+
+// No proper TypeScript inference
+const user = value; // Type: any
 ```
+
+#### ✅ Current Valibot Standard
+
+```typescript
+// Modern Valibot validation - use named imports for tree-shaking
+import {
+  object,
+  string,
+  number,
+  integer,
+  array,
+  optional,
+  pipe,
+  minLength,
+  maxLength,
+  minValue,
+  maxValue,
+  email,
+  picklist,
+  transform,
+  parse,
+  isValiError,
+  type InferInput,
+  type InferOutput,
+} from "valibot";
+
+const UserSchema = object({
+  name: pipe(string(), minLength(2), maxLength(50)),
+  email: pipe(string(), email()),
+  age: optional(pipe(number(), integer(), minValue(18), maxValue(120))),
+  roles: pipe(
+    array(picklist(["admin", "user"])),
+    transform((roles) => (roles.length > 0 ? roles : ["user"])),
+  ),
+});
+
+// Infer TypeScript type from schema
+type IUser = InferInput<typeof UserSchema>;
+type IValidatedUser = InferOutput<typeof UserSchema>;
+
+// Validate with proper error handling
+function validateUser(userData: unknown): IValidatedUser {
+  try {
+    return parse(UserSchema, userData);
+  } catch (error) {
+    if (isValiError(error)) {
+      const errorMessage = error.issues
+        .map((issue) => `${issue.path?.join(".")}: ${issue.message}`)
+        .join(", ");
+      throw new Error(`Validation failed: ${errorMessage}`);
+    }
+    throw error;
+  }
+}
+
+// Perfect TypeScript integration
+const user = validateUser(rawData); // Type: IValidatedUser
+```
+
+#### Common Migration Patterns
+
+**String Validations:**
+
+```typescript
+// ❌ Joi
+Joi.string().min(5).max(100).required();
+Joi.string().email().required();
+Joi.string().uri().optional();
+
+// ✅ Valibot - named imports for tree-shaking
+import {
+  pipe,
+  string,
+  minLength,
+  maxLength,
+  email,
+  url,
+  optional,
+} from "valibot";
+
+pipe(string(), minLength(5), maxLength(100));
+pipe(string(), email());
+optional(pipe(string(), url()));
+```
+
+**Number Validations:**
+
+```typescript
+// ❌ Joi
+Joi.number().integer().min(0).max(100);
+Joi.number().positive().required();
+
+// ✅ Valibot - named imports for tree-shaking
+import { pipe, number, integer, minValue, maxValue } from "valibot";
+
+pipe(number(), integer(), minValue(0), maxValue(100));
+pipe(number(), minValue(0, "Must be positive"));
+```
+
+**Object and Array Validations:**
+
+```typescript
+// ❌ Joi
+Joi.object({
+  items: Joi.array().items(Joi.string()).min(1).required(),
+  metadata: Joi.object().unknown(true).optional(),
+});
+
+// ✅ Valibot - named imports for tree-shaking
+import {
+  object,
+  array,
+  string,
+  pipe,
+  minLength,
+  optional,
+  record,
+  unknown,
+} from "valibot";
+
+object({
+  items: pipe(array(string()), minLength(1)),
+  metadata: optional(record(string(), unknown())),
+});
+```
+
+**Conditional Validations:**
+
+```typescript
+// ❌ Joi
+Joi.object({
+  type: Joi.string().valid("email", "phone").required(),
+  contact: Joi.when("type", {
+    is: "email",
+    then: Joi.string().email().required(),
+    otherwise: Joi.string()
+      .pattern(/^\+?[\d\s-()]+$/)
+      .required(),
+  }),
+});
+
+// ✅ Valibot - named imports for tree-shaking
+import { variant, object, literal, pipe, string, email, regex } from "valibot";
+
+variant("type", [
+  object({
+    type: literal("email"),
+    contact: pipe(string(), email()),
+  }),
+  object({
+    type: literal("phone"),
+    contact: pipe(string(), regex(/^\+?[\d\s-()]+$/)),
+  }),
+]);
+```
+
+**Number Validations:**
+
+```typescript
+// ❌ Joi
+Joi.number().integer().min(0).max(100);
+Joi.number().positive().required();
+
+// ✅ Valibot
+v.pipe(v.number(), v.integer(), v.minValue(0), v.maxValue(100));
+v.pipe(v.number(), v.minValue(0, "Must be positive"));
+```
+
+**Object and Array Validations:**
+
+```typescript
+// ❌ Joi
+Joi.object({
+  items: Joi.array().items(Joi.string()).min(1).required(),
+  metadata: Joi.object().unknown(true).optional(),
+});
+
+// ✅ Valibot
+v.object({
+  items: v.pipe(v.array(v.string()), v.minLength(1)),
+  metadata: v.optional(v.record(v.string(), v.unknown())),
+});
+```
+
+**Conditional Validations:**
+
+```typescript
+// ❌ Joi
+Joi.object({
+  type: Joi.string().valid("email", "phone").required(),
+  contact: Joi.when("type", {
+    is: "email",
+    then: Joi.string().email().required(),
+    otherwise: Joi.string()
+      .pattern(/^\+?[\d\s-()]+$/)
+      .required(),
+  }),
+});
+
+// ✅ Valibot
+v.variant("type", [
+  v.object({
+    type: v.literal("email"),
+    contact: v.pipe(v.string(), v.email()),
+  }),
+  v.object({
+    type: v.literal("phone"),
+    contact: v.pipe(v.string(), v.regex(/^\+?[\d\s-()]+$/)),
+  }),
+]);
+```
+
+#### Advanced Valibot Features
+
+```typescript
+// Custom transformations and validations - named imports for tree-shaking
+import {
+  pipe,
+  object,
+  string,
+  email,
+  isoDate,
+  transform,
+  check,
+  pipeAsync,
+  checkAsync,
+  minLength,
+  picklist,
+  array,
+} from "valibot";
+
+const ProcessedUserSchema = pipe(
+  object({
+    email: pipe(string(), email()),
+    name: string(),
+    birthDate: pipe(string(), isoDate()),
+  }),
+  transform((user) => ({
+    ...user,
+    email: user.email.toLowerCase(),
+    name: user.name.trim(),
+    age: calculateAge(new Date(user.birthDate)),
+  })),
+  check((user) => user.age >= 18, "Must be 18 or older"),
+);
+
+// Async validation
+const AsyncUserSchema = pipeAsync(
+  object({
+    username: string(),
+    email: pipe(string(), email()),
+  }),
+  checkAsync(async (user) => {
+    const exists = await checkUserExists(user.username);
+    return !exists;
+  }, "Username already exists"),
+);
+
+// Schema composition
+const BasePersonSchema = object({
+  name: pipe(string(), minLength(1)),
+  email: pipe(string(), email()),
+});
+
+const UserSchema = object({
+  ...BasePersonSchema.entries,
+  role: picklist(["admin", "user"]),
+  permissions: array(string()),
+});
+```
+
+#### Migration Checklist
+
+When migrating from Joi to Valibot:
+
+1. **✅ Replace imports**: `import Joi from 'joi'` → `import { object, string, parse, ... } from 'valibot'` (named imports for tree-shaking)
+2. **✅ Convert schema syntax**: `Joi.object()` → `object()`
+3. **✅ Update validation calls**: `.validate()` → `parse()` or `safeParse()`
+4. **✅ Add TypeScript types**: Use `InferInput<>` and `InferOutput<>`
+5. **✅ Improve error handling**: Use `isValiError()` for better error messages
+6. **✅ Leverage transformations**: Use `transform()` for data processing
+7. **✅ Update tests**: Test both validation and TypeScript inference
+
+**Important**: Always use named imports instead of `import * as v from 'valibot'` to ensure proper tree-shaking and smaller bundle sizes.
+
+#### Benefits of Migration
+
+- **🚀 Performance**: Valibot is significantly faster than Joi
+- **📘 TypeScript**: Perfect type inference without additional type definitions
+- **📦 Bundle size**: Much smaller bundle impact
+- **🔧 Composability**: Better schema composition and reuse
+- **🛠️ Developer experience**: Better IDE support and autocomplete
 
 ## Testing Standards (Based on Story 1.2)
 
@@ -1164,11 +2143,11 @@ Heading.defaultProps = {
 **After (React 19)**:
 
 ```typescript
-interface Props {
+type IProps = {
   text?: string;
-}
+};
 
-function Heading({ text = 'Hello, world!' }: Props) {
+function Heading({ text = 'Hello, world!' }: IProps) {
   return <h1>{text}</h1>;
 }
 ```
@@ -1194,7 +2173,12 @@ const MyInput = forwardRef(function MyInput(props, ref) {
 
 ```typescript
 // ref is now a regular prop
-function MyInput({ label, ref }) {
+type IProps = {
+  label: string;
+  ref?: React.Ref<HTMLInputElement>;
+};
+
+function MyInput({ label, ref }: IProps) {
   return (
     <label>
       {label}
@@ -1344,7 +2328,7 @@ function ProductPage({ product }) {
 
 1. **Analyze Legacy**: Understand existing SCSS and react-intl usage
 2. **Plan React 19 Updates**: Identify forwardRef, PropTypes, and manual memoization usage
-3. **Update TypeScript**: Replace PropTypes with proper interfaces
+3. **Update TypeScript**: Replace PropTypes with proper types using 'I' prefix and 'type' instead of 'interface'
 4. **Update Imports**: Replace react-intl with react-i18next
 5. **Style Conversion**: Convert SCSS to Unistyles
 6. **Test React Compiler**: Verify memoization works correctly

@@ -193,11 +193,14 @@ export default i18n;
 // Button/Button.spec.tsx - Component test with theme and i18n
 import { render, fireEvent } from '@testing-library/react-native';
 import { I18nextProvider } from 'react-i18next';
+import { PropsWithChildren } from 'react';
 import i18n from '../../i18nextForTests';
 import { Button } from './Button';
 
 // Test wrapper for i18n (Unistyles handled by Jest setup)
-function TestWrapper({ children }: { children: React.ReactNode }) {
+type IProps = PropsWithChildren;
+
+function TestWrapper({ children }: IProps) {
   return <I18nextProvider i18n={i18n}>{children}</I18nextProvider>;
 }
 

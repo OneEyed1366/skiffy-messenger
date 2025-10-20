@@ -1,11 +1,10 @@
-# Project Agents
+# Project Development Guide
 
-This file provides guidance and memory for your coding CLI.
+This file provides essential guidance and memory for coding in this project.
 
 ## 🛠️ Build & Test Commands
 
 **Monorepo commands (from root):**
-
 - `pnpm dev:mobile` - Start Expo development server
 - `pnpm dev:desktop` - Start Tauri desktop development
 - `pnpm build:mobile` - Build mobile Expo export
@@ -14,21 +13,43 @@ This file provides guidance and memory for your coding CLI.
 - `pnpm test` - Run tests across all workspaces
 
 **App-specific commands (from apps/v2):**
-
 - `pnpm start` - Expo development server
 - `pnpm tauri:dev` - Tauri desktop dev mode
 - `pnpm lint` - ESLint with Expo config
 
-## 📝 Code Style Guidelines
+## 📝 Essential Code Guidelines
 
-**TypeScript:** Strict mode enabled, use path aliases `@/*` for relative imports
-**Imports:** Follow ESLint import order rules - builtin → external → internal → sibling → parent
-**Styling:** Use react-native-unistyles with theme system: `StyleSheet.create((theme) => ({}))`
-**Components:** React Native patterns, use functional components with hooks
-**i18n:** Use i18next: `const { t } = useTranslation(); t('key.path')`
-**Naming:** camelCase for variables/functions, PascalCase for components
-**Files:** Use .tsx for components, .ts for utilities, organize by feature
-**Error handling:** Prefer valibot for validation, proper error boundaries
+**TypeScript:** Strict mode enabled, **ZERO** tolerance for `any` types. Use `satisfies`, `as const`, strictly type all constants
+**Type Naming:** Use 'I' prefix for all types. Internal props use `IProps`, exported props use unique names (`IButtonProps`)
+**Naming:** camelCase for functions, SCREAMING_SNAKE_CASE for constants, PascalCase for components
+**Imports:** Follow ESLint import order rules - builtin → external → internal → sibling → parent  
+**Styling:** Use react-native-unistyles with theme system co-located in component files
+**Components:** React Native patterns, named exports for components, default exports for pages
+**i18n:** Use i18next with flat key structure: `t('renderer.components.button.save')`
+**Files:** .tsx for components, .ts for utilities, complete co-location of types/styles in component files
+**Validation:** Always migrate Joi → Valibot when encountered
+
+> 📚 **Full Details**: See `docs/architecture/coding-standards.md` for comprehensive standards
+
+## 🔄 Critical Migration Rules
+
+**Always migrate legacy patterns when touching a file:**
+
+- **Joi → Valibot**: Replace `Joi.object()` with `v.object()` + proper TypeScript types
+- **PropTypes → TypeScript**: Remove PropTypes, add typed `IProps` with default parameters  
+- **Interface → Type**: Change `interface User` to `type IUser` (with 'I' prefix)
+- **Styles → Co-location**: Move `styles.ts` content into component file
+- **Any types → Strict typing**: Replace `any` with proper types using `satisfies` and `as const`
+
+**Quick migration commands:**
+```bash
+# Find legacy patterns to migrate
+grep -r "^interface [A-Z]" src/ --include="*.ts" --include="*.tsx"
+grep -r "PropTypes" src/ --include="*.ts" --include="*.tsx"
+grep -r "import Joi" src/ --include="*.ts" --include="*.tsx"
+```
+
+> 📚 **Migration Details**: See `docs/architecture/coding-standards.md` for complete migration guides
 
 <!-- BEGIN: BMAD-AGENTS-OPENCODE -->
 
