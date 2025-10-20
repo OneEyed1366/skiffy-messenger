@@ -30,6 +30,8 @@ export type ILanguage = {
 
 export type ILanguageKey = (typeof LANGUAGES)[keyof typeof LANGUAGES]["value"];
 
+export type ILanguageTranslations = typeof LANGUAGES[keyof typeof LANGUAGES]['url']
+
 export const LANGUAGES = {
   de: {
     value: "de",

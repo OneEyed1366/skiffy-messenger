@@ -1,9 +1,21 @@
 import * as Localization from "expo-localization";
-import i18next, { Resource } from "i18next";
+import i18next, { Resource, ResourceLanguage } from "i18next";
 import Backend from "i18next-chained-backend";
 import AsyncStoragePlugin from "i18next-react-native-async-storage";
 import { initReactI18next } from "react-i18next";
-import { ILanguageKey, LANGUAGES_ARRAY, LANGUAGE_KEYS_SET } from "./locales";
+import { ILanguageKey, ILanguageTranslations, LANGUAGES_ARRAY, LANGUAGE_KEYS_SET } from "./locales";
+
+const NS = 'translation' as const
+
+declare module 'i18next' {
+  type IDefaultNS = typeof NS
+
+  interface CustomTypeOptions {
+    enableSelector: false;
+    defaultNS: IDefaultNS;
+    resources:  Record<IDefaultNS, ILanguageTranslations>;
+  }
+}
 
 function getMyLocale(): ILanguageKey {
   const { languageCode } = (Localization.getLocales().at(0) ?? {}) as {
@@ -24,9 +36,9 @@ i18next
       (acc, { value, url }) =>
         ({
           ...acc,
-          [value]: { translation: url },
-        }) satisfies Record<ILanguageKey, Resource>,
-      {} as Record<ILanguageKey, Resource>,
+          [value]: { [NS]: url } satisfies ResourceLanguage,
+        } satisfies Resource),
+      {} as Resource,
     ),
     fallbackLng: "en" satisfies ILanguageKey,
     interpolation: {
