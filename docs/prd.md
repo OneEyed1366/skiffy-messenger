@@ -303,193 +303,18 @@ Expo was chosen as the foundation framework because it provides a unified develo
 - Ensure seamless user experience with no feature regression
 - Implement data migration and rollback procedures for safe deployment
 
-### Story 1.1: Project Foundation and Development Environment Setup ✅ LARGELY COMPLETE
+### Story Management
 
-As a **developer**,
-I want **to establish the new Expo + Tauri project structure and development environment**,
-so that **the team can begin development with proper tooling, build processes, and initial configuration in place**.
+**Story Documentation**: Individual stories are managed in `docs/stories/` directory with detailed acceptance criteria, technical context, and implementation guidance for development agents.
 
-#### Acceptance Criteria (**🎯 Foundation Established**)
+**Current Story Status**:
 
-1. ✅ **COMPLETE**: Tauri project initialized in apps/v2 with Expo integration (package.json confirmed)
-2. 🔄 **PENDING**: Expo static output configuration verification for desktop + web targets
-3. 🔄 **PENDING**: Development environment hot reload testing for frontend and Rust backend
-4. ✅ **COMPLETE**: TypeScript ~5.9.2 configuration with modern tooling
-5. ✅ **COMPLETE**: React 19.1.0 integration confirmed in package.json
-6. 🔄 **PENDING**: React Compiler integration verification with Expo Metro bundler
-7. ✅ **COMPLETE**: Unistyles 3.0.15 configuration with comprehensive theme system (theme.ts)
-8. ✅ **PARTIAL**: i18next structure established, expo-localization integration pending
-9. ✅ **COMPLETE**: Package.json configured with Tauri 2.1.0 build scripts for cross-platform
-10. ✅ **COMPLETE**: ESLint ^9.25.0 and modern linting configuration established
-11. ✅ **COMPLETE**: Build scripts configured for both Expo and Tauri workflows using pnpm
-12. 🔄 **PENDING**: React Compiler compatibility patterns review
-13. 🔄 **PENDING**: Performance baseline establishment
+- **Story 1.1**: Project Foundation and Development Environment Setup ✅ **LARGELY COMPLETE**
+- **Story 1.2**: Jest Integration Setup (to be created later)
+- **Story 1.3**: Add Storybook 9 Integration to apps/v2 Project 📝 **DRAFTED**
+- **Additional Stories**: To be defined and created based on epic progression and development needs
 
-#### **Foundation Status:**
-
-- **✅ Project Structure**: Modern Expo + Tauri architecture established
-- **✅ Dependencies**: All target stack packages properly configured
-- **✅ Tooling**: TypeScript, ESLint, build scripts ready
-- **✅ Core Systems**: Theme and internationalization foundations in place
-
-#### Integration Verification
-
-- **IV1**: Existing vendor/desktop Electron app remains fully functional and unaffected
-- **IV2**: New development environment can run alongside existing Electron development without conflicts
-- **IV3**: Build process verification confirms cross-platform compilation capability
-
-### Story 1.2: Core Application Shell and Window Management Migration
-
-As a **user**,
-I want **the basic application window behavior and shell to work identically to the current Electron version**,
-so that **I have the same desktop experience with window controls, menus, and system integration**.
-
-#### Acceptance Criteria
-
-1. Main application window opens with equivalent size, position, and behavior to Electron version
-2. Window management (minimize, maximize, close, resize) works on all platforms
-3. Application menu structure migrated from Electron to Tauri equivalents
-4. System tray integration implemented with equivalent functionality
-5. Keyboard shortcuts for window management preserved
-6. Application icon and branding properly displayed across platforms
-
-#### Integration Verification
-
-- **IV1**: Side-by-side comparison confirms equivalent window behavior between versions
-- **IV2**: Platform-specific window management features work correctly on each OS
-- **IV3**: System integration (taskbar, dock, system tray) maintains expected behavior
-
-### Story 1.3: Styling System Migration (SCSS → Unistyles) ✅ PARTIALLY COMPLETE
-
-As a **developer**,
-I want **all existing SCSS styles converted to Unistyles with improved TypeScript integration**,
-so that **the application maintains visual consistency while gaining better type safety and cross-platform styling capabilities**.
-
-#### Acceptance Criteria (**🎯 Significant Progress Made**)
-
-1. ✅ **COMPLETE**: Theme system established in Unistyles 3.0.15 matching current SCSS variables (apps/v2/src/theme.ts)
-2. 🔄 **IN PROGRESS**: Component styles systematic conversion to Unistyles StyleSheet.create syntax
-3. ✅ **COMPLETE**: Responsive breakpoints defined (xs: 0, sm: 300, md: 500, lg: 800, xl: 1200)
-4. ✅ **COMPLETE**: Typography system migrated (Open Sans, Metropolis, FontAwesome fonts configured)
-5. 🔄 **PENDING**: Animation and transition effects preservation with react-native-reanimated
-6. ✅ **COMPLETE**: Dark/light theme support (Denim & Onyx themes with comprehensive color palettes)
-7. ✅ **COMPLETE**: CSS-in-JS benefits with TypeScript integration and proper module declarations
-8. 🔄 **PENDING**: Visual regression testing for pixel-perfect match verification
-9. 🔄 **PENDING**: Performance validation against original SCSS implementation
-
-#### **Migration Details Completed:**
-
-- **Colors**: 50+ theme colors migrated from CSS variables (\_css_variables.scss, \_variables.scss)
-- **Elevation**: 6-level shadow system from CSS variables
-- **Typography**: Font families, weights, and utility functions
-- **Spacing**: Gap utility function (8px grid system)
-- **Border Radius**: Complete radius scale from xs (2px) to full (50%)
-
-#### Integration Verification
-
-- **IV1**: Visual regression testing confirms identical appearance to original SCSS version
-- **IV2**: Theme switching functionality maintains existing behavior
-- **IV3**: Performance testing shows no degradation in style rendering or application startup
-
-### Story 1.4: Internationalization Migration (react-intl → i18next) ✅ SIGNIFICANTLY ADVANCED
-
-As a **user**,
-I want **all text content and UI elements to be properly localized using the new i18next system**,
-so that **I can use the application in my preferred language with the same translation quality as before**.
-
-#### Acceptance Criteria (**🎯 Major Progress Made**)
-
-1. ✅ **COMPLETE**: Translation structure migrated to i18next JSON format (apps/v2/src/locales/)
-2. 🔄 **PENDING**: Language detection and switching with expo-localization integration
-3. ✅ **COMPLETE**: 22 languages preserved with proper metadata (bg, de, en, es, fr, fa, hu, it, ja, ko, nl, pl, pt-BR, ro, ru, sv, tr, uk, vi, zh-CN, zh-TW)
-4. 🔄 **PENDING**: Date, time, and number formatting configuration
-5. ✅ **COMPLETE**: RTL language support maintained (fa - Persian included)
-6. 🔄 **PENDING**: i18next-chained-backend integration for loading mechanisms
-7. ✅ **COMPLETE**: TypeScript integration with proper language types and validation
-8. 🔄 **IN PROGRESS**: React component migration from FormattedMessage to useTranslation
-9. 🔄 **PENDING**: Translation validation and missing key detection
-
-#### **Migration Details Completed:**
-
-- **Language Files**: 22 complete translation files in i18next JSON format
-- **Language Registry**: TypeScript-typed LANGUAGES configuration with proper ordering
-- **Metadata System**: Language names, values, and URL mappings established
-- **Type Safety**: ILanguage type and LANGUAGE_KEYS_SET for validation
-- **Translation Keys**: Extensive key structure (300+ keys in English file observed)
-
-#### Integration Verification
-
-- **IV1**: Translation completeness audit confirms no missing or broken translations
-- **IV2**: Language switching behavior matches original Electron implementation
-- **IV3**: Complex translation features (plurals, interpolation) work correctly across languages
-
-### Story 1.5: Backend API Migration (Node.js → Rust/Tauri)
-
-As a **user**,
-I want **all desktop-specific functionality to work seamlessly through the new Rust backend**,
-so that **I have the same platform integration capabilities with improved security and performance**.
-
-#### Acceptance Criteria
-
-1. File system operations migrated from Electron APIs to @tauri-apps/plugin-fs 2.1.0
-2. Network requests migrated from Electron's HTTP client to Tauri's built-in HTTP client
-3. Local storage and configuration management migrated from Electron to Tauri equivalents
-4. Desktop notifications implemented using @tauri-apps/plugin-notification 2.1.0
-5. Auto-updater functionality implemented using Tauri's built-in updater (replacing electron-updater 6.3.0)
-6. Platform-specific APIs migrated: clipboard, system info, shell commands via @tauri-apps/plugin-shell 2.1.0
-7. Security context and permissions properly configured for Tauri 2.1.0 environment
-8. Legacy Node.js dependencies removed: auto-launch, registry-js, windows-focus-assist
-9. Validation framework migrated from joi 17.12.2 to valibot 1.1.0
-
-#### Integration Verification
-
-- **IV1**: All existing desktop features function identically through new Rust backend
-- **IV2**: File operations and data persistence maintain existing behavior
-- **IV3**: Network connectivity and API communication preserved without regression
-
-### Story 1.6: Data Migration and User Experience Continuity
-
-As a **user**,
-I want **my existing settings, data, and preferences to be preserved when upgrading to the new version**,
-so that **I can continue using the application without losing any of my configuration or data**.
-
-#### Acceptance Criteria
-
-1. User settings and preferences migration utility created and tested
-2. Local data and cache migration implemented with integrity verification
-3. Configuration files converted to new format with fallback for missing settings
-4. Import/export functionality for user data provided for manual migration if needed
-5. Migration progress indication and error handling implemented
-6. Rollback capability provided in case migration issues are encountered
-7. Migration testing completed with various user data scenarios
-
-#### Integration Verification
-
-- **IV1**: Migration testing with real user data confirms no data loss
-- **IV2**: Application startup after migration maintains all user preferences
-- **IV3**: Rollback testing confirms ability to return to Electron version if needed
-
-### Story 1.7: Testing, Quality Assurance, and Release Preparation
-
-As a **developer and user**,
-I want **comprehensive testing and quality assurance processes in place**,
-so that **the migrated application is reliable, performant, and ready for production deployment**.
-
-#### Acceptance Criteria
-
-1. Automated test suite covering all migrated functionality
-2. Cross-platform testing completed on Windows, macOS, and Linux
-3. Performance benchmarking shows improvement or parity with Electron version
-4. Security audit completed for Tauri configuration and Rust backend
-5. User acceptance testing with existing application users
-6. Documentation updated for new architecture and development processes
-7. Release pipeline and distribution mechanism tested and verified
-
-#### Integration Verification
-
-- **IV1**: Full regression testing confirms no functionality loss from original Electron app
-- **IV2**: Performance testing validates improved metrics (bundle size, memory usage, startup time)
-- **IV3**: End-to-end testing confirms complete user workflow preservation
+**Epic Progress**: Foundation established, component development and testing infrastructure being prioritized to enable efficient UI migration workflow.
 
 ---
 
@@ -562,13 +387,14 @@ so that **the migrated application is reliable, performant, and ready for produc
 - **Theme System**: Complete Unistyles migration from SCSS with 50+ colors, typography, spacing
 - **Internationalization Structure**: 22 languages migrated to i18next JSON format with TypeScript types
 
-#### **🔄 IN PROGRESS (Component Migration)**
+#### **🔄 NEXT PHASE (Component Migration)**
 
-- **React Components**: Need systematic migration to use new theme and i18n systems
-- **SCSS to Unistyles**: Component-level style conversion pending
+- **Component Development Infrastructure**: Storybook integration for isolated component development
+- **React Components**: Systematic migration to use new theme and i18n systems
+- **SCSS to Unistyles**: Component-level style conversion
 - **i18next Integration**: Hook-based translation implementation in components
 
-#### **🔄 PENDING (Advanced Features)**
+#### **🔄 FUTURE PHASES (Advanced Features)**
 
 - **Tauri Backend APIs**: Desktop functionality migration from Electron to Rust
 - **Data Migration**: User settings and configuration preservation
@@ -576,14 +402,16 @@ so that **the migrated application is reliable, performant, and ready for produc
 
 ### **🚀 Recommended Next Steps:**
 
-1. **Complete Story 1.4**: Implement i18next hooks in existing components
-2. **Continue Story 1.3**: Convert component SCSS to Unistyles StyleSheet calls
-3. **Begin Story 1.2**: Implement core window management with Tauri
-4. **Story 1.5**: Start backend API migration planning
+1. **Create and begin Story 1.2**: Jest integration setup for testing infrastructure
+2. **Begin Story 1.3**: Add Storybook 9 integration for component development and testing
+3. **Define subsequent stories**: Component migration, styling system conversion, and backend API migration planning
+
+**Priority Rationale**: Testing infrastructure (Jest) and component development tools (Storybook) are prioritized to establish proper development and testing workflows before beginning systematic component migration.
 
 ---
 
-**Document Version**: v1.5  
-**Last Updated**: 2025-10-19  
+**Document Version**: v1.6  
+**Last Updated**: 2025-10-20  
 **Created By**: Product Manager (PM Agent)  
-**Technology Analysis**: Package.json comparison + React Compiler + Expo strategy + Progress analysis + pnpm standardization
+**Technology Analysis**: Package.json comparison + React Compiler + Expo strategy + Progress analysis + pnpm standardization  
+**Update Notes**: Reorganized story management approach, updated Story 1.2 to focus on Storybook integration, moved detailed story content to docs/stories/ directory
