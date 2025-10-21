@@ -25,6 +25,77 @@ In the output, you'll find options to open the app in a
 
 You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
 
+## Storybook Integration
+
+This project includes Storybook 9 for building, testing, and documenting UI components in isolation.
+
+### Running Storybook
+
+To run the app in Storybook mode:
+
+```bash
+pnpm sb
+```
+
+This will start the Expo development server with the `EXPO_PUBLIC_ENVIRONMENT=storybook` environment variable, making the `/storybook` route accessible within the app.
+
+### Development Modes
+
+- **Normal Development**: `pnpm start` - Standard app development mode
+- **Storybook Mode**: `pnpm sb` - Component development and documentation mode
+
+### Writing Stories
+
+Stories are located in `src/components/` alongside their respective components. Each component folder should include:
+
+- `ComponentName.tsx` - Main component with complete co-location (types, styles, logic)
+- `ComponentName.stories.tsx` - Storybook stories demonstrating component states
+- `index.ts` - Barrel export
+
+Example story structure:
+
+```typescript
+// src/components/Input/Input.stories.tsx
+import type { Meta, StoryObj } from "@storybook/react";
+import { Input } from "./Input";
+
+const meta: Meta<typeof Input> = {
+  title: "Components/Input",
+  component: Input,
+  parameters: {
+    layout: "centered",
+  },
+};
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+export const Default: Story = {
+  args: {
+    label: "Username",
+    value: "",
+    onChangeText: (text) => console.log("Input changed:", text),
+  },
+};
+```
+
+### Environment Variable Control
+
+Storybook access is controlled by the `EXPO_PUBLIC_ENVIRONMENT` environment variable:
+
+- When set to `'storybook'`, the `/storybook` route becomes available
+- In normal development mode, the storybook route is hidden
+
+### Component Standards
+
+All components follow these standards:
+
+- **TypeScript**: Strict mode with 'I' prefix for all custom types
+- **React 19**: ref as props, React Compiler compatible code
+- **Unistyles 3.0**: Theme-based styling with variants system
+- **Complete co-location**: Types, styles, and logic in single component file
+- **Accessibility**: Minimum touch targets and proper ARIA attributes
+
 ## Get a fresh project
 
 When you're ready, run:

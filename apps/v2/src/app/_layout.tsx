@@ -22,6 +22,13 @@ export default function RootLayout() {
           name="modal"
           options={{ presentation: "modal", title: "Modal" }}
         />
+        {/* Storybook route - only accessible when environment variable is set */}
+        {process.env.EXPO_PUBLIC_ENVIRONMENT === "storybook" && (
+          <Stack.Screen
+            name="storybook"
+            options={{ headerShown: false, title: "Storybook" }}
+          />
+        )}
       </Stack>
     </ThemeProvider>
   );
