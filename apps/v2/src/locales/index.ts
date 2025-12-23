@@ -21,14 +21,14 @@ import vi from "./vi.json";
 import zhCN from "./zh-CN.json";
 import zhTW from "./zh-TW.json";
 
-export type Language = {
+export type ILanguage = {
   value: string;
   name: string;
   order: number;
   url: Record<string, string>;
 };
 
-export type ILanguage = (typeof LANGUAGES)[keyof typeof LANGUAGES]["value"];
+export type ILanguageKey = (typeof LANGUAGES)[keyof typeof LANGUAGES]["value"];
 
 export const LANGUAGES = {
   de: {
@@ -163,7 +163,7 @@ export const LANGUAGES = {
     order: 21,
     url: ja,
   },
-} as const satisfies Record<string, Language>;
+} as const satisfies Record<string, ILanguage>;
 
 export const LANGUAGE_KEYS_SET = new Set(
   Object.values(LANGUAGES).map(({ value }) => value),
