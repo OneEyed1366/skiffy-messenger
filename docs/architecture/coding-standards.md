@@ -15,7 +15,8 @@ This document defines coding standards for the Mattermost Platform Migration pro
 ### Modern System (apps/v2) - ACTIVE DEVELOPMENT
 
 - **Status**: Primary development target
-- **Standards**: Modern React Native + TypeScript + Unistyles patterns
+- **Standards**: React 19 + TypeScript + Unistyles 3.0 + Expo Router patterns
+- **Architecture**: React Compiler + Unistyles C++ optimization for zero re-renders
 
 ## TypeScript Standards
 
@@ -213,47 +214,151 @@ const styles = StyleSheet.create((theme) => ({
 }));
 ```
 
-### React 19 Compatibility and New Patterns
+### React 19 + Unistyles 3.0 Integration
 
-- **React Compiler Optimization**: Let React Compiler handle memoization, but understand its limitations
-- **Modern Ref Patterns**: Use ref callbacks with cleanup and ref as props
-- **New Hooks Integration**: Leverage useActionState, useOptimistic, and enhanced useTransition
-- **Context Simplification**: Use Context directly without Provider wrapper
+- **React Compiler + Unistyles**: No manual memoization needed - React Compiler and Unistyles C++ optimize automatically
+- **Modern Ref Patterns**: Use ref as props in React 19 (no forwardRef needed)
+- **No Re-render Architecture**: Unistyles updates styles via C++ ShadowTree without React re-renders
+- **Automatic Style Optimization**: Variants and theme changes handled without component updates
 
-#### React 19 Specific Patterns
+#### React 19 + Unistyles 3.0 Integration Patterns
 
-**✅ React Compiler Compatible Patterns**:
+**✅ Perfect React 19 + Unistyles Component**:
 
 ```typescript
-// Compiler handles memoization automatically
-function Component({ data }) {
-  // No need for useMemo/useCallback in new code
-  const processedData = data.map(item => processItem(item));
-  const handleClick = () => setSelected(data.id);
+import React from "react";
+import { Pressable, Text } from "react-native";
+import { StyleSheet, UnistylesVariants } from "react-native-unistyles";
+import { useTranslation } from "react-i18next";
 
-  return <Child data={processedData} onClick={handleClick} />;
-}
+// Types with Unistyles variants integration
+type IProps = {
+  titleKey: string;
+  onPress: () => void;
+  ref?: React.Ref<React.ComponentRef<typeof Pressable>>; // React 19 ref as prop
+} & IButtonVariant;
 
-// Extract React Query mutations properly
-function UserActions() {
-  const { mutate: deleteUser } = useMutation(deleteUserMutation);
+type IButtonVariant = UnistylesVariants<typeof styles>;
 
-  const handleDelete = (id) => {
-    deleteUser(id); // Compiler memoizes correctly
+// Export types for other components
+export type IButtonProps = IProps;
+export type { IButtonVariant };
+
+// Component with React 19 + Unistyles best practices
+export function Button({
+  titleKey,
+  type = "primary",
+  onPress,
+  ref, // React 19: ref as regular prop
+  ...etc
+}: IProps) {
+  const { t } = useTranslation();
+
+  // React Compiler optimizes automatically - no useCallback needed
+  const handlePress = () => {
+    if (!etc.disabled && onPress) {
+      onPress();
+    }
   };
+
+  // Unistyles variants - no re-renders, pure C++ updates
+  styles.useVariants({ type });
+
+  return (
+    <Pressable
+      ref={ref}           // React 19: Direct ref usage
+      style={styles.button}  // Unistyles: Auto-optimized styles
+      onPress={handlePress}   // React Compiler: Auto-memoized
+      disabled={etc.disabled}
+      accessibilityRole="button"
+      accessibilityState={{ disabled: etc.disabled }}
+    >
+      <Text style={styles.text}>{t(titleKey)}</Text>
+    </Pressable>
+  );
 }
+
+// Unistyles 3.0: Co-located styles with variants
+const styles = StyleSheet.create((theme) => ({
+  button: {
+    paddingHorizontal: theme.gap(3),
+    paddingVertical: theme.gap(1.5),
+    borderRadius: theme.radius.m,
+    alignItems: "center",
+    justifyContent: "center",
+    minHeight: 44, // Accessibility requirement
+    variants: {
+      type: {
+        primary: { backgroundColor: theme.colors.buttonBg },
+        secondary: { backgroundColor: theme.colors.centerChannelBg },
+      },
+    },
+  },
+  text: {
+    fontWeight: theme.fontWeights.semiBold,
+    fontSize: 16,
+    variants: {
+      type: {
+        primary: { color: theme.colors.buttonColor },
+        secondary: { color: theme.colors.centerChannelColor },
+      },
+    },
+  },
+}));
 ```
 
-**❌ Patterns That Break React Compiler**:
+**✅ React Query + React Compiler + Unistyles Integration**:
 
 ```typescript
-// Don't do this - breaks memoization
+function UserActions() {
+  // Extract mutate properly for React Compiler
+  const { mutate: deleteUser } = useMutation(deleteUserMutation);
+
+  // React Compiler + Unistyles: No manual optimization needed
+  const handleDelete = (id: string) => {
+    deleteUser(id); // React Compiler memoizes correctly
+  };
+
+  // Unistyles handles theme updates without re-renders
+  return (
+    <Pressable style={styles.deleteButton} onPress={() => handleDelete(user.id)}>
+      <Text style={styles.deleteText}>{t('common.delete')}</Text>
+    </Pressable>
+  );
+}
+
+// Unistyles: Automatic theme updates without React re-renders
+const styles = StyleSheet.create((theme) => ({
+  deleteButton: {
+    backgroundColor: theme.colors.errorBg,
+    padding: theme.gap(2),
+    borderRadius: theme.radius.m,
+  },
+  deleteText: {
+    color: theme.colors.errorText,
+    fontWeight: theme.fontWeights.semiBold,
+  },
+}));
+```
+
+**❌ Anti-patterns to Avoid**:
+
+```typescript
+// Don't do this - breaks React Compiler + Unistyles optimization
 function Component() {
   const mutation = useMutation(config);
+  const { theme } = useUnistyles(); // Causes re-renders
 
   const handleAction = () => {
     mutation.mutate(data); // Compiler can't memoize this properly
   };
+
+  // Manual theme access - defeats Unistyles optimization
+  return (
+    <View style={{ backgroundColor: theme.colors.bg }}>
+      <Text style={{ color: theme.colors.text }}>Content</Text>
+    </View>
+  );
 }
 ```
 
@@ -365,90 +470,1383 @@ function ExpensiveComponent({ data, onProcess }) {
 }
 ```
 
-## Styling Standards (Unistyles)
+## Styling Standards (Unistyles 3.0)
 
-### Theme Usage
+### Core Principles
 
-- **Always use theme**: Access colors, spacing, fonts from theme object
-- **Responsive Design**: Use breakpoints for cross-platform compatibility
-- **Consistent Spacing**: Use `theme.gap()` function for spacing
+- **Co-located Styles**: Always define styles at the bottom of the component file
+- **Theme-driven Design**: Use theme object for all colors, spacing, and typography
+- **Variants System**: Leverage Unistyles variants for component states
+- **Performance**: Styles auto-update without re-renders via C++ ShadowTree integration
+- **Accessibility**: Include minimum touch targets and proper ARIA attributes
+
+### Unistyles 3.0 Component Pattern
+
+Based on your Button component, here's the complete pattern for component styling:
 
 ```typescript
-// ✅ Good - Theme-based styling
-const styles = StyleSheet.create((theme) => ({
-  container: {
-    backgroundColor: theme.colors.centerChannelBg,
-    padding: theme.gap(2), // 16px
-    borderRadius: theme.radius.m,
-    ...(theme.breakpoints.md && {
-      padding: theme.gap(3), // 24px on medium screens+
-    }),
-  },
-  text: {
-    fontFamily: theme.fonts.primary,
-    fontSize: 16,
-    color: theme.colors.centerChannelColor,
-  },
-}));
+// Button.tsx - Complete Unistyles 3.0 pattern
+import React from "react";
+import { Pressable, Text } from "react-native";
+import { StyleSheet, UnistylesVariants } from "react-native-unistyles";
+import { useTranslation } from "react-i18next";
 
-// ❌ Bad - Hardcoded values
-const styles = StyleSheet.create(() => ({
-  container: {
-    backgroundColor: "#ffffff",
-    padding: 16,
-    borderRadius: 8,
+// Types defined at the top of the component file
+type IProps = {
+  titleKey: string;
+  onPress: () => void;
+  ref?: React.Ref<React.ComponentRef<typeof Pressable>>; // ref as regular prop in React 19
+} & IButtonVariant;
+
+type IButtonVariant = UnistylesVariants<typeof styles>;
+
+// Export types that other components need
+export type IButtonProps = IProps & UnistylesVariants<typeof styles>;
+export type { IButtonVariant };
+
+// Component implementation with named export
+export function Button({
+  titleKey,
+  type = "primary",
+  onPress,
+  ref,
+  ...etc
+}: IProps) {
+  const { t } = useTranslation();
+
+  // Boolean variants can be strings - compute them properly
+  const disabled =
+    typeof etc.disabled === "boolean" ? etc.disabled : etc.disabled === "true";
+
+  // React Compiler handles memoization automatically - no useCallback needed
+  const handlePress = () => {
+    if (!disabled && onPress) {
+      onPress();
+    }
+  };
+
+  // Configure variants - boolean variants need computation
+  styles.useVariants({
+    type,
+    disabled, // Computed boolean (true/false)
+  });
+
+  return (
+    <Pressable
+      ref={ref}
+      style={styles.button}
+      onPress={handlePress}
+      disabled={disabled}
+      accessibilityRole="button"
+      accessibilityState={{ disabled }}
+    >
+      <Text style={styles.text}>{t(titleKey)}</Text>
+    </Pressable>
+  );
+}
+
+// Styles defined at the bottom of the component file
+const styles = StyleSheet.create((theme) => ({
+  button: {
+    paddingHorizontal: theme.gap(3),
+    paddingVertical: theme.gap(1.5),
+    borderRadius: theme.radius.m,
+    alignItems: "center",
+    justifyContent: "center",
+    minHeight: 44, // Accessibility minimum touch target
+    variants: {
+      type: {
+        primary: {
+          backgroundColor: theme.colors.buttonBg,
+        },
+        secondary: {
+          backgroundColor: theme.colors.centerChannelBg,
+          borderWidth: 1,
+          borderColor: theme.colors.borderDefault,
+        },
+        danger: {
+          backgroundColor: theme.colors.errorText,
+        },
+      },
+      // Boolean variants: handle both boolean and string values
+      disabled: {
+        true: { opacity: 0.6 },
+        false: { opacity: 1.0 },
+        // Can also be specified as strings: "true" | "false"
+        default: { opacity: 1.0 }, // Default variant when no disabled prop
+      },
+    },
   },
   text: {
-    fontFamily: "Arial",
+    fontWeight: theme.fontWeights.semiBold,
     fontSize: 16,
-    color: "#333333",
+    variants: {
+      type: {
+        primary: {
+          color: theme.colors.buttonColor,
+        },
+        secondary: {
+          color: theme.colors.centerChannelColor,
+        },
+        danger: {
+          color: theme.colors.neutral0,
+        },
+      },
+      disabled: {
+        true: { color: theme.colors.textDisabled },
+        false: {}, // Use type variant color
+        // Optional: can skip false and let type variants handle it
+      },
+    },
   },
 }));
 ```
 
-### Component Styling Patterns
+### Unistyles 3.0 Key Features
 
-- **Co-located Styles**: Define styles at component bottom
-- **Conditional Styles**: Use theme breakpoints and conditions
-- **Naming Convention**: Use descriptive style names
+#### 1. Variants System
+
+Use variants for component states instead of conditional styling:
+
+**Basic Variants:**
+
+```typescript
+// ✅ Good - Unistyles variants (automatic optimization)
+const styles = StyleSheet.create((theme) => ({
+  button: {
+    padding: theme.gap(2),
+    variants: {
+      size: {
+        small: { padding: theme.gap(1) },
+        medium: { padding: theme.gap(2) },
+        large: { padding: theme.gap(3) },
+      },
+      variant: {
+        primary: { backgroundColor: theme.colors.primary },
+        secondary: { backgroundColor: theme.colors.secondary },
+      },
+    },
+  },
+}));
+
+// Configure variants in component
+styles.useVariants({ size: "medium", variant: "primary" });
+```
+
+**Multi-Style Variants (TypeScript Consistency):**
+
+**CRITICAL**: When using the same variant across multiple styles, you must include ALL variant options in each style to avoid TypeScript errors. Use empty objects `{}` for variants that don't need styling.
+
+```typescript
+// ✅ Correct - All variant options in each style for proper TypeScript
+const styles = StyleSheet.create((theme) => ({
+  container: {
+    flex: 1,
+    variants: {
+      size: {
+        small: { width: 100, height: 100 },
+        medium: { width: 200, height: 200 },
+        large: { width: 300, height: 300 },
+      },
+    },
+  },
+  text: {
+    fontWeight: "bold",
+    variants: {
+      size: {
+        small: { fontSize: 12 },
+        medium: { fontSize: 16 },
+        large: { fontSize: 20 },
+      },
+    },
+  },
+  icon: {
+    variants: {
+      size: {
+        small: { width: 16, height: 16 },
+        medium: {}, // Empty object - no specific styles for medium
+        large: { width: 32, height: 32 },
+      },
+    },
+  },
+}));
+
+// ❌ Wrong - Missing variant options causes TypeScript errors
+const badStyles = StyleSheet.create((theme) => ({
+  container: {
+    variants: {
+      size: {
+        small: { width: 100 },
+        medium: { width: 200 },
+        large: { width: 300 },
+      },
+    },
+  },
+  text: {
+    variants: {
+      size: {
+        small: { fontSize: 12 },
+        // Missing medium and large - breaks TypeScript!
+      },
+    },
+  },
+}));
+// TypeScript error: size: ('small' | 'medium' | 'large') | ('small')
+```
+
+**Practical Pattern for Complex Components:**
+
+```typescript
+// Define all possible variant values consistently
+const styles = StyleSheet.create((theme) => ({
+  container: {
+    padding: theme.gap(2),
+    variants: {
+      size: {
+        small: { padding: theme.gap(1) },
+        medium: { padding: theme.gap(2) },
+        large: { padding: theme.gap(3) },
+      },
+      variant: {
+        primary: { backgroundColor: theme.colors.primary },
+        secondary: { backgroundColor: theme.colors.secondary },
+        danger: { backgroundColor: theme.colors.error },
+      },
+    },
+  },
+  text: {
+    fontWeight: theme.fontWeights.semiBold,
+    variants: {
+      size: {
+        small: { fontSize: 12 },
+        medium: { fontSize: 16 },
+        large: { fontSize: 20 },
+      },
+      variant: {
+        primary: { color: theme.colors.white },
+        secondary: { color: theme.colors.text },
+        danger: { color: theme.colors.white },
+      },
+    },
+  },
+  icon: {
+    variants: {
+      size: {
+        small: { width: 16, height: 16 },
+        medium: { width: 20, height: 20 },
+        large: {}, // No specific icon sizing for large
+      },
+      variant: {
+        primary: {}, // Uses default icon color
+        secondary: { opacity: 0.8 },
+        danger: {}, // Uses default icon color
+      },
+    },
+  },
+}));
+
+// All variants properly typed: size: 'small' | 'medium' | 'large'
+// Usage: styles.useVariants({ size: 'medium', variant: 'primary' });
+```
+
+**Compound Variants (Advanced Styling):**
+
+Compound variants allow applying additional styles when specific combinations of variants are met. This eliminates complex conditional logic and provides clean, declarative styling.
+
+```typescript
+// ✅ Good - Compound variants for complex styling combinations
+const styles = StyleSheet.create((theme) => ({
+  button: {
+    paddingHorizontal: theme.gap(3),
+    paddingVertical: theme.gap(1.5),
+    borderRadius: theme.radius.m,
+    variants: {
+      size: {
+        small: {
+          paddingHorizontal: theme.gap(2),
+          paddingVertical: theme.gap(1),
+        },
+        medium: {
+          paddingHorizontal: theme.gap(3),
+          paddingVertical: theme.gap(1.5),
+        },
+        large: {
+          paddingHorizontal: theme.gap(4),
+          paddingVertical: theme.gap(2),
+        },
+      },
+      variant: {
+        primary: { backgroundColor: theme.colors.buttonBg },
+        secondary: { backgroundColor: theme.colors.centerChannelBg },
+        danger: { backgroundColor: theme.colors.errorBg },
+      },
+      loading: {
+        true: { opacity: 0.7 },
+        false: {},
+        default: {},
+      },
+    },
+    // Compound variants - apply when multiple conditions are met
+    compoundVariants: [
+      {
+        variant: "primary",
+        loading: true,
+        // Apply these styles when button is primary AND loading
+        styles: {
+          backgroundColor: theme.colors.buttonBgLoading,
+          transform: [{ scale: 0.98 }],
+        },
+      },
+      {
+        size: "large",
+        variant: "danger",
+        // Apply these styles when button is large AND danger
+        styles: {
+          borderWidth: 2,
+          borderColor: theme.colors.errorBorder,
+          shadowColor: theme.colors.errorShadow,
+          shadowOffset: { width: 0, height: 4 },
+          shadowOpacity: 0.3,
+          shadowRadius: 8,
+        },
+      },
+      {
+        variant: "secondary",
+        loading: false,
+        // Apply these styles when secondary AND explicitly not loading
+        styles: {
+          borderWidth: 1,
+          borderColor: theme.colors.borderDefault,
+        },
+      },
+    ],
+  },
+  text: {
+    fontWeight: theme.fontWeights.semiBold,
+    variants: {
+      size: {
+        small: { fontSize: 12 },
+        medium: { fontSize: 16 },
+        large: { fontSize: 20 },
+      },
+      variant: {
+        primary: { color: theme.colors.buttonColor },
+        secondary: { color: theme.colors.centerChannelColor },
+        danger: { color: theme.colors.errorText },
+      },
+      loading: {
+        true: {},
+        false: {},
+        default: {},
+      },
+    },
+    compoundVariants: [
+      {
+        variant: "secondary",
+        size: "large",
+        // Large secondary buttons get special text treatment
+        styles: {
+          fontWeight: theme.fontWeights.bold,
+          letterSpacing: 0.5,
+        },
+      },
+      {
+        variant: "danger",
+        loading: true,
+        // Danger buttons when loading show different text color
+        styles: {
+          color: theme.colors.errorTextLoading,
+        },
+      },
+    ],
+  },
+}));
+
+// Usage - compound variants automatically apply based on combinations
+styles.useVariants({
+  size: "large",
+  variant: "danger",
+  loading: false,
+});
+// This will apply large + danger compound variant styles
+```
+
+**Real-world Typography Example:**
 
 ```typescript
 const styles = StyleSheet.create((theme) => ({
-  // Container styles
+  text: {
+    fontFamily: theme.fonts.base,
+    variants: {
+      size: {
+        small: { fontSize: 12 },
+        medium: { fontSize: 16 },
+        large: { fontSize: 20 },
+      },
+      weight: {
+        normal: { fontWeight: theme.fontWeights.normal },
+        bold: { fontWeight: theme.fontWeights.bold },
+      },
+      color: {
+        primary: { color: theme.colors.primary },
+        secondary: { color: theme.colors.secondary },
+        link: { color: theme.colors.link },
+        error: { color: theme.colors.errorText },
+      },
+      emphasis: {
+        true: { fontStyle: "italic" },
+        false: {},
+        default: {},
+      },
+    },
+    compoundVariants: [
+      {
+        weight: "bold",
+        color: "link",
+        // Bold links get underline
+        styles: {
+          textDecorationLine: "underline",
+        },
+      },
+      {
+        size: "large",
+        weight: "bold",
+        color: "primary",
+        // Large bold primary text gets special treatment
+        styles: {
+          letterSpacing: 1,
+          textTransform: "uppercase",
+        },
+      },
+      {
+        color: "error",
+        emphasis: true,
+        // Emphasized error text gets background
+        styles: {
+          backgroundColor: theme.colors.errorBg,
+          paddingHorizontal: theme.gap(1),
+          borderRadius: theme.radius.s,
+        },
+      },
+    ],
+  },
+}));
+
+// ❌ Bad - Complex conditional logic instead of compound variants
+const getTextStyle = (size, weight, color, emphasis) => [
+  styles.text,
+  weight === "bold" && color === "link" && styles.boldLink,
+  size === "large" &&
+    weight === "bold" &&
+    color === "primary" &&
+    styles.largeBoldPrimary,
+  color === "error" && emphasis && styles.emphasizedError,
+  // This gets unwieldy quickly...
+];
+```
+
+**Compound Variants Best Practices:**
+
+1. **Order Matters**: Compound variants take precedence over regular variants
+2. **Specific Combinations**: Use for specific styling combinations that can't be achieved with regular variants
+3. **Performance**: More efficient than conditional styling logic
+4. **Maintainability**: Declarative and easier to understand than complex conditionals
+5. **TypeScript**: Fully typed with autocomplete support
+
+```typescript
+// Component usage with compound variants
+const Component = ({ size, variant, loading, emphasis }) => {
+  const isLoading = typeof loading === "boolean" ? loading : loading === "true";
+  const isEmphasis = typeof emphasis === "boolean" ? emphasis : emphasis === "true";
+
+  styles.useVariants({
+    size,
+    variant,
+    loading: loading !== undefined ? isLoading : undefined,
+    emphasis: emphasis !== undefined ? isEmphasis : undefined,
+  });
+
+  return <Text style={styles.text}>{content}</Text>;
+};
+```
+
+**Boolean Variants (Critical Pattern):**
+
+Boolean variants can be passed as strings and need proper computation. **CRITICAL**: `false` ≠ `default` - you must pass `undefined` to get default variant behavior.
+
+```typescript
+// Component with boolean props that might be strings
+const Component = ({ isPrimary, isDisabled, showBorder }) => {
+  // CRITICAL: Compute boolean variants - they can be strings!
+  const disabled = typeof isDisabled === "boolean" ? isDisabled : isDisabled === "true";
+  const primary = typeof isPrimary === "boolean" ? isPrimary : isPrimary === "true";
+  const border = typeof showBorder === "boolean" ? showBorder : showBorder === "true";
+
+  // Configure variants with computed booleans
+  // IMPORTANT: false ≠ default! Pass undefined for default variant
+  styles.useVariants({
+    color: disabled ? false : true,        // Explicit false vs true
+    borderColor: primary ? true : undefined, // undefined = use default variant
+    border: border ? "visible" : "hidden",   // String variants
+  });
+
+  return <View style={styles.container} />;
+};
+
+const styles = StyleSheet.create((theme) => ({
+  container: {
+    padding: theme.gap(2),
+    variants: {
+      // Boolean variants - false is NOT the same as default!
+      color: {
+        true: { backgroundColor: theme.colors.primary },
+        false: { backgroundColor: theme.colors.disabled }, // Applied when value = false
+        default: { backgroundColor: theme.colors.background }, // Applied when value = undefined
+      },
+      borderColor: {
+        true: { borderColor: theme.colors.primary },
+        // No 'false' defined - undefined will use default or no styles
+        default: { borderColor: theme.colors.border },
+      },
+      border: {
+        visible: { borderWidth: 1 },
+        hidden: { borderWidth: 0 },
+      },
+    },
+  },
+}));
+```
+
+**Variant Value Rules:**
+
+```typescript
+// Understanding variant selection logic
+const ExampleComponent = ({ disabled, loading }) => {
+  const isDisabled = typeof disabled === "boolean" ? disabled : disabled === "true";
+  const isLoading = typeof loading === "boolean" ? loading : loading === "true";
+
+  styles.useVariants({
+    // These are DIFFERENT behaviors:
+    state: isDisabled ? false : undefined,  // false = select 'false' variant, undefined = select 'default' variant
+    loading: isLoading,                     // true = select 'true' variant, false = select 'false' variant
+    interactive: isDisabled ? false : true, // Explicit false vs true selection
+  });
+
+  return <View style={styles.container} />;
+};
+
+const styles = StyleSheet.create((theme) => ({
+  container: {
+    variants: {
+      state: {
+        true: { opacity: 1.0 },           // When state = true
+        false: { opacity: 0.5 },          // When state = false (EXPLICIT)
+        default: { opacity: 0.8 },        // When state = undefined (DEFAULT)
+      },
+      loading: {
+        true: { backgroundColor: theme.colors.loading },
+        false: { backgroundColor: theme.colors.normal },
+        // No default - undefined loading will not apply any styles
+      },
+      interactive: {
+        true: { cursor: 'pointer' },
+        false: { cursor: 'not-allowed' },
+        // No default - must be explicitly true or false
+      },
+    },
+  },
+}));
+```
+
+**Variant Computation Patterns:**
+
+```typescript
+// ✅ Proper boolean variant computation with false vs undefined distinction
+const Component = ({ disabled, loading, error, optional }) => {
+  // Handle mixed boolean/string props
+  const isDisabled = typeof disabled === "boolean" ? disabled : disabled === "true";
+  const isLoading = typeof loading === "boolean" ? loading : loading === "true";
+  const hasError = typeof error === "boolean" ? error : error === "true";
+
+  styles.useVariants({
+    // String variants - straightforward
+    state: isLoading ? "loading" : (hasError ? "error" : "normal"),
+
+    // Boolean variants - CRITICAL: false ≠ undefined
+    interactive: isDisabled ? false : true,        // Explicit false vs true
+    disabled: isDisabled,                          // Boolean computation
+    optional: optional ? true : undefined,         // true or default (undefined)
+
+    // Mixed approach - sometimes you want false, sometimes undefined
+    appearance: hasError ? "danger" : undefined,   // "danger" or default
+  });
+
+  return <View style={styles.container} />;
+};
+
+const styles = StyleSheet.create((theme) => ({
+  container: {
+    variants: {
+      state: {
+        loading: { opacity: 0.7 },
+        error: { borderColor: theme.colors.error },
+        normal: { opacity: 1.0 },
+      },
+      interactive: {
+        true: { cursor: 'pointer', transform: [{ scale: 1.0 }] },
+        false: { cursor: 'not-allowed', transform: [{ scale: 0.95 }] }, // EXPLICIT false behavior
+        // No default - must be explicitly true or false
+      },
+      disabled: {
+        true: { opacity: 0.6 },
+        false: { opacity: 1.0 },
+        default: { opacity: 1.0 }, // Same as false in this case, but semantically different
+      },
+      optional: {
+        true: { borderStyle: 'dashed' },
+        // false not defined - will not apply styles
+        default: { borderStyle: 'solid' }, // Applied when undefined
+      },
+      appearance: {
+        danger: { backgroundColor: theme.colors.errorBg },
+        default: { backgroundColor: theme.colors.normalBg },
+      },
+    },
+  },
+}));
+
+// ❌ Bad - Manual conditional styling (triggers re-renders)
+const getButtonStyle = (size: string, variant: string) => [
+  styles.button,
+  size === 'small' && styles.smallButton,
+  variant === 'primary' && styles.primaryButton,
+];
+```
+
+**Key Rules for Boolean Variants:**
+
+1. **`true`** - Selects the `true` variant
+2. **`false`** - Selects the `false` variant (if defined)
+3. **`undefined`** - Selects the `default` variant (if defined)
+4. **Missing variant** - No styles applied if variant key not found
+
+```typescript
+// Practical example from your Button component
+const Button = ({ disabled, type = "primary" }) => {
+  const isDisabled =
+    typeof disabled === "boolean" ? disabled : disabled === "true";
+
+  styles.useVariants({
+    type, // String variant
+    disabled: disabled !== undefined ? isDisabled : undefined, // Boolean or default
+  });
+};
+
+const styles = StyleSheet.create((theme) => ({
+  button: {
+    variants: {
+      disabled: {
+        true: { opacity: 0.6 }, // When explicitly disabled
+        false: { opacity: 1.0 }, // When explicitly enabled
+        default: { opacity: 1.0 }, // When disabled prop not provided
+      },
+    },
+  },
+}));
+```
+
+#### 2. Theme Access Pattern
+
+Always access theme through StyleSheet.create function:
+
+```typescript
+// ✅ Good - Theme access in StyleSheet.create
+const styles = StyleSheet.create((theme) => ({
+  container: {
+    backgroundColor: theme.colors.centerChannelBg,
+    padding: theme.gap(2),
+    borderRadius: theme.radius.m,
+    borderColor: theme.colors.borderDefault,
+  },
+  text: {
+    fontFamily: theme.fonts.primary,
+    fontSize: theme.fontSizes.body,
+    color: theme.colors.centerChannelColor,
+    fontWeight: theme.fontWeights.normal,
+  },
+}));
+
+// ❌ Bad - Manual theme access (causes re-renders)
+function Component() {
+  const { theme } = useUnistyles(); // Triggers re-renders
+
+  return (
+    <View style={{ backgroundColor: theme.colors.centerChannelBg }}>
+      <Text style={{ color: theme.colors.text }}>Content</Text>
+    </View>
+  );
+}
+```
+
+#### 3. Accessibility Requirements
+
+Include accessibility properties for all interactive elements:
+
+```typescript
+const styles = StyleSheet.create((theme) => ({
+  button: {
+    paddingHorizontal: theme.gap(3),
+    paddingVertical: theme.gap(1.5),
+    borderRadius: theme.radius.m,
+    minHeight: 44, // Required: Minimum touch target size
+    alignItems: "center",
+    justifyContent: "center",
+  },
+}));
+
+// In component JSX
+<Pressable
+  style={styles.button}
+  onPress={handlePress}
+  disabled={disabled}
+  accessibilityRole="button"           // Required: Define role
+  accessibilityState={{ disabled }}   // Required: State information
+  accessibilityLabel={t(titleKey)}    // Optional: Custom label if needed
+>
+```
+
+#### 4. Responsive Design with Breakpoints
+
+Unistyles 3.0 provides powerful breakpoint system for responsive design across all platforms.
+
+**Breakpoint Configuration:**
+
+First, define breakpoints in your theme configuration:
+
+```typescript
+// unistyles.ts - Breakpoint configuration
+const breakpoints = {
+  xs: 0, // Mobile portrait (required to start with 0)
+  sm: 576, // Mobile landscape
+  md: 768, // Tablet portrait
+  lg: 992, // Tablet landscape
+  xl: 1200, // Desktop
+  xxl: 1400, // Large desktop
+} as const;
+
+// TypeScript integration
+type AppBreakpoints = typeof breakpoints;
+
+declare module "react-native-unistyles" {
+  export interface UnistylesBreakpoints extends AppBreakpoints {}
+}
+
+// Register breakpoints
+StyleSheet.configure({
+  themes: appThemes,
+  breakpoints,
+  settings: {
+    initialTheme: "light",
+  },
+});
+```
+
+**Responsive Styling Patterns:**
+
+```typescript
+// ✅ Good - Breakpoint-based responsive design
+const styles = StyleSheet.create((theme) => ({
   container: {
     flex: 1,
-    backgroundColor: theme.colors.centerChannelBg,
+    padding: theme.gap(2),
+
+    // Responsive values - change based on screen size
+    backgroundColor: {
+      xs: theme.colors.background,      // Mobile
+      md: theme.colors.backgroundAlt,  // Tablet+
+      xl: theme.colors.backgroundCard, // Desktop+
+    },
+
+    // Different layouts per breakpoint
+    flexDirection: {
+      xs: 'column',    // Mobile: stack vertically
+      md: 'row',       // Tablet+: horizontal layout
+    },
+
+    // Responsive spacing
+    gap: {
+      xs: theme.gap(2),   // 16px on mobile
+      sm: theme.gap(3),   // 24px on large mobile
+      lg: theme.gap(4),   // 32px on desktop
+    },
   },
 
-  // Layout styles
-  header: {
-    paddingVertical: theme.gap(2),
-    borderBottomWidth: 1,
-    borderBottomColor: theme.colors.borderDefault,
-  },
-
-  // Content styles
-  messageText: {
-    fontFamily: theme.fonts.primary,
+  text: {
     fontSize: 16,
     lineHeight: 22,
-    color: theme.colors.centerChannelColor,
+
+    // Responsive typography
+    fontSize: {
+      xs: 14,    // Smaller on mobile
+      sm: 16,    // Standard on tablet
+      lg: 18,    // Larger on desktop
+    },
+
+    // Responsive text alignment
+    textAlign: {
+      xs: 'center',   // Center on mobile
+      md: 'left',     // Left-align on tablet+
+    },
   },
 
-  // Interactive styles
+  // Complex responsive transforms
+  image: {
+    width: 100,
+    height: 100,
+    transform: [
+      {
+        scale: {
+          xs: 1.0,      // Normal scale on mobile
+          md: 1.2,      // Slightly larger on tablet
+          xl: 1.5,      // Much larger on desktop
+        },
+      },
+      {
+        translateX: {
+          xs: 0,        // No offset on mobile
+          lg: 50,       // Offset on desktop
+        },
+      },
+    ],
+  },
+}));
+
+// Component automatically adapts to screen size changes
+const ResponsiveComponent = ({ title, content }) => {
+  return (
+    <View style={styles.container}>
+      <Text style={styles.text}>{title}</Text>
+      <Image style={styles.image} source={{ uri: content.imageUrl }} />
+    </View>
+  );
+};
+```
+
+**Built-in Mobile Breakpoints:**
+
+Unistyles provides built-in `portrait` and `landscape` breakpoints for mobile devices:
+
+```typescript
+const styles = StyleSheet.create((theme) => ({
+  container: {
+    backgroundColor: {
+      portrait: theme.colors.background, // Portrait orientation
+      landscape: theme.colors.backgroundAlt, // Landscape orientation
+    },
+
+    // Different padding for orientations
+    paddingHorizontal: {
+      portrait: theme.gap(2), // Less padding in portrait
+      landscape: theme.gap(4), // More padding in landscape
+    },
+  },
+
+  // Combine custom and built-in breakpoints
+  header: {
+    height: {
+      xs: 60, // Mobile portrait
+      portrait: 60, // Any portrait (including tablet)
+      landscape: 80, // Any landscape
+      lg: 100, // Desktop
+    },
+  },
+}));
+```
+
+**Conditional Component Rendering:**
+
+Use `Display` and `Hide` components with media queries for showing/hiding content:
+
+```typescript
+import { Display, Hide, mq } from 'react-native-unistyles';
+
+const AdaptiveComponent = () => {
+  return (
+    <>
+      {/* Show only on mobile */}
+      <Display mq={mq.only.width(0, 768)}>
+        <MobileNavigation />
+      </Display>
+
+      {/* Hide on small screens */}
+      <Hide mq={mq.only.width(0, 992)}>
+        <DesktopSidebar />
+      </Hide>
+
+      {/* Show only on tablets */}
+      <Display mq={mq.only.width(768, 1200)}>
+        <TabletSpecificContent />
+      </Display>
+
+      {/* Complex media query */}
+      <Display mq={mq.only.width(992).and.height(600)}>
+        <LargeScreenContent />
+      </Display>
+    </>
+  );
+};
+```
+
+**Responsive Variants:**
+
+Combine breakpoints with variants for complex responsive behavior:
+
+```typescript
+const styles = StyleSheet.create((theme) => ({
+  button: {
+    variants: {
+      size: {
+        small: {
+          padding: theme.gap(1),
+          // Responsive padding within variants
+          padding: {
+            xs: theme.gap(1),
+            lg: theme.gap(1.5),
+          },
+        },
+        large: {
+          padding: theme.gap(3),
+          padding: {
+            xs: theme.gap(2), // Smaller on mobile
+            lg: theme.gap(3), // Full size on desktop
+          },
+        },
+      },
+    },
+
+    compoundVariants: [
+      {
+        size: "large",
+        // Apply only on desktop breakpoints
+        styles: {
+          minWidth: {
+            lg: 200, // Minimum width only on desktop
+          },
+        },
+      },
+    ],
+  },
+}));
+```
+
+**Runtime Breakpoint Access:**
+
+Access current breakpoint programmatically when needed:
+
+```typescript
+import { UnistylesRuntime } from 'react-native-unistyles';
+
+const AdaptiveComponent = () => {
+  // Access current breakpoint (avoid overuse - prefer CSS-in-JS)
+  const isMobile = UnistylesRuntime.breakpoint === 'xs' || UnistylesRuntime.breakpoint === 'sm';
+  const isDesktop = UnistylesRuntime.breakpoint === 'lg' || UnistylesRuntime.breakpoint === 'xl';
+
+  return (
+    <View style={styles.container}>
+      <Text>Current breakpoint: {UnistylesRuntime.breakpoint}</Text>
+      {isMobile && <MobileSpecificLogic />}
+      {isDesktop && <DesktopSpecificLogic />}
+    </View>
+  );
+};
+```
+
+### Media Queries (Pixel-Perfect Control)
+
+For more granular control than breakpoints, use media queries with the `mq` utility for pixel-perfect responsive design:
+
+```typescript
+import { StyleSheet, mq } from "react-native-unistyles";
+
+const styles = StyleSheet.create((theme) => ({
+  container: {
+    flex: 1,
+    backgroundColor: theme.colors.background,
+
+    // Basic width-based media queries
+    backgroundColor: {
+      [mq.only.width(240, 380)]: theme.colors.backgroundMobile, // 240-379px
+      [mq.only.width(380)]: theme.colors.backgroundTablet, // 380px+
+    },
+
+    // Height-based media queries
+    minHeight: {
+      [mq.only.height(600)]: 100, // Minimum height when screen >= 600px tall
+      [mq.only.height(300, 600)]: 80, // Medium height for 300-599px screens
+    },
+  },
+
+  // Complex combined media queries
+  sidebar: {
+    width: 200,
+    backgroundColor: theme.colors.sidebarBg,
+
+    // Width AND height combinations
+    width: {
+      [mq.width(768).and.height(600)]: 250, // Larger sidebar on big screens
+      [mq.width(1200).and.height(800)]: 300, // Even larger on desktop
+    },
+
+    // Mix breakpoints with pixel values
+    padding: {
+      [mq.only.width(200, "md")]: theme.gap(2), // 200px to 'md' breakpoint
+      [mq.only.width("md", "xl")]: theme.gap(3), // 'md' to 'xl' breakpoint
+      [mq.only.width("xl")]: theme.gap(4), // 'xl' breakpoint onwards
+    },
+  },
+
+  // Advanced responsive typography
+  title: {
+    fontSize: 16,
+    fontWeight: theme.fontWeights.semiBold,
+
+    // Precise typography scaling
+    fontSize: {
+      [mq.only.width(null, 320)]: 14, // Small phones (0-319px)
+      [mq.only.width(320, 480)]: 16, // Standard phones (320-479px)
+      [mq.only.width(480, 768)]: 18, // Large phones/small tablets
+      [mq.only.width(768, 1024)]: 20, // Tablets
+      [mq.only.width(1024)]: 24, // Desktop and up
+    },
+
+    // Combined width/height for optimal readability
+    lineHeight: {
+      [mq.width(480).and.height(600)]: 24, // Larger line height on bigger screens
+      [mq.width(768).and.height(1024)]: 28, // Even larger for tablets
+    },
+  },
+
+  // Responsive images with precise control
+  heroImage: {
+    width: "100%",
+    aspectRatio: 16 / 9,
+
+    // Different aspect ratios for different screen sizes
+    aspectRatio: {
+      [mq.only.width(null, 480)]: 4 / 3, // Square-ish on mobile
+      [mq.only.width(480, 1024)]: 16 / 9, // Widescreen on tablets
+      [mq.only.width(1024)]: 21 / 9, // Ultra-wide on desktop
+    },
+
+    // Responsive transforms
+    transform: [
+      {
+        scale: {
+          [mq.only.width(null, 380)]: 0.9, // Slightly smaller on small screens
+          [mq.width(380).and.height(600)]: 1.0, // Normal size on medium screens
+          [mq.width(1200)]: 1.1, // Slightly larger on desktop
+        },
+      },
+    ],
+  },
+}));
+```
+
+**Media Query Patterns:**
+
+```typescript
+// Width-only queries
+[mq.only.width(100, 200)][mq.only.width(400)][mq.only.width(null, 800)][ // Width from 100 to 199px // Width from 400px onwards // Width from 0 to 799px
+  // Height-only queries
+  mq.only.height(300, 600)
+][mq.only.height(800)][ // Height from 300 to 599px // Height from 800px onwards
+  // Combined width and height
+  mq.width(768).and.height(600)
+][mq.height(500).and.width("sm")][ // Width 768+ AND height 600+ // Height 500+ AND width from 'sm' breakpoint
+  // Using breakpoints in media queries
+  mq.only.width("sm", "lg")
+][mq.only.width(400, "xl")][ // From 'sm' to 'lg' breakpoint // From 400px to 'xl' breakpoint
+  // ❌ Invalid ranges (will be ignored)
+  mq.only.width("xl", "sm")
+][mq.only.width(800, 400)]; // Invalid: xl is larger than sm // Invalid: 800 is larger than 400
+```
+
+**Practical Use Cases:**
+
+```typescript
+// Navigation that adapts to screen dimensions
+const styles = StyleSheet.create((theme) => ({
+  navigation: {
+    flexDirection: 'row',
+
+    // Switch to vertical on narrow tall screens (phones in portrait)
+    flexDirection: {
+      [mq.width(null, 480).and.height(600)]: 'column',
+    },
+
+    // Different layouts for different aspect ratios
+    justifyContent: {
+      [mq.only.width(null, 768)]: 'space-between',     // Mobile: space out items
+      [mq.width(768).and.height(600)]: 'center',       // Tablet landscape: center
+      [mq.width(1024)]: 'flex-start',                  // Desktop: align left
+    },
+  },
+
+  // Cards that adapt to available space
+  card: {
+    width: '100%',
+
+    // Responsive card sizing with precise control
+    width: {
+      [mq.only.width(null, 480)]: '100%',              // Full width on mobile
+      [mq.only.width(480, 768)]: '48%',                // Two columns on large mobile
+      [mq.only.width(768, 1200)]: '31%',               // Three columns on tablet
+      [mq.width(1200).and.height(800)]: '23%',         // Four columns on large desktop
+    },
+
+    // Responsive padding based on available space
+    padding: {
+      [mq.only.width(null, 400)]: theme.gap(1),        // Tight padding on small screens
+      [mq.width(400).and.height(600)]: theme.gap(2),   // Standard padding
+      [mq.width(800)]: theme.gap(3),                   // Generous padding on large screens
+    },
+  },
+}));
+
+// Component with media query logic
+const AdaptiveGrid = ({ items }) => {
+  return (
+    <View style={styles.container}>
+      {items.map((item, index) => (
+        <View key={index} style={styles.card}>
+          <Text style={styles.title}>{item.title}</Text>
+        </View>
+      ))}
+    </View>
+  );
+};
+```
+
+**Media Query Best Practices:**
+
+- **Precision**: Use media queries for pixel-perfect control where breakpoints aren't sufficient
+- **Performance**: Media queries update automatically without re-renders
+- **Logical ranges**: Ensure ranges make sense (smaller to larger values)
+- **Combine dimensions**: Use width + height for aspect ratio specific styling
+- **Breakpoint integration**: Mix breakpoints with pixel values for flexible responsive design
+- **Avoid overuse**: Use breakpoints for general responsive design, media queries for fine-tuning
+
+**Best Practices:**
+
+- **Mobile-first**: Start with mobile (`xs`) and scale up
+- **Logical breakpoints**: Use semantic breakpoint names
+- **Performance**: Breakpoint styles update automatically without re-renders
+- **Consistency**: Use same breakpoints across your entire app
+- **Precision**: Use media queries for pixel-perfect control when needed
+- **Avoid overuse**: Prefer CSS-in-JS responsive values over runtime checks
+
+#### 5. Web-specific Styles
+
+Unistyles 3.0 supports web-only CSS properties:
+
+```typescript
+const styles = StyleSheet.create((theme) => ({
+  container: {
+    backgroundColor: theme.colors.background,
+
+    // Web-only styles
+    _web: {
+      cursor: "pointer",
+      transition: "all 0.2s ease",
+
+      // Pseudo-classes
+      _hover: {
+        backgroundColor: theme.colors.hoverBackground,
+      },
+      _focus: {
+        outline: `2px solid ${theme.colors.focusRing}`,
+      },
+    },
+  },
+}));
+```
+
+### Styling Migration Rules
+
+When encountering legacy styling patterns, migrate to Unistyles 3.0:
+
+#### From React Native StyleSheet
+
+```typescript
+// ❌ Legacy - React Native StyleSheet
+import { StyleSheet } from "react-native";
+
+const styles = StyleSheet.create({
+  button: {
+    backgroundColor: "#007bff",
+    padding: 16,
+    borderRadius: 8,
+  },
+});
+
+// ✅ Modern - Unistyles 3.0
+import { StyleSheet } from "react-native-unistyles";
+
+const styles = StyleSheet.create((theme) => ({
   button: {
     backgroundColor: theme.colors.buttonBg,
     paddingHorizontal: theme.gap(3),
     paddingVertical: theme.gap(1.5),
     borderRadius: theme.radius.m,
-  },
-
-  buttonText: {
-    color: theme.colors.buttonColor,
-    fontWeight: theme.fontWeights.semiBold,
+    variants: {
+      type: {
+        primary: { backgroundColor: theme.colors.buttonBg },
+        secondary: { backgroundColor: theme.colors.centerChannelBg },
+      },
+    },
   },
 }));
 ```
+
+#### From Styled Components or Emotion
+
+```typescript
+// ❌ Legacy - Styled Components
+const StyledButton = styled.Pressable<{ variant: "primary" | "secondary" }>`
+  background-color: ${(props) =>
+    props.variant === "primary" ? "#007bff" : "#6c757d"};
+  padding: 16px;
+  border-radius: 8px;
+`;
+
+// ✅ Modern - Unistyles 3.0 with variants
+const styles = StyleSheet.create((theme) => ({
+  button: {
+    paddingHorizontal: theme.gap(3),
+    paddingVertical: theme.gap(1.5),
+    borderRadius: theme.radius.m,
+    variants: {
+      variant: {
+        primary: { backgroundColor: theme.colors.buttonBg },
+        secondary: { backgroundColor: theme.colors.centerChannelBg },
+      },
+    },
+  },
+}));
+
+// Configure variants
+styles.useVariants({ variant: "primary" });
+```
+
+### Performance Considerations
+
+- **No Re-renders**: Unistyles 3.0 updates styles directly in C++ without React re-renders
+- **Selective Updates**: Only affected styles are recalculated on theme/breakpoint changes
+- **Automatic Optimization**: Variants and compound variants are optimized automatically
+- **Style Merging**: Use array syntax `[style1, style2]` instead of object spread
+
+### Theme Structure Requirements
+
+Ensure your theme and configuration follow these patterns for optimal Unistyles integration:
+
+**Theme Definition:**
+
+```typescript
+// themes.ts
+const theme = {
+  colors: {
+    // Primary colors
+    buttonBg: "#007bff",
+    buttonColor: "#ffffff",
+    centerChannelBg: "#ffffff",
+    centerChannelColor: "#3f4350",
+
+    // State colors
+    errorText: "#d24b47",
+    errorBg: "#fdebea",
+
+    // Border colors
+    borderDefault: "#ddd",
+  },
+
+  // Spacing function for consistency
+  gap: (multiplier: number) => multiplier * 8,
+
+  // Radius system
+  radius: {
+    s: 4,
+    m: 8,
+    l: 12,
+    xl: 16,
+  },
+
+  // Typography
+  fontWeights: {
+    normal: "400",
+    medium: "500",
+    semiBold: "600",
+    bold: "700",
+  },
+
+  fontSizes: {
+    small: 12,
+    body: 16,
+    heading: 20,
+    title: 24,
+  },
+} as const;
+```
+
+**Breakpoints Definition:**
+
+```typescript
+// breakpoints.ts
+const breakpoints = {
+  xs: 0, // Mobile portrait (must start with 0)
+  sm: 576, // Mobile landscape
+  md: 768, // Tablet portrait
+  lg: 992, // Tablet landscape
+  xl: 1200, // Desktop
+  xxl: 1400, // Large desktop
+} as const;
+```
+
+**Complete Unistyles Configuration:**
+
+```typescript
+// unistyles.ts
+import { StyleSheet } from "react-native-unistyles";
+import { lightTheme, darkTheme } from "./themes";
+import { breakpoints } from "./breakpoints";
+
+// TypeScript integration
+type AppThemes = {
+  light: typeof lightTheme;
+  dark: typeof darkTheme;
+};
+
+type AppBreakpoints = typeof breakpoints;
+
+declare module "react-native-unistyles" {
+  export interface UnistylesThemes extends AppThemes {}
+  export interface UnistylesBreakpoints extends AppBreakpoints {}
+}
+
+// Configure Unistyles
+StyleSheet.configure({
+  themes: {
+    light: lightTheme,
+    dark: darkTheme,
+  },
+  breakpoints,
+  settings: {
+    initialTheme: "light",
+    // adaptiveThemes: true, // Alternative to initialTheme
+  },
+});
+```
+
+````
 
 ## Internationalization Standards
 
@@ -486,7 +1884,7 @@ function SettingsModal() {
     </View>
   );
 }
-```
+````
 
 ### Translation Key Structure (Flat, 1-Level Approach)
 
@@ -549,6 +1947,132 @@ function SettingsModal() {
 
 ### Adding New Translation Keys
 
+## Quick Reference
+
+### Modern Component Template (React 19 + Unistyles 3.0)
+
+```typescript
+import React from "react";
+import { View, Text, Pressable } from "react-native";
+import { StyleSheet, UnistylesVariants } from "react-native-unistyles";
+import { useTranslation } from "react-i18next";
+
+// Types at top with 'I' prefix
+type IProps = {
+  title: string;
+  onPress: () => void;
+  ref?: React.Ref<React.ComponentRef<typeof Pressable>>;
+} & IComponentVariant;
+
+type IComponentVariant = UnistylesVariants<typeof styles>;
+
+// Export types for external use
+export type IComponentProps = IProps;
+export type { IComponentVariant };
+
+// Named export component
+export function Component({ title, variant = "default", disabled, onPress, ref }: IProps) {
+  const { t } = useTranslation();
+
+  // CRITICAL: Compute boolean variants - they can be strings!
+  const isDisabled = typeof disabled === "boolean" ? disabled : disabled === "true";
+
+  // React Compiler handles memoization
+  const handlePress = () => {
+    if (!isDisabled && onPress) onPress();
+  };
+
+  // Configure Unistyles variants - REMEMBER: false ≠ default (undefined)
+  styles.useVariants({
+    variant,
+    disabled: disabled !== undefined ? isDisabled : undefined, // false vs undefined distinction
+  });
+
+  return (
+    <Pressable
+      ref={ref}
+      style={styles.button}
+      onPress={handlePress}
+      disabled={isDisabled}
+      accessibilityRole="button"
+      accessibilityState={{ disabled: isDisabled }}
+    >
+      <Text style={styles.text}>{t(title)}</Text>
+    </Pressable>
+  );
+}
+
+// Co-located styles at bottom
+const styles = StyleSheet.create((theme) => ({
+  button: {
+    paddingHorizontal: theme.gap(3),
+    paddingVertical: theme.gap(1.5),
+    borderRadius: theme.radius.m,
+    backgroundColor: theme.colors.buttonBg,
+    minHeight: 44, // Accessibility
+    variants: {
+      variant: {
+        default: { backgroundColor: theme.colors.buttonBg },
+        secondary: { backgroundColor: theme.colors.centerChannelBg },
+        danger: { backgroundColor: theme.colors.errorBg },
+      },
+      disabled: {
+        true: { opacity: 0.6 },
+        false: { opacity: 1.0 },
+        default: { opacity: 1.0 },
+      },
+    },
+  },
+  text: {
+    color: theme.colors.buttonColor,
+    fontWeight: theme.fontWeights.semiBold,
+    fontSize: 16,
+    variants: {
+      variant: {
+        default: { color: theme.colors.buttonColor },
+        secondary: { color: theme.colors.centerChannelColor },
+        danger: { color: theme.colors.errorText },
+      },
+      disabled: {
+        true: { color: theme.colors.textDisabled },
+        false: {}, // No specific styling - use variant color
+        default: {}, // No specific styling - use variant color
+      },
+    },
+    // Compound variants for complex styling combinations
+    compoundVariants: [
+      {
+        variant: 'danger',
+        disabled: true,
+        // Danger + disabled combination gets special treatment
+        styles: {
+          backgroundColor: theme.colors.errorBgDisabled,
+          borderColor: theme.colors.errorBorderDisabled,
+        },
+      },
+    ],
+  },
+}));
+```
+
+### Migration Checklist
+
+When touching any file, migrate these patterns:
+
+- [ ] **Styling**: `StyleSheet` from `react-native` → `react-native-unistyles`
+- [ ] **Types**: `interface User` → `type IUser`
+- [ ] **Validation**: `Joi.object()` → `object()` from Valibot
+- [ ] **Components**: Separate files → Co-located in single file
+- [ ] **Refs**: `forwardRef` → `ref` as prop (React 19)
+- [ ] **Memoization**: Remove `useCallback`/`useMemo` (React Compiler)
+- [ ] **Theme**: Manual theme access → `StyleSheet.create((theme) => ({}))`
+- [ ] **Variants**: Ensure all variant options exist in each style (use `{}` for empty)
+- [ ] **Boolean Variants**: Distinguish `false` vs `undefined` (default) behavior
+- [ ] **Complex Conditionals**: Replace with compound variants for style combinations
+- [ ] **Responsive Design**: Use breakpoint objects and `mq` instead of manual calculations
+- [ ] **Show/Hide Logic**: Replace conditional rendering with `Display`/`Hide` + `mq`
+- [ ] **Pixel-Perfect Design**: Use `mq` utility for precise responsive control
+
 When adding new translation keys, follow the established patterns:
 
 ```typescript
@@ -595,25 +2119,73 @@ const keys = {
 4. **Sibling modules**: Same directory
 5. **Parent modules**: Parent directories
 
+**Unistyles 3.0 Import Patterns**:
+
 ```typescript
-// ✅ Good - Proper import order
-import React, { useState, useCallback } from "react";
+// ✅ Good - Proper import order with Unistyles 3.0
+import React, { useState } from "react";
 import { View, Text, Pressable } from "react-native";
+import { StyleSheet, UnistylesVariants, mq } from "react-native-unistyles"; // Unistyles imports
 import { useTranslation } from "react-i18next";
-import { StyleSheet } from "react-native-unistyles";
 
 import { UserService } from "@/services/UserService";
-import { theme } from "@/theme";
+import { formatDate } from "@/utils/formatters";
 
 import { MessageInput } from "./MessageInput";
 import { MessageList } from "../MessageList";
 
-// ❌ Bad - Mixed import order
-import { MessageInput } from "./MessageInput";
-import React, { useState } from "react";
-import { UserService } from "@/services/UserService";
-import { View, Text } from "react-native";
+// Component implementation
+type IProps = {
+  titleKey: string;
+  onPress: () => void;
+} & UnistylesVariants<typeof styles>;
+
+export function Button({ titleKey, onPress, ...variants }: IProps) {
+  const { t } = useTranslation();
+
+  // Configure variants for this instance
+  styles.useVariants(variants);
+
+  return (
+    <Pressable style={styles.button} onPress={onPress}>
+      <Text style={styles.text}>{t(titleKey)}</Text>
+    </Pressable>
+  );
+}
+
+// Styles at bottom with theme access
+const styles = StyleSheet.create((theme) => ({
+  button: {
+    backgroundColor: theme.colors.buttonBg,
+    // ... rest of styles
+  },
+  text: {
+    color: theme.colors.buttonColor,
+    // ... rest of styles
+  },
+}));
+
+// ❌ Bad - Wrong Unistyles imports and usage
+import { StyleSheet } from "react-native"; // Wrong - should be from unistyles
+import { useUnistyles } from "react-native-unistyles"; // Avoid - causes re-renders
+
+function BadComponent() {
+  const { theme } = useUnistyles(); // Causes unnecessary re-renders
+
+  return (
+    <View style={{ backgroundColor: theme.colors.bg }}> {/* Manual theme access */}
+      <Text>Content</Text>
+    </View>
+  );
+}
 ```
+
+**Critical Unistyles Import Rules**:
+
+- **Always import `StyleSheet` from `react-native-unistyles`**, never from `react-native`
+- **Import `UnistylesVariants` type** when using variants
+- **Avoid `useUnistyles` hook** unless absolutely necessary (causes re-renders)
+- **Never import theme directly** - access through `StyleSheet.create((theme) => ({}))`
 
 ### Path Aliases
 
@@ -1900,6 +3472,162 @@ export class ErrorBoundary extends React.Component<
 ```
 
 ## Migration-Specific Standards
+
+### Legacy Patterns to Always Migrate
+
+When touching any file, always migrate these legacy patterns to modern standards:
+
+#### 1. Styling: React Native StyleSheet → Unistyles 3.0
+
+```typescript
+// ❌ Legacy - React Native StyleSheet
+import { StyleSheet } from "react-native";
+
+const styles = StyleSheet.create({
+  button: {
+    backgroundColor: "#007bff",
+    padding: 16,
+    borderRadius: 8,
+  },
+});
+
+// ✅ Modern - Unistyles 3.0 with theme and variants
+import { StyleSheet } from "react-native-unistyles";
+
+const styles = StyleSheet.create((theme) => ({
+  button: {
+    backgroundColor: theme.colors.buttonBg,
+    paddingHorizontal: theme.gap(3),
+    paddingVertical: theme.gap(1.5),
+    borderRadius: theme.radius.m,
+    variants: {
+      type: {
+        primary: { backgroundColor: theme.colors.buttonBg },
+        secondary: { backgroundColor: theme.colors.centerChannelBg },
+      },
+    },
+  },
+}));
+```
+
+#### 2. Component Structure: Separate Files → Co-location
+
+```typescript
+// ❌ Legacy - Separate files
+// Button/Button.tsx
+// Button/Button.styles.ts
+// Button/Button.types.ts
+
+// ✅ Modern - Complete co-location
+// Button/Button.tsx (everything in one file)
+import React from "react";
+import { Pressable, Text } from "react-native";
+import { StyleSheet, UnistylesVariants } from "react-native-unistyles";
+
+// Types at top
+type IProps = {
+  titleKey: string;
+  onPress: () => void;
+} & IButtonVariant;
+
+type IButtonVariant = UnistylesVariants<typeof styles>;
+
+// Export types for other components
+export type IButtonProps = IProps;
+export type { IButtonVariant };
+
+// Component in middle
+export function Button({ titleKey, type = "primary", onPress }: IProps) {
+  styles.useVariants({ type });
+
+  return (
+    <Pressable style={styles.button} onPress={onPress}>
+      <Text style={styles.text}>{t(titleKey)}</Text>
+    </Pressable>
+  );
+}
+
+// Styles at bottom
+const styles = StyleSheet.create((theme) => ({
+  // ... styles with variants
+}));
+```
+
+#### 3. Type Definitions: Interface → Type with 'I' prefix
+
+```typescript
+// ❌ Legacy - Interface without prefix
+interface UserProps {
+  user: User;
+  onSelect: (id: string) => void;
+}
+
+interface User {
+  id: string;
+  name: string;
+}
+
+// ✅ Modern - Type with 'I' prefix
+type IUserProps = {
+  user: IUser;
+  onSelect: (id: string) => void;
+};
+
+type IUser = {
+  id: string;
+  name: string;
+};
+```
+
+#### 4. Validation: Joi → Valibot
+
+```typescript
+// ❌ Legacy - Joi validation
+import Joi from "joi";
+
+const userSchema = Joi.object({
+  name: Joi.string().min(2).required(),
+  email: Joi.string().email().required(),
+});
+
+// ✅ Modern - Valibot with proper TypeScript
+import { object, string, pipe, minLength, email, parse } from "valibot";
+
+const UserSchema = object({
+  name: pipe(string(), minLength(2)),
+  email: pipe(string(), email()),
+});
+
+type IUser = InferInput<typeof UserSchema>;
+```
+
+#### 5. References: forwardRef → React 19 ref as prop
+
+```typescript
+// ❌ Legacy - forwardRef pattern
+import React, { forwardRef } from 'react';
+
+const Button = forwardRef<View, IButtonProps>(({ title, onPress }, ref) => (
+  <Pressable ref={ref} onPress={onPress}>
+    <Text>{title}</Text>
+  </Pressable>
+));
+
+// ✅ Modern - React 19 ref as prop
+type IProps = {
+  title: string;
+  onPress: () => void;
+  ref?: React.Ref<React.ComponentRef<typeof Pressable>>;
+};
+
+export function Button({ title, onPress, ref }: IProps) {
+  return (
+    <Pressable ref={ref} onPress={onPress}>
+      <Text>{title}</Text>
+    </Pressable>
+  );
+}
+```
 
 ### React 17 to React 19 Migration Rules
 

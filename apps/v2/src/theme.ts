@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native-unistyles";
 
 type AppBreakpoints = typeof breakpoints;
-type AppThemes = typeof appThemes;
+type AppThemes = typeof themes;
 
 declare module "react-native-unistyles" {
   export interface UnistylesThemes extends AppThemes {}
@@ -118,7 +118,7 @@ const lightTheme = {
 
   // Spacing utility
   gap: (v: number) => v * 8,
-};
+} as const;
 
 const darkTheme = {
   colors: {
@@ -185,9 +185,9 @@ const darkTheme = {
   fonts: lightTheme.fonts,
   fontWeights: lightTheme.fontWeights,
   gap: lightTheme.gap,
-};
+} as const;
 
-const appThemes = {
+const themes = {
   light: lightTheme,
   dark: darkTheme,
 };
@@ -198,15 +198,15 @@ const breakpoints = {
   md: 500,
   lg: 800,
   xl: 1200,
-};
+} as const;
 
 StyleSheet.configure({
   settings: {
-    initialTheme: "light",
+    initialTheme: 'light' satisfies keyof typeof themes,
   },
   breakpoints,
-  themes: appThemes,
+  themes,
 });
 
 // Export themes for use in other parts of the app
-export { appThemes, darkTheme, lightTheme };
+export { darkTheme, lightTheme };
