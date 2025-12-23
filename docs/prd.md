@@ -159,6 +159,7 @@ Expo was chosen as the foundation framework because it provides a unified develo
 - **Styling**: react-native-unistyles 3.0.15
 - **Internationalization**: i18next 25.6.0, react-i18next 16.1.0, expo-localization ~17.0.7
 - **Build System**: Expo Metro bundler
+- **Package Manager**: pnpm (for performance and consistency)
 - **Validation**: valibot 1.1.0
 - **Platform APIs**: @tauri-apps/api 2.1.0, @tauri-apps/plugin-\* packages
 - **External Dependencies**: @mattermost/compass-icons ^0.1.45, classnames ^2.5.1, uuid ^10.0.0
@@ -320,7 +321,7 @@ so that **the team can begin development with proper tooling, build processes, a
 8. ✅ **PARTIAL**: i18next structure established, expo-localization integration pending
 9. ✅ **COMPLETE**: Package.json configured with Tauri 2.1.0 build scripts for cross-platform
 10. ✅ **COMPLETE**: ESLint ^9.25.0 and modern linting configuration established
-11. ✅ **COMPLETE**: Build scripts configured for both Expo and Tauri workflows
+11. ✅ **COMPLETE**: Build scripts configured for both Expo and Tauri workflows using pnpm
 12. 🔄 **PENDING**: React Compiler compatibility patterns review
 13. 🔄 **PENDING**: Performance baseline establishment
 
@@ -582,7 +583,7 @@ so that **the migrated application is reliable, performant, and ready for produc
 
 ---
 
-**Document Version**: v1.4  
+**Document Version**: v1.5  
 **Last Updated**: 2025-10-19  
 **Created By**: Product Manager (PM Agent)  
-**Technology Analysis**: Package.json comparison + React Compiler + Expo strategy + Progress analysis
+**Technology Analysis**: Package.json comparison + React Compiler + Expo strategy + Progress analysis + pnpm standardization
