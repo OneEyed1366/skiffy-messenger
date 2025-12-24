@@ -43,10 +43,5 @@ app-example
 /ios
 /android
 
-!docs/
+!.docs/
 !AGENTS.md
-!CLAUDE.md
-!opencode.jsonc
-!.claude/
-!.bmad-core/
-!.clinerules/
