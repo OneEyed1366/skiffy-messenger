@@ -4,6 +4,11 @@
 node_modules/
 **/node_modules/
 
+# pnpm
+pnpm-lock.yaml
+.pnpm-store/
+.pnpm-debug.log
+
 # Expo
 .expo/
 dist/
@@ -36,6 +41,17 @@ yarn-error.*
 
 # typescript
 *.tsbuildinfo
+
+# IDE / Editor
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Personal notes
+.notes/
+.notes
 
 app-example
 
