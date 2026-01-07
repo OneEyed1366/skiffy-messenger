@@ -20,6 +20,7 @@
     "sb:build": "storybook build"
   },
   "dependencies": {
+    "@date-fns/tz": "^1.4.1",
     "@expo/metro-runtime": "~6.1.2",
     "@expo/vector-icons": "^15.0.2",
     "@mattermost/compass-icons": "^0.1.45",
@@ -29,6 +30,7 @@
     "@tauri-apps/plugin-notification": "^2.1.0",
     "@tauri-apps/plugin-shell": "^2.1.0",
     "classnames": "^2.5.1",
+    "date-fns": "^4.1.0",
     "expo": "~54.0.13",
     "expo-localization": "~17.0.7",
     "expo-router": "~6.0.11",
@@ -50,7 +52,7 @@
     "react-native-reanimated": "~4.1.1",
     "react-native-unistyles": "^3.0.15",
     "react-native-web": "~0.21.2",
-    "uuid": "^10.0.0",
+    "uuid": "^13.0.0",
     "valibot": "^1.1.0"
   },
   "devDependencies": {
@@ -91,7 +93,7 @@
       "<rootDir>/jest.setup.js"
     ],
     "transformIgnorePatterns": [
-      "node_modules/(?!(?:.pnpm/)?((jest-)?react-native|@react-native(-community)?|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@sentry/react-native|native-base|react-native-svg))"
+      "node_modules/(?!(?:.pnpm/)?((jest-)?react-native|@react-native(-community)?|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@sentry/react-native|native-base|react-native-svg|uuid))"
     ],
     "collectCoverage": true,
     "collectCoverageFrom": [
