@@ -4,6 +4,12 @@
 
 Pure formatting utilities for dates, text, numbers, URLs, and content processing.
 
+## Status: COMPLETE
+
+**Completed:** 2026-01-07
+**Total Tests:** 748 (L4 only)
+**All Tests Passing:** Yes
+
 ## Source Locations
 
 - `vendor/desktop/webapp/channels/src/utils/datetime.ts`
@@ -22,161 +28,223 @@ Pure formatting utilities for dates, text, numbers, URLs, and content processing
 
 ## Dependencies
 
-| Layer | Dependency                |
-| ----- | ------------------------- |
-| L0    | Types (IPost, IFileInfo)  |
-| L2    | Pure Utils (string utils) |
+| Layer | Dependency                    | Status   |
+| ----- | ----------------------------- | -------- |
+| L0    | Types (IPost, IFileInfo, etc) | Complete |
+| L2    | Pure Utils (string utils)     | Complete |
+| L3    | Platform Utils                | Complete |
 
 ## Tasks
 
-| ID                                               | Name              | Status  | Parallel | Est. | Assignee |
-| ------------------------------------------------ | ----------------- | ------- | -------- | ---- | -------- |
-| [T4.01](../tasks/T4.01-utils-datetime.md)        | DateTime utils    | pending | ✓        | 3h   | -        |
-| [T4.02](../tasks/T4.02-utils-text-formatting.md) | Text formatting   | pending | ✓        | 4h   | -        |
-| [T4.03](../tasks/T4.03-utils-markdown.md)        | Markdown utils    | pending | ✓        | 6h   | -        |
-| [T4.04](../tasks/T4.04-utils-post-formatting.md) | Post formatting   | pending | ✓        | 3h   | -        |
-| [T4.05](../tasks/T4.05-utils-timezone.md)        | Timezone utils    | pending | ✓        | 2h   | -        |
-| [T4.06](../tasks/T4.06-utils-url.md)             | URL utils         | pending | ✓        | 2h   | -        |
-| [T4.07](../tasks/T4.07-utils-file-size.md)       | File size utils   | pending | ✓        | 1h   | -        |
-| [T4.08](../tasks/T4.08-utils-number.md)          | Number formatting | pending | ✓        | 1h   | -        |
-| [T4.09](../tasks/T4.09-utils-username.md)        | Username utils    | pending | ✓        | 1h   | -        |
-| [T4.10](../tasks/T4.10-utils-password.md)        | Password utils    | pending | ✓        | 1h   | -        |
-| [T4.11](../tasks/T4.11-utils-emoji.md)           | Emoji utils       | pending | ✓        | 2h   | -        |
+| ID    | Name              | Status   | Tests | Coverage |
+| ----- | ----------------- | -------- | ----- | -------- |
+| T4.01 | DateTime utils    | complete | 90    | 92%      |
+| T4.02 | Text formatting   | complete | 75    | 100%     |
+| T4.03 | Markdown utils    | complete | 96    | 96%      |
+| T4.04 | Post formatting   | complete | 73    | 100%     |
+| T4.05 | Timezone utils    | complete | 41    | 98%      |
+| T4.06 | URL utils         | complete | 65    | 97%      |
+| T4.07 | File size utils   | complete | 50    | 95%      |
+| T4.08 | Number formatting | complete | 69    | 100%     |
+| T4.09 | Username utils    | complete | 69    | 100%     |
+| T4.10 | Password utils    | complete | 50    | 99%      |
+| T4.11 | Emoji utils       | complete | 70    | 97%      |
 
 ## Progress
 
 - Total: 11
-- Done: 0
+- Done: 11
 - In Progress: 0
-- Pending: 11
-- **Estimated Hours: 26h**
+- Pending: 0
+- **Actual Hours: ~18h**
 
-## File Structure
+## File Structure (Flat)
+
+Decision: Use flat file structure consistent with L2/L3 layers.
 
 ```
 apps/v2/src/utils/
-├── datetime/
-│   ├── datetime.ts       # T4.01
-│   └── index.ts
-├── text-formatting/
-│   ├── text-formatting.ts # T4.02
-│   └── index.ts
-├── markdown/
-│   ├── markdown.ts       # T4.03
-│   └── index.ts
-├── post-formatting/
-│   ├── post-formatting.ts # T4.04
-│   └── index.ts
-├── timezone/
-│   ├── timezone.ts       # T4.05
-│   └── index.ts
-├── url/
-│   ├── url.ts            # T4.06
-│   └── index.ts
-├── file-size/
-│   ├── file-size.ts      # T4.07 (canonical formatFileSize)
-│   └── index.ts
-├── number/
-│   ├── number.ts         # T4.08
-│   └── index.ts
-├── username/
-│   ├── username.ts       # T4.09
-│   └── index.ts
-├── password/
-│   ├── password.ts       # T4.10
-│   └── index.ts
-├── emoji/
-│   ├── emoji.ts          # T4.11
-│   └── index.ts
-└── index.ts              # Barrel exports
+├── date.ts              # T4.01 - Extended with formatting
+├── date.spec.ts
+├── text-formatting.ts   # T4.02
+├── text-formatting.spec.ts
+├── markdown.ts          # T4.03
+├── markdown.spec.ts
+├── post-formatting.ts   # T4.04
+├── post-formatting.spec.ts
+├── timezone.ts          # T4.05 - Extended
+├── timezone.spec.ts
+├── url.ts               # T4.06
+├── url.spec.ts
+├── file.ts              # T4.07 - Extended with formatFileSize
+├── file.spec.ts
+├── number.ts            # T4.08
+├── number.spec.ts
+├── username.ts          # T4.09
+├── username.spec.ts
+├── password.ts          # T4.10
+├── password.spec.ts
+├── emoji.ts             # T4.11
+├── emoji.spec.ts
+└── index.ts             # Barrel exports
 ```
 
-## Dependency Graph
+## Implementation Notes
 
-```
-T4.01 (datetime)
-    ↓
-T4.05 (timezone)
+### Date/Time Strategy
 
-T2.03 (utils-string)
-    ↓
-T4.02 (text-formatting)
-    ↓
-T4.03 (markdown) ← depends on `marked` library
-    ↓
-T4.04 (post-formatting) ← needs T0.03 (Post types), T0.05 (File types), T4.07
+Uses native `Intl.DateTimeFormat` and `Intl.RelativeTimeFormat` for locale-aware formatting.
+Uses `@date-fns/tz` for timezone offset calculations only.
 
-T2.03 (utils-string)
-    ↓
-T4.06 (url)
+**Rationale:** Native Intl API handles formatting well, but timezone offset calculation requires
+date-fns/tz. Implementing this natively would add significant complexity without meaningful benefits.
 
-T4.07 (file-size) — no deps, canonical location for formatFileSize
-T4.08 (number) — no deps
-T4.09 (username) ← T0.02 (User types)
-T4.10 (password) — no deps
-T4.11 (emoji) — no deps (emoji data injected)
-```
+### File Size Naming
 
-## Consolidation Notes
+- `fileSizeToString` renamed to `formatFileSize` for consistency with `format*` pattern
+- `fileSizeToString` kept as `@deprecated` alias for backward compatibility
 
-### formatFileSize Duplication
+### Markdown
 
-`formatFileSize()` appears in multiple task specs. The **canonical location is T4.07 (`file-size.ts`)**.
+Uses `marked` library for accurate markdown parsing:
 
-| Task  | Action                                                         |
-| ----- | -------------------------------------------------------------- |
-| T4.04 | Remove `formatAttachmentSize`, import from `@/utils/file-size` |
-| T4.08 | Remove `formatFileSize`, import from `@/utils/file-size`       |
+- `parseMarkdown()` - Convert to HTML
+- `stripMarkdown()` - Uses marked lexer for accurate text extraction
 
-### stripMarkdown Duplication
+### Emoji Detection
 
-The canonical location is **T4.03 (`markdown.ts`)** using the `marked` lexer for accuracy.
+Uses Unicode property escapes (`\p{Emoji_Presentation}`) for reliable emoji detection.
+Emoji map is injected to keep bundle size small.
 
-| Task  | Action                                                           |
-| ----- | ---------------------------------------------------------------- |
-| T4.04 | Remove `stripMarkdownForPreview`, import from `@/utils/markdown` |
+## Key Functions by Module
 
-## Key Implementations
-
-### DateTime Utils (T4.01)
+### date.ts (Extended)
 
 ```typescript
-import { formatDistanceToNow, isToday, isYesterday, format } from "date-fns";
+// Comparison
+(isSameDay,
+  isSameMonth,
+  isSameYear,
+  isToday,
+  isYesterday,
+  isTomorrow,
+  isWithinLastWeek);
 
-export function relativeFormatDate(date: Date | number): string;
-export function isSameDay(a: Date | number, b: Date | number): boolean;
-export function formatTimestamp(timestamp: number, pattern?: string): string;
+// Difference
+(getDiff(a, b, unit), isWithin(a, b, unit, threshold));
+
+// Formatting (Intl.DateTimeFormat)
+(formatDate, formatDateShort, formatTime, formatDateTime, formatDateTimeShort);
+
+// Relative Time (Intl.RelativeTimeFormat)
+(getRelativeTime, formatRelativeDate);
+
+// Unix
+(toUTCUnixSeconds, fromUnixSeconds);
 ```
 
-### File Size Utils (T4.07) — Canonical
+### timezone.ts (Extended)
 
 ```typescript
-export function formatFileSize(bytes: number, decimals?: number): string;
-export function parseFileSize(sizeStr: string): number;
+(getBrowserTimezone, getUserTimezone, isValidTimezone);
+(getUtcOffsetForTimezone, getTimezoneRegion);
+(formatInTimezone, listTimezones);
+(getCurrentDateForTimezone, getCurrentDateTimeForTimezone);
 ```
 
-### Username Utils (T4.09)
+### file.ts (Extended)
 
 ```typescript
-export function getDisplayName(user: IUserProfile): string;
-export function getFullName(user: IUserProfile): string;
-export function isValidUsername(name: string): boolean;
-export function getUsernameStatus(name: string): IUsernameStatus;
+formatFileSize(bytes, options?)  // Renamed from fileSizeToString
+parseFileSize(sizeString)        // New: "1.5 MB" -> 1572864
+FILE_SIZE_UNITS, BYTES_PER_UNIT  // Constants
 ```
 
-### Emoji Utils (T4.11)
+### text-formatting.ts
 
 ```typescript
-export function initializeEmojiContext(emojiMap: IEmojiMap): void;
-export function replaceShortcodesWithUnicode(text: string): string;
-export function isOnlyEmoji(text: string): boolean;
-export function isLargeEmojiOnly(text: string): boolean;
+(highlightSearchTerms, truncateText, wrapLongWords);
+(escapeHtml, unescapeHtml, formatChannelName);
+(normalizeWhitespace, countWords);
 ```
 
-## Notes
+### markdown.ts
 
-- Use `date-fns` for date formatting (tree-shakeable)
-- Remove moment.js dependencies
-- Emoji map is injected to keep bundle size small
-- Markdown utils use `marked` library for accurate parsing
-- All utils should be pure functions (no side effects)
+```typescript
+(parseMarkdown, stripMarkdown);
+(extractLinks, extractMentions, extractHashtags);
+(isMarkdownLink, getMarkdownPreview, hasMarkdownSyntax);
+escapeMarkdown;
+```
+
+### post-formatting.ts
+
+```typescript
+// Type checks
+(isSystemPost, isEphemeralPost, isPostEdited, isPostDeleted);
+(isPostPinned, isPostReply, isPostRoot, isPostFailed);
+
+// Priority
+(hasPostPriority, getPostPriority);
+
+// Content
+(getPostMessage, getPostPreview, getPostHashtags);
+(formatPostTimestamp, getPostAttachmentCount, getPostFileInfos);
+(hasPostReactions, getPostReactionCount, getCombinedPosts);
+```
+
+### url.ts
+
+```typescript
+(isValidUrl, isExternalUrl, isDataUrl, isImageUrl);
+(extractDomain, getUrlExtension, normalizeUrl, joinPaths);
+(buildQueryString, parseQueryString, setQueryParam, removeQueryParam);
+```
+
+### number.ts
+
+```typescript
+(formatNumber, formatCompactNumber, formatPercent, formatCurrency);
+(ordinal, clamp, roundTo, isFiniteNumber);
+```
+
+### username.ts
+
+```typescript
+(getDisplayName, getFullName, getInitials);
+(isValidUsername, getUsernameStatus, sanitizeUsername);
+(formatMention, extractUsernameFromMention, isMention);
+(isBotUser, isSystemAdmin, getUserPosition, getUserLocale);
+```
+
+### password.ts
+
+```typescript
+(validatePassword, getPasswordRequirements);
+(getPasswordStrength, getPasswordStrengthLabel);
+(hasSequentialChars, hasRepeatedChars, isCommonPassword);
+DEFAULT_PASSWORD_CONFIG;
+```
+
+### emoji.ts
+
+```typescript
+(isEmoji, isOnlyEmoji, isLargeEmojiOnly, countEmoji);
+(extractEmoji, extractEmojiWithPositions);
+(replaceShortcodesWithUnicode, replaceUnicodeWithShortcodes);
+(getShortcodeForEmoji, SHORTCODE_REGEX);
+```
+
+## Commands
+
+```bash
+# Run L4 tests
+pnpm --filter @retrievly/app test:unit -- src/utils/
+
+# Run specific module tests
+pnpm --filter @retrievly/app test:unit -- date.spec
+pnpm --filter @retrievly/app test:unit -- markdown.spec
+
+# Type check
+cd apps/v2 && npx tsc --noEmit
+```

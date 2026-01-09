@@ -34,7 +34,13 @@ export type { IColorComponents } from "./color";
 //#endregion
 
 //#region File Utilities
-export { fileSizeToString } from "./file";
+export {
+  formatFileSize,
+  fileSizeToString, // @deprecated - use formatFileSize
+  parseFileSize,
+  FILE_SIZE_UNITS,
+  BYTES_PER_UNIT,
+} from "./file";
 //#endregion
 
 //#region Object Utilities
@@ -51,6 +57,25 @@ export {
 export { mod, stringToNumber, numberToFixedDynamic } from "./math";
 //#endregion
 
+//#region Number Formatting Utilities
+export {
+  formatNumber,
+  formatCompactNumber,
+  formatPercent,
+  formatCurrency,
+  ordinal,
+  clamp,
+  roundTo,
+  isFiniteNumber,
+} from "./number";
+export type {
+  IFormatNumberOptions,
+  IFormatCompactOptions,
+  IFormatCurrencyOptions,
+  IFormatPercentOptions,
+} from "./number";
+//#endregion
+
 //#region Array Utilities
 export {
   unique,
@@ -64,12 +89,28 @@ export {
 
 //#region Date Utilities
 export {
+  // Comparison
   isSameDay,
   isSameMonth,
   isSameYear,
   isToday,
   isYesterday,
+  isTomorrow,
+  isWithinLastWeek,
+  // Difference
+  getDiff,
+  isWithin,
+  // Formatting
+  formatDate,
+  formatDateShort,
+  formatTime,
+  formatDateTime,
+  formatDateTimeShort,
+  getRelativeTime,
+  formatRelativeDate,
+  // Unix
   toUTCUnixSeconds,
+  fromUnixSeconds,
 } from "./date";
 //#endregion
 
@@ -88,10 +129,33 @@ export type { IAriaAnnouncement } from "./timer";
 //#region Timezone Utilities
 export {
   getBrowserTimezone,
+  getUserTimezone,
   isValidTimezone,
   getUtcOffsetForTimezone,
   getTimezoneRegion,
+  formatInTimezone,
+  listTimezones,
+  getCurrentDateForTimezone,
+  getCurrentDateTimeForTimezone,
 } from "./timezone";
+export type { ITimezoneInfo, IFormatInTimezoneOptions } from "./timezone";
+//#endregion
+
+//#region URL Utilities
+export {
+  isValidUrl,
+  isExternalUrl,
+  isDataUrl,
+  isImageUrl,
+  extractDomain,
+  getUrlExtension,
+  normalizeUrl,
+  joinPaths,
+  buildQueryString,
+  parseQueryString,
+  setQueryParam,
+  removeQueryParam,
+} from "./url";
 //#endregion
 
 // ============================================================================
@@ -259,4 +323,115 @@ export type {
   INotificationOptions,
   INotificationChannel,
 } from "./notifications";
+//#endregion
+
+//#region Username Utilities
+export {
+  getDisplayName,
+  getFullName,
+  getInitials,
+  isValidUsername,
+  getUsernameStatus,
+  formatMention,
+  isBotUser,
+  isSystemAdmin,
+  getUserPosition,
+  getUserLocale,
+  extractUsernameFromMention,
+  isMention,
+  sanitizeUsername,
+} from "./username";
+
+export type { IUsernameStatus, IDisplayNameOptions } from "./username";
+//#endregion
+
+// ============================================================================
+// L4 Formatting Utils - Pure formatting utilities
+// ============================================================================
+
+//#region Text Formatting Utilities (L4)
+export {
+  highlightSearchTerms,
+  truncateText,
+  wrapLongWords,
+  escapeHtml,
+  unescapeHtml,
+  formatChannelName,
+  normalizeWhitespace,
+  countWords,
+} from "./text-formatting";
+//#endregion
+
+//#region Password Utilities (L4)
+export {
+  validatePassword,
+  getPasswordRequirements,
+  getPasswordStrength,
+  getPasswordStrengthLabel,
+  hasSequentialChars,
+  hasRepeatedChars,
+  isCommonPassword,
+  DEFAULT_PASSWORD_CONFIG,
+} from "./password";
+export type {
+  IPasswordConfig,
+  IPasswordStrength,
+  IPasswordRequirement,
+  IPasswordValidationResult,
+} from "./password";
+//#endregion
+
+//#region Emoji Utilities (L4)
+export {
+  isEmoji,
+  isOnlyEmoji,
+  isLargeEmojiOnly,
+  countEmoji,
+  extractEmoji,
+  extractEmojiWithPositions,
+  replaceShortcodesWithUnicode,
+  replaceUnicodeWithShortcodes,
+  getShortcodeForEmoji,
+  SHORTCODE_REGEX,
+} from "./emoji";
+export type { IEmojiMap, IEmojiMatch } from "./emoji";
+//#endregion
+
+//#region Markdown Utilities (L4)
+export {
+  parseMarkdown,
+  stripMarkdown,
+  extractLinks,
+  extractMentions,
+  extractHashtags,
+  isMarkdownLink,
+  getMarkdownPreview,
+  hasMarkdownSyntax,
+  escapeMarkdown,
+} from "./markdown";
+export type { IMarkdownLink, IMention, IHashtag } from "./markdown";
+//#endregion
+
+//#region Post Formatting Utilities (L4)
+export {
+  isSystemPost,
+  isEphemeralPost,
+  isPostEdited,
+  isPostDeleted,
+  isPostPinned,
+  isPostReply,
+  isPostRoot,
+  isPostFailed,
+  hasPostPriority,
+  getPostPriority,
+  hasPostReactions,
+  getPostReactionCount,
+  getPostMessage,
+  getPostPreview,
+  getPostHashtags,
+  formatPostTimestamp,
+  getPostAttachmentCount,
+  getPostFileInfos,
+  getCombinedPosts,
+} from "./post-formatting";
 //#endregion
