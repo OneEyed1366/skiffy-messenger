@@ -29,7 +29,7 @@ export type IRelationOneToOne<E extends IEntity, T> = {
  * Example: { [teamId]: [userId1, userId2, ...] }
  */
 export type IRelationOneToMany<E1 extends IEntity, E2 extends IEntity> = {
-  [x in E1["id"]]: Array<E2["id"]>;
+  [x in E1["id"]]: E2["id"][];
 };
 
 /**
@@ -55,7 +55,7 @@ export type IIDMappedObjects<E extends IEntity> = IRelationOneToOne<E, E>;
  */
 export type IIDMappedCollection<T extends IEntity> = {
   data: IIDMappedObjects<T>;
-  order: Array<T["id"]>;
+  order: T["id"][];
   errors?: IRelationOneToOne<T, Error>;
   warnings?: IRelationOneToOne<T, { [Key in keyof T]?: string }>;
 };

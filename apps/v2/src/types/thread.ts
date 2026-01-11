@@ -30,7 +30,7 @@ export type IUserThread = {
   reply_count: number;
   last_reply_at: number;
   last_viewed_at: number;
-  participants: Array<{ id: IUserProfile["id"] } | IUserProfile>;
+  participants: ({ id: IUserProfile["id"] } | IUserProfile)[];
   unread_replies: number;
   unread_mentions: number;
   is_following: boolean;

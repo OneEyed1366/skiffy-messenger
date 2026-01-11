@@ -15,7 +15,7 @@ export function usePrefixedIds<S extends ISuffixMap>(
 ): IPrefixedIds<S> {
   return useMemo(() => {
     const result = {} as IPrefixedIds<S>;
-    for (const key of Object.keys(suffixes) as Array<keyof S>) {
+    for (const key of Object.keys(suffixes) as (keyof S)[]) {
       result[key] = `${prefix}-${String(key)}`;
     }
     return result;

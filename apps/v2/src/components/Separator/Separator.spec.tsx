@@ -28,7 +28,7 @@ jest.mock("react-native-unistyles", () => {
         } = { useVariants: () => {} };
         for (const key of Object.keys(styles)) {
           const style = styles[key];
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
           const { variants, compoundVariants, ...rest } = style;
           processedStyles[key] = rest;
         }
