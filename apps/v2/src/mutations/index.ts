@@ -15,12 +15,16 @@ export {
   useDeletePostMutation,
   useAddReactionMutation,
   useRemoveReactionMutation,
+  usePinPostMutation,
+  useFlagPostMutation,
   // API Functions
   createPost,
   updatePost,
   deletePost,
   addReaction,
   removeReaction,
+  pinOrUnpinPost,
+  flagOrUnflagPost,
 } from "./posts";
 
 export type {
@@ -38,6 +42,12 @@ export type {
   IRemoveReactionInput,
   IUseAddReactionMutationOptions,
   IUseRemoveReactionMutationOptions,
+  // Pin Post
+  IPinPostMutationVariables,
+  IUsePinPostMutationOptions,
+  // Flag Post
+  IFlagPostMutationVariables,
+  IUseFlagPostMutationOptions,
 } from "./posts";
 
 //#endregion
@@ -137,5 +147,62 @@ export type {
   IDeletePreferenceMutationInput,
   IUseDeletePreferenceMutationOptions,
 } from "./preferences";
+
+//#endregion
+
+//#region Files Mutations
+
+export {
+  // Hooks
+  useUploadFilesMutation,
+  useGetPublicLinkMutation,
+  // API Functions
+  uploadFiles,
+  getPublicLink,
+} from "./files";
+
+export type {
+  // Upload Files
+  IUploadFilesInput,
+  IUseUploadFilesMutationOptions,
+  // Get Public Link
+  IGetPublicLinkInput,
+  IUseGetPublicLinkMutationOptions,
+} from "./files";
+
+//#endregion
+
+//#region Categories Mutations
+
+export {
+  useCreateCategoryMutation,
+  useUpdateCategoryMutation,
+  useDeleteCategoryMutation,
+  useReorderCategoriesMutation,
+} from "./categories";
+
+export type {
+  ICreateCategoryMutationVariables,
+  IUseCreateCategoryMutationOptions,
+  IUpdateCategoryMutationVariables,
+  IUseUpdateCategoryMutationOptions,
+  IDeleteCategoryMutationVariables,
+  IUseDeleteCategoryMutationOptions,
+  IReorderCategoriesMutationVariables,
+  IUseReorderCategoriesMutationOptions,
+} from "./categories";
+
+//#endregion
+
+//#region Emojis Mutations
+
+export { useCreateEmojiMutation, useDeleteEmojiMutation } from "./emojis";
+
+export type {
+  ICreateEmojiMutationVariables,
+  IUseCreateEmojiMutationOptions,
+  IDeleteEmojiMutationVariables,
+  IUseDeleteEmojiMutationOptions,
+} from "./emojis";
 
 //#endregion

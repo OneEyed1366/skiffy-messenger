@@ -19,11 +19,7 @@ export type {
 
 //#region Posts Query Hooks
 
-export {
-  usePostsQuery,
-  usePostQuery,
-  useInfinitePostsQuery,
-} from "./posts";
+export { usePostsQuery, usePostQuery, useInfinitePostsQuery } from "./posts";
 export type {
   IUsePostsQueryOptions,
   IUsePostQueryOptions,
@@ -72,10 +68,62 @@ export type {
 
 //#region Preferences Query Hooks
 
-export { usePreferencesQuery, usePreferencesByCategoryQuery } from "./preferences";
+export {
+  usePreferencesQuery,
+  usePreferencesByCategoryQuery,
+} from "./preferences";
 export type {
   IUsePreferencesQueryOptions,
   IUsePreferencesByCategoryQueryOptions,
 } from "./preferences";
+
+//#endregion
+
+//#region Files Query Hooks
+
+export { useFileQuery, useFilesForPostQuery } from "./files";
+export type {
+  IUseFileQueryOptions,
+  IUseFilesForPostQueryOptions,
+} from "./files";
+
+//#endregion
+
+//#region Search Query Hooks
+
+export {
+  useSearchPostsQuery,
+  useFlaggedPostsQuery,
+  usePinnedPostsQuery,
+} from "./search";
+export type {
+  IUseSearchPostsQueryOptions,
+  IUseFlaggedPostsQueryOptions,
+  IUsePinnedPostsQueryOptions,
+} from "./search";
+
+//#endregion
+
+//#region Categories Query Hooks
+
+export { useChannelCategoriesQuery } from "./categories";
+export type { IUseChannelCategoriesQueryOptions } from "./categories";
+
+//#endregion
+
+//#region Emojis Query Hooks
+
+export { useCustomEmojisQuery, useEmojiAutocompleteQuery } from "./emojis";
+export type {
+  IUseCustomEmojisQueryOptions,
+  IUseEmojiAutocompleteQueryOptions,
+} from "./emojis";
+
+//#endregion
+
+//#region Reactions Query Exports
+
+export { useReactionsForPostQuery } from "./reactions";
+export type { IUseReactionsForPostQueryOptions } from "./reactions";
 
 //#endregion

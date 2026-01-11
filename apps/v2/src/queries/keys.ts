@@ -23,8 +23,7 @@ export const queryKeys = {
     list: (channelId: string, params?: unknown) =>
       ["posts", "list", channelId, params] as const,
     detail: (postId: string) => ["posts", "detail", postId] as const,
-    infinite: (channelId: string) =>
-      ["posts", "infinite", channelId] as const,
+    infinite: (channelId: string) => ["posts", "infinite", channelId] as const,
   },
   //#endregion
 
@@ -33,8 +32,7 @@ export const queryKeys = {
     all: ["channels"] as const,
     list: (teamId: string) => ["channels", "list", teamId] as const,
     detail: (channelId: string) => ["channels", "detail", channelId] as const,
-    members: (channelId: string) =>
-      ["channels", "members", channelId] as const,
+    members: (channelId: string) => ["channels", "members", channelId] as const,
   },
   //#endregion
 
@@ -62,6 +60,60 @@ export const queryKeys = {
       ["threads", "list", userId, teamId, params] as const,
     detail: (userId: string, threadId: string) =>
       ["threads", "detail", userId, threadId] as const,
+  },
+  //#endregion
+
+  //#region Files Keys
+  files: {
+    all: ["files"] as const,
+    detail: (fileId: string) =>
+      [...queryKeys.files.all, "detail", fileId] as const,
+    forPost: (postId: string) =>
+      [...queryKeys.files.all, "forPost", postId] as const,
+  },
+  //#endregion
+
+  //#region Search Keys
+  search: {
+    all: ["search"] as const,
+    posts: (teamId: string | null, terms: string, params?: unknown) =>
+      [...queryKeys.search.all, "posts", teamId, terms, params] as const,
+    flagged: (userId: string, params?: unknown) =>
+      [...queryKeys.search.all, "flagged", userId, params] as const,
+    pinned: (channelId: string) =>
+      [...queryKeys.search.all, "pinned", channelId] as const,
+  },
+  //#endregion
+
+  //#region Categories Keys
+  categories: {
+    all: ["categories"] as const,
+    forTeam: (userId: string, teamId: string) =>
+      [...queryKeys.categories.all, userId, teamId] as const,
+  },
+  //#endregion
+
+  //#region Emojis Keys
+  emojis: {
+    all: ["emojis"] as const,
+    list: (params?: unknown) =>
+      [...queryKeys.emojis.all, "list", params] as const,
+    detail: (emojiId: string) =>
+      [...queryKeys.emojis.all, "detail", emojiId] as const,
+    byName: (name: string) =>
+      [...queryKeys.emojis.all, "byName", name] as const,
+    autocomplete: (term: string) =>
+      [...queryKeys.emojis.all, "autocomplete", term] as const,
+    search: (term: string) =>
+      [...queryKeys.emojis.all, "search", term] as const,
+  },
+  //#endregion
+
+  //#region Reactions Keys
+  reactions: {
+    all: ["reactions"] as const,
+    forPost: (postId: string) =>
+      [...queryKeys.reactions.all, "forPost", postId] as const,
   },
   //#endregion
 

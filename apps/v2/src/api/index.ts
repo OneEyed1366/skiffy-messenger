@@ -47,6 +47,9 @@ export {
   createPost,
   updatePost,
   deletePost,
+  pinPost,
+  unpinPost,
+  getReactionsForPost,
   addReaction,
   removeReaction,
 } from "./posts";
@@ -60,12 +63,7 @@ export type {
 
 //#region Threads API Exports
 
-export {
-  getThreads,
-  getThread,
-  markThreadRead,
-  followThread,
-} from "./threads";
+export { getThreads, getThread, markThreadRead, followThread } from "./threads";
 export type {
   IGetThreadsParams,
   IMarkThreadReadResponse,
@@ -150,6 +148,9 @@ export {
   getPostsUrl,
   getPostUrl,
   getChannelPostsUrl,
+  getPostPinUrl,
+  getPostUnpinUrl,
+  getPostReactionsUrl,
   getChannelsUrl,
   getChannelUrl,
   getChannelMembersUrl,
@@ -164,6 +165,15 @@ export {
   getServerConfigUrl,
   getPreferencesUrl,
   getPreferencesByCategoryUrl,
+  getFilesUrl,
+  getFileUrl,
+  getFilesForPostUrl,
+  getFileThumbnailUrl as getFileThumbnailRoute,
+  getFilePreviewUrl as getFilePreviewRoute,
+  getFileDownloadUrl as getFileDownloadRoute,
+  getSearchPostsUrl,
+  getFlaggedPostsUrl,
+  getPinnedPostsUrl,
 } from "./urls";
 
 //#endregion
@@ -181,5 +191,79 @@ export type {
   ISavePreferenceInput,
   IDeletePreferenceInput,
 } from "./preferences";
+
+//#endregion
+
+//#region Files API Exports
+
+export {
+  getFilesForPost,
+  getFileInfo,
+  getFileThumbnailUrl,
+  getFilePreviewUrl,
+  getFileDownloadUrl,
+  getFilePublicLink,
+  uploadFiles,
+} from "./files";
+export type {
+  IFileInfo,
+  IFileUploadResponse,
+  IFilePublicLinkResponse,
+} from "./files";
+
+//#endregion
+
+//#region Search API Exports
+
+export { searchPosts, getFlaggedPosts, getPinnedPosts } from "./search";
+export type { ISearchParams, IGetFlaggedPostsParams } from "./search";
+
+//#endregion
+
+//#region Categories API Exports
+
+export {
+  getChannelCategories,
+  createChannelCategory,
+  updateChannelCategory,
+  deleteChannelCategory,
+  updateCategoryOrder,
+  getCategoriesUrl,
+  getCategoryUrl,
+  getCategoryOrderUrl,
+} from "./categories";
+export type {
+  ICategorySorting,
+  ICategoryType,
+  IChannelCategory,
+  IChannelCategoriesWithOrder,
+  ICreateCategoryInput,
+  IUpdateCategoryInput,
+} from "./categories";
+
+//#endregion
+
+//#region Emojis API Exports
+
+export {
+  getEmojisUrl,
+  getEmojiUrl,
+  getEmojiByNameUrl,
+  getEmojiAutocompleteUrl,
+  getEmojiSearchUrl,
+  getCustomEmojis,
+  getCustomEmoji,
+  getCustomEmojiByName,
+  searchCustomEmojis,
+  autocompleteEmojis,
+  createCustomEmoji,
+  deleteCustomEmoji,
+  getCustomEmojiImageUrl,
+} from "./emojis";
+export type {
+  ICustomEmoji,
+  ICreateEmojiInput,
+  IGetEmojisParams,
+} from "./emojis";
 
 //#endregion

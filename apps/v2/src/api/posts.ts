@@ -11,7 +11,13 @@
 import type { IPost, IPaginatedPostList, IReaction } from "@/types";
 
 import { apiClient } from "./client";
-import { getChannelPostsUrl, getPostUrl } from "./urls";
+import {
+  getChannelPostsUrl,
+  getPostPinUrl,
+  getPostReactionsUrl,
+  getPostUnpinUrl,
+  getPostUrl,
+} from "./urls";
 
 //#endregion
 
@@ -130,6 +136,38 @@ export async function updatePost(
 export async function deletePost(postId: string): Promise<void> {
   const url = getPostUrl(postId);
   return apiClient.delete<void>(url);
+}
+
+/**
+ * Pin a post to the channel
+ * @param postId - The post ID to pin
+ * @returns void on success
+ */
+export async function pinPost(postId: string): Promise<void> {
+  const url = getPostPinUrl(postId);
+  return apiClient.post<void>(url, {});
+}
+
+/**
+ * Unpin a post from the channel
+ * @param postId - The post ID to unpin
+ * @returns void on success
+ */
+export async function unpinPost(postId: string): Promise<void> {
+  const url = getPostUnpinUrl(postId);
+  return apiClient.post<void>(url, {});
+}
+
+/**
+ * Get all reactions for a post
+ * @param postId - The post ID to get reactions for
+ * @returns Array of reactions
+ */
+export async function getReactionsForPost(
+  postId: string,
+): Promise<IReaction[]> {
+  const url = getPostReactionsUrl(postId);
+  return apiClient.get<IReaction[]>(url);
 }
 
 //#endregion

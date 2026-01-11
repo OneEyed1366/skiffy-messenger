@@ -68,6 +68,33 @@ export function getChannelPostsUrl(channelId: string): string {
   return `${getChannelUrl(channelId)}/posts`;
 }
 
+/**
+ * Get the pin URL for a post
+ * @param postId - The post ID
+ * @returns Post pin endpoint path
+ */
+export function getPostPinUrl(postId: string): string {
+  return `${getPostUrl(postId)}/pin`;
+}
+
+/**
+ * Get the unpin URL for a post
+ * @param postId - The post ID
+ * @returns Post unpin endpoint path
+ */
+export function getPostUnpinUrl(postId: string): string {
+  return `${getPostUrl(postId)}/unpin`;
+}
+
+/**
+ * Get the reactions URL for a post
+ * @param postId - The post ID
+ * @returns Post reactions endpoint path
+ */
+export function getPostReactionsUrl(postId: string): string {
+  return `${getPostUrl(postId)}/reactions`;
+}
+
 //#endregion
 
 //#region Channels URLs
@@ -186,6 +213,110 @@ export function getClientConfigUrl(): string {
  */
 export function getServerConfigUrl(): string {
   return `${getConfigUrl()}`;
+}
+
+//#endregion
+
+//#region Files URLs
+
+/**
+ * Get the files API route
+ * @returns Files endpoint path
+ */
+export function getFilesUrl(): string {
+  return `${apiClient.getBaseRoute()}/files`;
+}
+
+/**
+ * Get a specific file's route
+ * @param fileId - The file ID
+ * @returns File endpoint path
+ */
+export function getFileUrl(fileId: string): string {
+  return `${getFilesUrl()}/${fileId}`;
+}
+
+/**
+ * Get files metadata for a specific post
+ * @param postId - The post ID
+ * @returns Post files info endpoint path
+ */
+export function getFilesForPostUrl(postId: string): string {
+  return `${getPostUrl(postId)}/files/info`;
+}
+
+/**
+ * Get the thumbnail URL for an image file
+ * @param fileId - The file ID
+ * @param timestamp - Optional cache-busting timestamp
+ * @returns File thumbnail endpoint path
+ */
+export function getFileThumbnailUrl(
+  fileId: string,
+  timestamp?: number,
+): string {
+  let url = `${getFileUrl(fileId)}/thumbnail`;
+  if (timestamp) {
+    url += `?${timestamp}`;
+  }
+  return url;
+}
+
+/**
+ * Get the preview URL for an image file
+ * @param fileId - The file ID
+ * @param timestamp - Optional cache-busting timestamp
+ * @returns File preview endpoint path
+ */
+export function getFilePreviewUrl(fileId: string, timestamp?: number): string {
+  let url = `${getFileUrl(fileId)}/preview`;
+  if (timestamp) {
+    url += `?${timestamp}`;
+  }
+  return url;
+}
+
+/**
+ * Get the download URL for a file
+ * @param fileId - The file ID
+ * @returns File download endpoint path
+ */
+export function getFileDownloadUrl(fileId: string): string {
+  return getFileUrl(fileId);
+}
+
+//#endregion
+
+//#region Search URLs
+
+/**
+ * Get the search posts API route
+ * @param teamId - Optional team ID for team-scoped search
+ * @returns Search posts endpoint path
+ */
+export function getSearchPostsUrl(teamId?: string): string {
+  if (teamId) {
+    return `${getTeamUrl(teamId)}/posts/search`;
+  }
+  return `${getPostsUrl()}/search`;
+}
+
+/**
+ * Get the flagged posts API route for a user
+ * @param userId - The user ID
+ * @returns Flagged posts endpoint path
+ */
+export function getFlaggedPostsUrl(userId: string): string {
+  return `${getUserUrl(userId)}/posts/flagged`;
+}
+
+/**
+ * Get the pinned posts API route for a channel
+ * @param channelId - The channel ID
+ * @returns Pinned posts endpoint path
+ */
+export function getPinnedPostsUrl(channelId: string): string {
+  return `${getChannelUrl(channelId)}/pinned`;
 }
 
 //#endregion

@@ -52,3 +52,23 @@ export type {
 } from "./useReactionMutation";
 
 //#endregion
+
+//#region Pin Post
+
+export { usePinPostMutation, pinOrUnpinPost } from "./usePinPostMutation";
+export type {
+  IPinPostMutationVariables,
+  IUsePinPostMutationOptions,
+} from "./usePinPostMutation";
+
+//#endregion
+
+//#region Flag Post
+
+export { useFlagPostMutation, flagOrUnflagPost } from "./useFlagPostMutation";
+export type {
+  IFlagPostMutationVariables,
+  IUseFlagPostMutationOptions,
+} from "./useFlagPostMutation";
+
+//#endregion
