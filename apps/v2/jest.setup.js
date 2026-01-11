@@ -63,6 +63,26 @@ jest.mock("@react-native-async-storage/async-storage", () => ({
   clear: jest.fn(),
 }));
 
+// Mock @expo/vector-icons for Icon component tests
+// eslint-disable-next-line no-undef
+jest.mock("@expo/vector-icons", () => {
+  const React = require("react");
+  const { Text } = require("react-native");
+
+  const createIconMock = (familyName) => {
+    const IconMock = ({ name, testID }) =>
+      React.createElement(Text, { testID: testID || `${familyName}-${name}` }, name);
+    IconMock.glyphMap = { close: 0, search: 1, menu: 2, check: 3, times: 4 };
+    return IconMock;
+  };
+
+  return {
+    MaterialCommunityIcons: createIconMock("MaterialCommunityIcons"),
+    Ionicons: createIconMock("Ionicons"),
+    FontAwesome: createIconMock("FontAwesome"),
+  };
+});
+
 // Mock expo-secure-store
 // eslint-disable-next-line no-undef
 jest.mock("expo-secure-store", () => ({
@@ -84,3 +104,34 @@ if (typeof global.structuredClone === "undefined") {
   // eslint-disable-next-line no-undef
   global.structuredClone = (object) => JSON.parse(JSON.stringify(object));
 }
+
+// Mock react-i18next for component tests
+// eslint-disable-next-line no-undef
+jest.mock("react-i18next", () => {
+  // Load actual translations from locale files
+  // eslint-disable-next-line no-undef
+  const translations = require("./src/locales/en.json");
+  return {
+    useTranslation: () => ({
+      t: (key, params) => {
+        let value = translations[key] || key;
+        // Handle interpolation
+        if (params && typeof value === "string") {
+          Object.entries(params).forEach(([paramKey, paramValue]) => {
+            value = value.replace(new RegExp(`{{${paramKey}}}`, "g"), paramValue);
+          });
+        }
+        return value;
+      },
+      i18n: {
+        language: "en",
+        changeLanguage: jest.fn(),
+      },
+    }),
+    initReactI18next: {
+      type: "3rdParty",
+      init: jest.fn(),
+    },
+    Trans: ({ children }) => children,
+  };
+});
