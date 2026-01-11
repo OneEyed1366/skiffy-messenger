@@ -202,7 +202,7 @@ const breakpoints = {
 
 StyleSheet.configure({
   settings: {
-    initialTheme: 'light' satisfies keyof typeof themes,
+    initialTheme: "light" satisfies keyof typeof themes,
   },
   breakpoints,
   themes,

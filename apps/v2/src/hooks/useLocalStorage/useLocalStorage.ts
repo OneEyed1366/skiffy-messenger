@@ -151,7 +151,10 @@ export async function getStorageItem(key: string): Promise<string | null> {
  * @param key - Storage key
  * @param value - Value to store
  */
-export async function setStorageItem(key: string, value: string): Promise<void> {
+export async function setStorageItem(
+  key: string,
+  value: string,
+): Promise<void> {
   if (!isClientSide()) {
     return;
   }
@@ -230,7 +233,9 @@ export async function setMultipleStorageItems(
  *
  * @param keys - Array of storage keys to remove
  */
-export async function removeMultipleStorageItems(keys: string[]): Promise<void> {
+export async function removeMultipleStorageItems(
+  keys: string[],
+): Promise<void> {
   if (!isClientSide()) {
     return;
   }
@@ -307,7 +312,11 @@ export function useLocalStorage<T>(
   key: string,
   options: IUseLocalStorageOptions<T> = {},
 ): IUseLocalStorageReturn<T> {
-  const { defaultValue, serialize = defaultSerialize, deserialize = defaultDeserialize } = options;
+  const {
+    defaultValue,
+    serialize = defaultSerialize,
+    deserialize = defaultDeserialize,
+  } = options;
 
   const [value, setValueState] = useState<T | null>(defaultValue ?? null);
   const [isLoading, setIsLoading] = useState(true);
@@ -347,7 +356,10 @@ export function useLocalStorage<T>(
       }
     } catch (err) {
       const errorObj = err instanceof Error ? err : new Error(String(err));
-      console.error(`Failed to load storage item "${keyRef.current}":`, errorObj);
+      console.error(
+        `Failed to load storage item "${keyRef.current}":`,
+        errorObj,
+      );
       setError(errorObj);
       setValueState(defaultValueRef.current ?? null);
     } finally {
@@ -391,7 +403,10 @@ export function useLocalStorage<T>(
         emit(keyRef.current, valueToStore);
       } catch (err) {
         const errorObj = err instanceof Error ? err : new Error(String(err));
-        console.error(`Failed to set storage item "${keyRef.current}":`, errorObj);
+        console.error(
+          `Failed to set storage item "${keyRef.current}":`,
+          errorObj,
+        );
         setError(errorObj);
         throw errorObj;
       }
@@ -414,7 +429,10 @@ export function useLocalStorage<T>(
       emit(keyRef.current, resetValue);
     } catch (err) {
       const errorObj = err instanceof Error ? err : new Error(String(err));
-      console.error(`Failed to remove storage item "${keyRef.current}":`, errorObj);
+      console.error(
+        `Failed to remove storage item "${keyRef.current}":`,
+        errorObj,
+      );
       setError(errorObj);
       throw errorObj;
     }

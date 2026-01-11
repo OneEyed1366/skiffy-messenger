@@ -3,17 +3,22 @@ import i18next, { Resource, ResourceLanguage } from "i18next";
 import Backend from "i18next-chained-backend";
 import AsyncStoragePlugin from "i18next-react-native-async-storage";
 import { initReactI18next } from "react-i18next";
-import { ILanguageKey, ILanguageTranslations, LANGUAGES_ARRAY, LANGUAGE_KEYS_SET } from "./locales";
+import {
+  ILanguageKey,
+  ILanguageTranslations,
+  LANGUAGES_ARRAY,
+  LANGUAGE_KEYS_SET,
+} from "./locales";
 
-const NS = 'translation' as const
+const NS = "translation" as const;
 
-declare module 'i18next' {
-  type IDefaultNS = typeof NS
+declare module "i18next" {
+  type IDefaultNS = typeof NS;
 
   interface CustomTypeOptions {
     enableSelector: false;
     defaultNS: IDefaultNS;
-    resources:  Record<IDefaultNS, ILanguageTranslations>;
+    resources: Record<IDefaultNS, ILanguageTranslations>;
   }
 }
 
@@ -37,7 +42,7 @@ i18next
         ({
           ...acc,
           [value]: { [NS]: url } satisfies ResourceLanguage,
-        } satisfies Resource),
+        }) satisfies Resource,
       {} as Resource,
     ),
     fallbackLng: "en" satisfies ILanguageKey,

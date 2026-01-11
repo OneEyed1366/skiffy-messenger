@@ -229,7 +229,9 @@ describe("useLocalStorage", () => {
       mockAsyncStorage.setItem.mockResolvedValue();
 
       const serialize = (value: { name: string }) => `custom:${value.name}`;
-      const deserialize = (value: string) => ({ name: value.replace("custom:", "") });
+      const deserialize = (value: string) => ({
+        name: value.replace("custom:", ""),
+      });
 
       const { result } = renderHook(() =>
         useLocalStorage("test-key", { serialize, deserialize }),
@@ -253,7 +255,9 @@ describe("useLocalStorage", () => {
       mockAsyncStorage.getItem.mockResolvedValue("custom:Jane");
 
       const serialize = (value: { name: string }) => `custom:${value.name}`;
-      const deserialize = (value: string) => ({ name: value.replace("custom:", "") });
+      const deserialize = (value: string) => ({
+        name: value.replace("custom:", ""),
+      });
 
       const { result } = renderHook(() =>
         useLocalStorage("test-key", { serialize, deserialize }),
@@ -339,7 +343,9 @@ describe("setStorageItem", () => {
     mockAsyncStorage.setItem.mockRejectedValue(new Error("Write failed"));
     const consoleSpy = jest.spyOn(console, "error").mockImplementation();
 
-    await expect(setStorageItem("key", "value")).rejects.toThrow("Write failed");
+    await expect(setStorageItem("key", "value")).rejects.toThrow(
+      "Write failed",
+    );
 
     consoleSpy.mockRestore();
   });

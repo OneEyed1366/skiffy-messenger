@@ -63,7 +63,9 @@ describe("useClickOutside", () => {
       Platform.OS = "ios";
 
       const handler = jest.fn();
-      const ref = { current: createMockElement() } as unknown as React.RefObject<HTMLDivElement>;
+      const ref = {
+        current: createMockElement(),
+      } as unknown as React.RefObject<HTMLDivElement>;
 
       renderHook(() => useClickOutside(ref, handler));
 
@@ -74,7 +76,9 @@ describe("useClickOutside", () => {
       Platform.OS = "android";
 
       const handler = jest.fn();
-      const ref = { current: createMockElement() } as unknown as React.RefObject<HTMLDivElement>;
+      const ref = {
+        current: createMockElement(),
+      } as unknown as React.RefObject<HTMLDivElement>;
 
       renderHook(() => useClickOutside(ref, handler));
 
@@ -85,7 +89,9 @@ describe("useClickOutside", () => {
   describe("hook structure", () => {
     it("should not throw when called with valid arguments", () => {
       const handler = jest.fn();
-      const ref = { current: createMockElement() } as unknown as React.RefObject<HTMLDivElement>;
+      const ref = {
+        current: createMockElement(),
+      } as unknown as React.RefObject<HTMLDivElement>;
 
       expect(() => {
         renderHook(() => useClickOutside(ref, handler));
@@ -103,7 +109,9 @@ describe("useClickOutside", () => {
 
     it("should not throw with all options provided", () => {
       const handler = jest.fn();
-      const ref = { current: createMockElement() } as unknown as React.RefObject<HTMLDivElement>;
+      const ref = {
+        current: createMockElement(),
+      } as unknown as React.RefObject<HTMLDivElement>;
 
       expect(() => {
         renderHook(() =>
@@ -117,7 +125,9 @@ describe("useClickOutside", () => {
 
     it("should accept all valid event types", () => {
       const handler = jest.fn();
-      const ref = { current: createMockElement() } as unknown as React.RefObject<HTMLDivElement>;
+      const ref = {
+        current: createMockElement(),
+      } as unknown as React.RefObject<HTMLDivElement>;
 
       expect(() => {
         renderHook(() =>
@@ -148,7 +158,9 @@ describe("useClickOutside", () => {
   describe("enabled option", () => {
     it("should not throw when enabled is true", () => {
       const handler = jest.fn();
-      const ref = { current: createMockElement() } as unknown as React.RefObject<HTMLDivElement>;
+      const ref = {
+        current: createMockElement(),
+      } as unknown as React.RefObject<HTMLDivElement>;
 
       expect(() => {
         renderHook(() =>
@@ -161,7 +173,9 @@ describe("useClickOutside", () => {
 
     it("should not throw when enabled is false", () => {
       const handler = jest.fn();
-      const ref = { current: createMockElement() } as unknown as React.RefObject<HTMLDivElement>;
+      const ref = {
+        current: createMockElement(),
+      } as unknown as React.RefObject<HTMLDivElement>;
 
       expect(() => {
         renderHook(() =>
