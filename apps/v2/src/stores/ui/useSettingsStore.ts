@@ -47,7 +47,8 @@ export const useSettingsStore = createStore<ISettingsState>(
 
     setTab: (tab) => set({ activeTab: tab }),
 
-    setHasUnsavedChanges: (hasChanges) => set({ hasUnsavedChanges: hasChanges }),
+    setHasUnsavedChanges: (hasChanges) =>
+      set({ hasUnsavedChanges: hasChanges }),
   }),
   { name: "settings" },
 );

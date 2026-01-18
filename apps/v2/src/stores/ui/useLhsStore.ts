@@ -50,7 +50,8 @@ export const useLhsStore = createStore<ILhsState>(
 
     setActiveTeam: (teamId: string) => set({ activeTeamId: teamId }),
 
-    setActiveChannel: (channelId: string) => set({ activeChannelId: channelId }),
+    setActiveChannel: (channelId: string) =>
+      set({ activeChannelId: channelId }),
 
     toggleCategory: (categoryId: string) =>
       set((state) => {

@@ -2,10 +2,7 @@
 
 import { act } from "@testing-library/react-native";
 
-import {
-  useThreadsViewStore,
-  IThreadsFilter,
-} from "./useThreadsViewStore";
+import { useThreadsViewStore, IThreadsFilter } from "./useThreadsViewStore";
 
 // Mock Platform
 jest.mock("react-native", () => ({
@@ -114,7 +111,9 @@ describe("useThreadsViewStore", () => {
         useThreadsViewStore.getState().selectThread("thread-456");
       });
 
-      expect(useThreadsViewStore.getState().selectedThreadId).toBe("thread-456");
+      expect(useThreadsViewStore.getState().selectedThreadId).toBe(
+        "thread-456",
+      );
     });
 
     it("can select null to deselect", () => {
@@ -384,7 +383,9 @@ describe("useThreadsViewStore", () => {
         useThreadsViewStore.getState().selectThread("thread-second");
       });
 
-      expect(useThreadsViewStore.getState().selectedThreadId).toBe("thread-second");
+      expect(useThreadsViewStore.getState().selectedThreadId).toBe(
+        "thread-second",
+      );
     });
   });
 

@@ -31,6 +31,8 @@ describe("useConnectionStore", () => {
         lastConnected: null,
         reconnectAttempts: 0,
         error: null,
+        lastEventId: null,
+        connectionId: null,
       });
     });
   });
@@ -45,6 +47,8 @@ describe("useConnectionStore", () => {
       expect(state.lastConnected).toBeNull();
       expect(state.reconnectAttempts).toBe(0);
       expect(state.error).toBeNull();
+      expect(state.lastEventId).toBeNull();
+      expect(state.connectionId).toBeNull();
     });
   });
 
@@ -322,6 +326,140 @@ describe("useConnectionStore", () => {
 
   //#endregion resetReconnectAttempts
 
+  //#region setLastEventId
+
+  describe("setLastEventId", () => {
+    it("sets lastEventId to provided value", () => {
+      act(() => {
+        useConnectionStore.getState().setLastEventId("evt_123");
+      });
+
+      expect(useConnectionStore.getState().lastEventId).toBe("evt_123");
+    });
+
+    it("updates existing lastEventId", () => {
+      act(() => {
+        useConnectionStore.setState({ lastEventId: "evt_001" });
+        useConnectionStore.getState().setLastEventId("evt_002");
+      });
+
+      expect(useConnectionStore.getState().lastEventId).toBe("evt_002");
+    });
+
+    it("preserves other state properties", () => {
+      const timestamp = 1234567890;
+
+      act(() => {
+        useConnectionStore.setState({
+          status: "connected",
+          lastConnected: timestamp,
+          reconnectAttempts: 2,
+          error: null,
+          connectionId: "conn_abc",
+        });
+        useConnectionStore.getState().setLastEventId("evt_xyz");
+      });
+
+      const state = useConnectionStore.getState();
+      expect(state.status).toBe("connected");
+      expect(state.lastConnected).toBe(timestamp);
+      expect(state.reconnectAttempts).toBe(2);
+      expect(state.connectionId).toBe("conn_abc");
+      expect(state.lastEventId).toBe("evt_xyz");
+    });
+  });
+
+  //#endregion setLastEventId
+
+  //#region setConnectionId
+
+  describe("setConnectionId", () => {
+    it("sets connectionId to provided value", () => {
+      act(() => {
+        useConnectionStore.getState().setConnectionId("conn_123");
+      });
+
+      expect(useConnectionStore.getState().connectionId).toBe("conn_123");
+    });
+
+    it("updates existing connectionId", () => {
+      act(() => {
+        useConnectionStore.setState({ connectionId: "conn_001" });
+        useConnectionStore.getState().setConnectionId("conn_002");
+      });
+
+      expect(useConnectionStore.getState().connectionId).toBe("conn_002");
+    });
+
+    it("preserves other state properties", () => {
+      const timestamp = 1234567890;
+
+      act(() => {
+        useConnectionStore.setState({
+          status: "connected",
+          lastConnected: timestamp,
+          reconnectAttempts: 2,
+          error: null,
+          lastEventId: "evt_abc",
+        });
+        useConnectionStore.getState().setConnectionId("conn_xyz");
+      });
+
+      const state = useConnectionStore.getState();
+      expect(state.status).toBe("connected");
+      expect(state.lastConnected).toBe(timestamp);
+      expect(state.reconnectAttempts).toBe(2);
+      expect(state.lastEventId).toBe("evt_abc");
+      expect(state.connectionId).toBe("conn_xyz");
+    });
+  });
+
+  //#endregion setConnectionId
+
+  //#region reset
+
+  describe("reset", () => {
+    it("resets all state to initial values", () => {
+      act(() => {
+        useConnectionStore.setState({
+          status: "connected",
+          lastConnected: 1234567890,
+          reconnectAttempts: 5,
+          error: "some error",
+          lastEventId: "evt_123",
+          connectionId: "conn_456",
+        });
+        useConnectionStore.getState().reset();
+      });
+
+      const state = useConnectionStore.getState();
+      expect(state.status).toBe("disconnected");
+      expect(state.lastConnected).toBeNull();
+      expect(state.reconnectAttempts).toBe(0);
+      expect(state.error).toBeNull();
+      expect(state.lastEventId).toBeNull();
+      expect(state.connectionId).toBeNull();
+    });
+
+    it("is idempotent when already at initial state", () => {
+      const initialState = useConnectionStore.getState();
+
+      act(() => {
+        useConnectionStore.getState().reset();
+      });
+
+      const state = useConnectionStore.getState();
+      expect(state.status).toBe(initialState.status);
+      expect(state.lastConnected).toBe(initialState.lastConnected);
+      expect(state.reconnectAttempts).toBe(initialState.reconnectAttempts);
+      expect(state.error).toBe(initialState.error);
+      expect(state.lastEventId).toBe(initialState.lastEventId);
+      expect(state.connectionId).toBe(initialState.connectionId);
+    });
+  });
+
+  //#endregion reset
+
   //#region Integration Scenarios
 
   describe("integration scenarios", () => {
@@ -379,9 +517,9 @@ describe("useConnectionStore", () => {
       expect(useConnectionStore.getState().status).toBe("connected");
       expect(useConnectionStore.getState().reconnectAttempts).toBe(0);
       expect(useConnectionStore.getState().error).toBeNull();
-      expect(useConnectionStore.getState().lastConnected).toBeGreaterThanOrEqual(
-        lastConnected as number,
-      );
+      expect(
+        useConnectionStore.getState().lastConnected,
+      ).toBeGreaterThanOrEqual(lastConnected as number);
     });
 
     it("handles manual reconnect attempts reset", () => {

@@ -2,6 +2,27 @@
 
 import { act } from "@testing-library/react-native";
 
+//#endregion Mocks
+
+// Imports must come AFTER jest.mock declarations
+import { queryClient } from "@/queries";
+
+import { useConnectionStore } from "./connection";
+import { useBrowserStore } from "./ephemeral/useBrowserStore";
+import { useDraftsStore } from "./ephemeral/useDraftsStore";
+import { usePresenceStore } from "./ephemeral/usePresenceStore";
+import { useTypingStore } from "./ephemeral/useTypingStore";
+import { PERSISTED_STORE_KEYS, resetAllState, resetUIState } from "./reset";
+import { useEmojiStore } from "./ui/useEmojiStore";
+import { useLhsStore } from "./ui/useLhsStore";
+import { useModalsStore } from "./ui/useModalsStore";
+import { useRhsStore } from "./ui/useRhsStore";
+import { useSettingsStore } from "./ui/useSettingsStore";
+import { useChannelSidebarStore } from "./views/useChannelSidebarStore";
+import { useChannelViewStore } from "./views/useChannelViewStore";
+import { useSearchStore } from "./views/useSearchStore";
+import { useThreadsViewStore } from "./views/useThreadsViewStore";
+
 //#region Mocks
 
 // Mock localStorage for web tests
@@ -55,31 +76,6 @@ jest.mock("zustand/middleware", () => ({
     removeItem: jest.fn(),
   }),
 }));
-
-//#endregion Mocks
-
-// Imports must come AFTER jest.mock declarations
-import { queryClient } from "@/queries";
-
-import { useConnectionStore } from "./connection";
-import { useBrowserStore } from "./ephemeral/useBrowserStore";
-import { useDraftsStore } from "./ephemeral/useDraftsStore";
-import { usePresenceStore } from "./ephemeral/usePresenceStore";
-import { useTypingStore } from "./ephemeral/useTypingStore";
-import {
-  PERSISTED_STORE_KEYS,
-  resetAllState,
-  resetUIState,
-} from "./reset";
-import { useEmojiStore } from "./ui/useEmojiStore";
-import { useLhsStore } from "./ui/useLhsStore";
-import { useModalsStore } from "./ui/useModalsStore";
-import { useRhsStore } from "./ui/useRhsStore";
-import { useSettingsStore } from "./ui/useSettingsStore";
-import { useChannelSidebarStore } from "./views/useChannelSidebarStore";
-import { useChannelViewStore } from "./views/useChannelViewStore";
-import { useSearchStore } from "./views/useSearchStore";
-import { useThreadsViewStore } from "./views/useThreadsViewStore";
 
 // Get mock reference
 const mockQueryClientClear = queryClient.clear as jest.Mock;

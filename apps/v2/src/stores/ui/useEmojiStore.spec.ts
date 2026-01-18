@@ -619,11 +619,7 @@ describe("useEmojiStore", () => {
         useEmojiStore.getState().addRecentEmoji("❤️");
       });
 
-      expect(useEmojiStore.getState().recentEmojis).toEqual([
-        "❤️",
-        "🎉",
-        "👍",
-      ]);
+      expect(useEmojiStore.getState().recentEmojis).toEqual(["❤️", "🎉", "👍"]);
     });
 
     it("handles empty string as emoji name", () => {

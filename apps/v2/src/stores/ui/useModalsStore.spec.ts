@@ -355,7 +355,9 @@ describe("useModalsStore", () => {
         useStore.getState().closeModal();
       });
 
-      expect(useStore.getState().getCurrentModal()?.type).toBe("create_channel");
+      expect(useStore.getState().getCurrentModal()?.type).toBe(
+        "create_channel",
+      );
     });
 
     it("returns null after closeAllModals", () => {
@@ -428,14 +430,18 @@ describe("useModalsStore", () => {
         useStore.getState().closeModal();
       });
       expect(useStore.getState().stack).toHaveLength(1);
-      expect(useStore.getState().getCurrentModal()?.type).toBe("create_channel");
+      expect(useStore.getState().getCurrentModal()?.type).toBe(
+        "create_channel",
+      );
 
       // Open invite members
       act(() => {
         useStore.getState().openModal("invite_members");
       });
       expect(useStore.getState().stack).toHaveLength(2);
-      expect(useStore.getState().getCurrentModal()?.type).toBe("invite_members");
+      expect(useStore.getState().getCurrentModal()?.type).toBe(
+        "invite_members",
+      );
 
       // Props from first modal should be preserved
       expect(useStore.getState().stack[0].props).toEqual({ teamId: "team-1" });

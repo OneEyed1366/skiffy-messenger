@@ -107,12 +107,16 @@ describe("useChannelViewStore", () => {
         useChannelViewStore.getState().setScrollPosition("channel-1", 150);
       });
 
-      const position = useChannelViewStore.getState().getScrollPosition("channel-1");
+      const position = useChannelViewStore
+        .getState()
+        .getScrollPosition("channel-1");
       expect(position).toBe(150);
     });
 
     it("returns 0 for channel without saved position", () => {
-      const position = useChannelViewStore.getState().getScrollPosition("unknown-channel");
+      const position = useChannelViewStore
+        .getState()
+        .getScrollPosition("unknown-channel");
       expect(position).toBe(0);
     });
   });

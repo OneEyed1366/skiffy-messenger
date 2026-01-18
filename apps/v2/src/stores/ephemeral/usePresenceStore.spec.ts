@@ -330,9 +330,9 @@ describe("usePresenceStore", () => {
         usePresenceStore.getState().setPresence("user-2", "away");
       });
 
-      expect(
-        Object.keys(usePresenceStore.getState().lastActivity).length,
-      ).toBe(2);
+      expect(Object.keys(usePresenceStore.getState().lastActivity).length).toBe(
+        2,
+      );
 
       act(() => {
         usePresenceStore.getState().clearPresences();
