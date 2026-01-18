@@ -352,10 +352,9 @@ describe("useAddReactionMutation", () => {
 
     const onSuccess = jest.fn();
 
-    const { result } = renderHook(
-      () => useAddReactionMutation({ onSuccess }),
-      { wrapper: createWrapper(queryClient) },
-    );
+    const { result } = renderHook(() => useAddReactionMutation({ onSuccess }), {
+      wrapper: createWrapper(queryClient),
+    });
 
     await act(async () => {
       result.current.mutate({
@@ -381,10 +380,9 @@ describe("useAddReactionMutation", () => {
 
     const onError = jest.fn();
 
-    const { result } = renderHook(
-      () => useAddReactionMutation({ onError }),
-      { wrapper: createWrapper(queryClient) },
-    );
+    const { result } = renderHook(() => useAddReactionMutation({ onError }), {
+      wrapper: createWrapper(queryClient),
+    });
 
     const input = {
       post_id: "post-123",

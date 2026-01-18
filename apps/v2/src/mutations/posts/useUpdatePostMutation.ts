@@ -42,7 +42,11 @@ type IUpdatePostContext = {
  */
 export type IUseUpdatePostMutationOptions = {
   onSuccess?: (post: IPost) => void;
-  onError?: (error: Error, variables: IUpdatePostInput, context: IUpdatePostContext | undefined) => void;
+  onError?: (
+    error: Error,
+    variables: IUpdatePostInput,
+    context: IUpdatePostContext | undefined,
+  ) => void;
   onSettled?: () => void;
 };
 
@@ -98,19 +102,16 @@ export function useUpdatePostMutation(options?: IUseUpdatePostMutationOptions) {
 
       // Optimistically update to the new value
       if (previousPost) {
-        queryClient.setQueryData<IPost>(
-          queryKeys.posts.detail(input.post_id),
-          {
-            ...previousPost,
-            message: input.message ?? previousPost.message,
-            is_pinned: input.is_pinned ?? previousPost.is_pinned,
-            props: input.props ?? previousPost.props,
-            metadata: input.metadata
-              ? { ...previousPost.metadata, ...input.metadata }
-              : previousPost.metadata,
-            update_at: Date.now(),
-          },
-        );
+        queryClient.setQueryData<IPost>(queryKeys.posts.detail(input.post_id), {
+          ...previousPost,
+          message: input.message ?? previousPost.message,
+          is_pinned: input.is_pinned ?? previousPost.is_pinned,
+          props: input.props ?? previousPost.props,
+          metadata: input.metadata
+            ? { ...previousPost.metadata, ...input.metadata }
+            : previousPost.metadata,
+          update_at: Date.now(),
+        });
       }
 
       return { previousPost };

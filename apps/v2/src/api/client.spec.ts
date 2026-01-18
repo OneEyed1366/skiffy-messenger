@@ -271,7 +271,11 @@ describe("ApiClient Fetch", () => {
         status_code: 404,
         id: "api.user.not_found",
       };
-      mockFetch(errorResponse, { ok: false, status: 404, statusText: "Not Found" });
+      mockFetch(errorResponse, {
+        ok: false,
+        status: 404,
+        statusText: "Not Found",
+      });
 
       await expect(
         apiClient.fetch("https://api.example.com/api/v4/users/unknown"),
@@ -324,7 +328,9 @@ describe("ApiClient Fetch", () => {
         json: jest.fn(),
       });
 
-      const result = await apiClient.fetch("https://api.example.com/api/v4/delete");
+      const result = await apiClient.fetch(
+        "https://api.example.com/api/v4/delete",
+      );
 
       expect(result).toBeUndefined();
     });
@@ -461,7 +467,10 @@ describe("ApiError", () => {
   });
 
   it("uses response message as error message", () => {
-    const error = new ApiError(404, { message: "User not found", status_code: 404 });
+    const error = new ApiError(404, {
+      message: "User not found",
+      status_code: 404,
+    });
     expect(error.message).toBe("User not found");
   });
 

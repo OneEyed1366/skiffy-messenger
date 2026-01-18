@@ -89,12 +89,9 @@ describe("useLeaveTeamMutation", () => {
     mockApiClient.delete.mockResolvedValueOnce(mockResponse);
     const onSuccess = jest.fn();
 
-    const { result } = renderHook(
-      () => useLeaveTeamMutation({ onSuccess }),
-      {
-        wrapper: createWrapper(queryClient),
-      },
-    );
+    const { result } = renderHook(() => useLeaveTeamMutation({ onSuccess }), {
+      wrapper: createWrapper(queryClient),
+    });
 
     await act(async () => {
       result.current.mutate({

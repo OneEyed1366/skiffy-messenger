@@ -48,7 +48,11 @@ type IReactionContext = {
  */
 export type IUseAddReactionMutationOptions = {
   onSuccess?: (reaction: IReaction) => void;
-  onError?: (error: Error, variables: IAddReactionInput, context: IReactionContext | undefined) => void;
+  onError?: (
+    error: Error,
+    variables: IAddReactionInput,
+    context: IReactionContext | undefined,
+  ) => void;
   onSettled?: () => void;
 };
 
@@ -57,7 +61,11 @@ export type IUseAddReactionMutationOptions = {
  */
 export type IUseRemoveReactionMutationOptions = {
   onSuccess?: () => void;
-  onError?: (error: Error, variables: IRemoveReactionInput, context: IReactionContext | undefined) => void;
+  onError?: (
+    error: Error,
+    variables: IRemoveReactionInput,
+    context: IReactionContext | undefined,
+  ) => void;
   onSettled?: () => void;
 };
 
@@ -98,7 +106,9 @@ function getReactionUrl(
  * @param input - Reaction input
  * @returns Created reaction
  */
-export async function addReaction(input: IAddReactionInput): Promise<IReaction> {
+export async function addReaction(
+  input: IAddReactionInput,
+): Promise<IReaction> {
   const url = getReactionsUrl(input.post_id);
   return apiClient.post<IReaction>(url, {
     user_id: input.user_id,

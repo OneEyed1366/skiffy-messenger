@@ -258,10 +258,9 @@ describe("useFollowThreadMutation", () => {
 
     const onError = jest.fn();
 
-    const { result } = renderHook(
-      () => useFollowThreadMutation({ onError }),
-      { wrapper: createWrapper(queryClient) },
-    );
+    const { result } = renderHook(() => useFollowThreadMutation({ onError }), {
+      wrapper: createWrapper(queryClient),
+    });
 
     await act(async () => {
       result.current.mutate({

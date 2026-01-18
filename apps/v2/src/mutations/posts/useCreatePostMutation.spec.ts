@@ -242,10 +242,9 @@ describe("useCreatePostMutation", () => {
 
     const onSuccess = jest.fn();
 
-    const { result } = renderHook(
-      () => useCreatePostMutation({ onSuccess }),
-      { wrapper: createWrapper(queryClient) },
-    );
+    const { result } = renderHook(() => useCreatePostMutation({ onSuccess }), {
+      wrapper: createWrapper(queryClient),
+    });
 
     await act(async () => {
       result.current.mutate({
@@ -268,10 +267,9 @@ describe("useCreatePostMutation", () => {
 
     const onError = jest.fn();
 
-    const { result } = renderHook(
-      () => useCreatePostMutation({ onError }),
-      { wrapper: createWrapper(queryClient) },
-    );
+    const { result } = renderHook(() => useCreatePostMutation({ onError }), {
+      wrapper: createWrapper(queryClient),
+    });
 
     await act(async () => {
       result.current.mutate({
@@ -293,10 +291,9 @@ describe("useCreatePostMutation", () => {
 
     const onSettled = jest.fn();
 
-    const { result } = renderHook(
-      () => useCreatePostMutation({ onSettled }),
-      { wrapper: createWrapper(queryClient) },
-    );
+    const { result } = renderHook(() => useCreatePostMutation({ onSettled }), {
+      wrapper: createWrapper(queryClient),
+    });
 
     await act(async () => {
       result.current.mutate({

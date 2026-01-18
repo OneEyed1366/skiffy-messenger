@@ -301,10 +301,9 @@ describe("useDeletePostMutation", () => {
 
     const onSuccess = jest.fn();
 
-    const { result } = renderHook(
-      () => useDeletePostMutation({ onSuccess }),
-      { wrapper: createWrapper(queryClient) },
-    );
+    const { result } = renderHook(() => useDeletePostMutation({ onSuccess }), {
+      wrapper: createWrapper(queryClient),
+    });
 
     await act(async () => {
       result.current.mutate({
@@ -329,10 +328,9 @@ describe("useDeletePostMutation", () => {
 
     const onError = jest.fn();
 
-    const { result } = renderHook(
-      () => useDeletePostMutation({ onError }),
-      { wrapper: createWrapper(queryClient) },
-    );
+    const { result } = renderHook(() => useDeletePostMutation({ onError }), {
+      wrapper: createWrapper(queryClient),
+    });
 
     const input = {
       post_id: "post-123",
@@ -360,10 +358,9 @@ describe("useDeletePostMutation", () => {
 
     const onSettled = jest.fn();
 
-    const { result } = renderHook(
-      () => useDeletePostMutation({ onSettled }),
-      { wrapper: createWrapper(queryClient) },
-    );
+    const { result } = renderHook(() => useDeletePostMutation({ onSettled }), {
+      wrapper: createWrapper(queryClient),
+    });
 
     await act(async () => {
       result.current.mutate({

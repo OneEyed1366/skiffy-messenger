@@ -89,7 +89,10 @@ export function useMarkThreadReadMutation(
     onSuccess: (thread, variables) => {
       // Invalidate the thread detail query
       queryClient.invalidateQueries({
-        queryKey: queryKeys.threads.detail(variables.user_id, variables.thread_id),
+        queryKey: queryKeys.threads.detail(
+          variables.user_id,
+          variables.thread_id,
+        ),
       });
 
       options?.onSuccess?.(thread);

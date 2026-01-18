@@ -39,7 +39,11 @@ type IDeletePostContext = {
  */
 export type IUseDeletePostMutationOptions = {
   onSuccess?: (postId: string) => void;
-  onError?: (error: Error, variables: IDeletePostInput, context: IDeletePostContext | undefined) => void;
+  onError?: (
+    error: Error,
+    variables: IDeletePostInput,
+    context: IDeletePostContext | undefined,
+  ) => void;
   onSettled?: () => void;
 };
 

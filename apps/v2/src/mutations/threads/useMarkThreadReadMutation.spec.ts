@@ -107,10 +107,7 @@ describe("markThreadRead", () => {
 
     await markThreadRead(input);
 
-    expect(mockApiPut).toHaveBeenCalledWith(
-      expect.any(String),
-      { timestamp },
-    );
+    expect(mockApiPut).toHaveBeenCalledWith(expect.any(String), { timestamp });
   });
 
   it("propagates API errors", async () => {

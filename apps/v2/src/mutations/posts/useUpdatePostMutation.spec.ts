@@ -297,10 +297,9 @@ describe("useUpdatePostMutation", () => {
 
     const onSuccess = jest.fn();
 
-    const { result } = renderHook(
-      () => useUpdatePostMutation({ onSuccess }),
-      { wrapper: createWrapper(queryClient) },
-    );
+    const { result } = renderHook(() => useUpdatePostMutation({ onSuccess }), {
+      wrapper: createWrapper(queryClient),
+    });
 
     await act(async () => {
       result.current.mutate({
@@ -325,10 +324,9 @@ describe("useUpdatePostMutation", () => {
 
     const onError = jest.fn();
 
-    const { result } = renderHook(
-      () => useUpdatePostMutation({ onError }),
-      { wrapper: createWrapper(queryClient) },
-    );
+    const { result } = renderHook(() => useUpdatePostMutation({ onError }), {
+      wrapper: createWrapper(queryClient),
+    });
 
     const input = {
       post_id: "post-123",

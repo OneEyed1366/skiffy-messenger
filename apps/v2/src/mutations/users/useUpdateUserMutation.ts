@@ -135,7 +135,10 @@ export function useUpdateUserMutation(options?: IUseUpdateUserMutationOptions) {
             locale: input.locale ?? previousUser.locale,
             timezone:
               input.timezone && previousUser.timezone
-                ? ({ ...previousUser.timezone, ...input.timezone } as IUserTimezone)
+                ? ({
+                    ...previousUser.timezone,
+                    ...input.timezone,
+                  } as IUserTimezone)
                 : previousUser.timezone,
             notify_props: input.notify_props
               ? { ...previousUser.notify_props, ...input.notify_props }
@@ -159,7 +162,10 @@ export function useUpdateUserMutation(options?: IUseUpdateUserMutationOptions) {
           locale: input.locale ?? previousCurrentUser.locale,
           timezone:
             input.timezone && previousCurrentUser.timezone
-              ? ({ ...previousCurrentUser.timezone, ...input.timezone } as IUserTimezone)
+              ? ({
+                  ...previousCurrentUser.timezone,
+                  ...input.timezone,
+                } as IUserTimezone)
               : previousCurrentUser.timezone,
           notify_props: input.notify_props
             ? { ...previousCurrentUser.notify_props, ...input.notify_props }
