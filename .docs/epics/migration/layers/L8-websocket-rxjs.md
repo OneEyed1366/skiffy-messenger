@@ -17,18 +17,19 @@ to these streams for real-time state updates.
 
 ## Tasks
 
-| ID                                           | Name                    | Status  | Est. | Description                               |
-| -------------------------------------------- | ----------------------- | ------- | ---- | ----------------------------------------- |
-| [T8.01](../tasks/T8.01-websocket-service.md) | WebSocket Service       | pending | 4h   | Core socket$, connection management       |
-| [T8.02](../tasks/T8.02-websocket-events.md)  | Event Streams           | pending | 6h   | Typed streams (posts$, typing$, etc)      |
-| [T8.03](../tasks/T8.03-operator-debounce.md) | debounceAfterN Operator | pending | 1.5h | Custom operator for vendor-matching batch |
+| ID     | Name                    | Status | Est. | Description                               |
+| ------ | ----------------------- | ------ | ---- | ----------------------------------------- |
+| T8.01  | WebSocket Service       | done   | 4h   | Core socket$, connection management       |
+| T8.02  | Event Streams           | done   | 6h   | Typed streams (18 streams implemented)    |
+| T8.03  | debounceAfterN Operator | done   | 1.5h | Custom operator for vendor-matching batch |
+| T8.04  | Subscriptions Layer     | done   | 3h   | Integration with TQ cache + Zustand       |
 
 ## Progress
 
-- Total: 3
-- Done: 0
+- Total: 4
+- Done: 4
 - In Progress: 0
-- Pending: 3
+- Pending: 0
 
 ## Architecture
 
@@ -36,7 +37,7 @@ to these streams for real-time state updates.
 ┌─────────────────────────────────────────────────────────────────┐
 │                        WebSocket Server                          │
 └──────────────────────────────┬──────────────────────────────────┘
-                               │ 90+ event types
+                               │ 82 event types (19 categories)
                                ▼
 ┌─────────────────────────────────────────────────────────────────┐
 │                    RxJS WebSocket Layer                          │
@@ -46,13 +47,15 @@ to these streams for real-time state updates.
 │         │                                                        │
 │         ├──► posts$      ─► debounceAfterN(5, 100, 200)         │
 │         ├──► typing$     ─► groupBy + switchMap + timer         │
-│         ├──► channels$   ─► filter by event type                │
-│         ├──► users$      ─► distinctUntilKeyChanged             │
-│         ├──► teams$      ─► filter by event type                │
+│         ├──► channels$   ─► filter + map                        │
+│         ├──► users$      ─► distinctUntilChanged                │
+│         ├──► teams$      ─► filter + map                        │
 │         ├──► reactions$  ─► throttleTime(500)                   │
-│         ├──► threads$    ─► filter by event type                │
-│         ├──► preferences$ ─► filter by event type               │
-│         └──► system$     ─► connection events                   │
+│         ├──► threads$    ─► filter + map                        │
+│         ├──► preferences$ ─► filter + map                       │
+│         ├──► system$     ─► connection events                   │
+│         ├──► sidebar$, drafts$, dialogs$, apps$, ...            │
+│         └──► (19 streams total)                                 │
 │                                                                  │
 │  Bundle: ~8-12kb gzipped (tree-shaken)                          │
 └──────────────────────────────┬──────────────────────────────────┘
@@ -74,42 +77,58 @@ to these streams for real-time state updates.
 apps/v2/src/services/websocket/
 ├── index.ts                 # Re-exports
 ├── socket.ts                # T8.01 - Core WebSocket connection
-├── streams/                 # T8.02 - Event stream definitions
+├── subscriptions.ts         # T8.04 - TQ cache + Zustand integration
+├── streams/                 # T8.02 - Event stream definitions (19 files)
 │   ├── index.ts
-│   ├── posts$.ts            # Uses debounceAfterN
-│   ├── typing$.ts           # Uses switchMap + merge
+│   ├── posts$.ts            # Uses debounceAfterN(5, 100, 200)
+│   ├── typing$.ts           # Uses switchMap + merge + timer
 │   ├── channels$.ts
 │   ├── users$.ts            # Uses distinctUntilChanged
 │   ├── teams$.ts
-│   ├── reactions$.ts        # Uses throttleTime
+│   ├── reactions$.ts        # Uses throttleTime(500)
 │   ├── threads$.ts
 │   ├── preferences$.ts
-│   └── system$.ts
+│   ├── system$.ts
+│   ├── sidebar$.ts
+│   ├── drafts$.ts
+│   ├── dialogs$.ts
+│   ├── apps$.ts
+│   ├── bookmarks$.ts
+│   ├── burnOnRead$.ts
+│   ├── cloud$.ts
+│   ├── groups$.ts
+│   ├── roles$.ts
+│   └── scheduledPosts$.ts
 ├── operators/               # T8.03 - Custom RxJS operators
 │   ├── index.ts
 │   └── debounceAfterN.ts    # Vendor-matching post batching
 ├── types.ts                 # WebSocket event types
-└── constants.ts             # Event names, timeouts
+└── constants.ts             # Event names, timeouts (WS_EVENTS, WS_TIMEOUTS)
 ```
 
-## Event Categories (90+ Events from Vendor)
+## Event Categories (82 Events from Vendor)
 
-| Category    | Count | Events                                                                                  |
-| ----------- | ----- | --------------------------------------------------------------------------------------- |
-| Posts       | 12    | `posted`, `post_edited`, `post_deleted`, `post_unread`, `ephemeral_message`, etc.       |
-| Channels    | 15    | `channel_created`, `channel_deleted`, `channel_updated`, `channel_member_updated`, etc. |
-| Teams       | 8     | `added_to_team`, `leave_team`, `update_team`, `delete_team`, etc.                       |
-| Users       | 6     | `user_added`, `user_removed`, `user_updated`, `status_change`, etc.                     |
-| Typing      | 2     | `typing`, `stop_typing`                                                                 |
-| Reactions   | 3     | `reaction_added`, `reaction_removed`, `emoji_added`                                     |
-| Threads     | 3     | `thread_updated`, `thread_follow_changed`, `thread_read_changed`                        |
-| Preferences | 3     | `preference_changed`, `preferences_changed`, `preferences_deleted`                      |
-| Sidebar     | 4     | `sidebar_category_created`, `sidebar_category_updated`, etc.                            |
-| Drafts      | 3     | `draft_created`, `draft_updated`, `draft_deleted`                                       |
-| Groups      | 8     | `received_group`, `group_member_add`, `group_member_deleted`, etc.                      |
-| Roles       | 4     | `role_added`, `role_removed`, `role_updated`, `memberrole_updated`                      |
-| Plugins     | 4     | `plugin_enabled`, `plugin_disabled`, `plugin_statuses_changed`, etc.                    |
-| System      | 10+   | `hello`, `config_changed`, `license_changed`, etc.                                      |
+| Category       | Count | Events                                                                            |
+| -------------- | ----- | --------------------------------------------------------------------------------- |
+| Posts          | 7     | `posted`, `post_edited`, `post_deleted`, `post_unread`, `ephemeral_message`, etc. |
+| Channels       | 11    | `channel_created`, `channel_deleted`, `channel_updated`, `direct_added`, etc.     |
+| Teams          | 8     | `added_to_team`, `leave_team`, `update_team`, `delete_team`, etc.                 |
+| Users          | 6     | `user_added`, `user_removed`, `user_updated`, `status_change`, etc.               |
+| Typing         | 1     | `typing`                                                                          |
+| Reactions      | 3     | `reaction_added`, `reaction_removed`, `emoji_added`                               |
+| Threads        | 3     | `thread_updated`, `thread_follow_changed`, `thread_read_changed`                  |
+| Preferences    | 3     | `preference_changed`, `preferences_changed`, `preferences_deleted`                |
+| Sidebar        | 4     | `sidebar_category_created`, `sidebar_category_updated`, etc.                      |
+| Drafts         | 3     | `draft_created`, `draft_updated`, `draft_deleted`                                 |
+| Groups         | 8     | `received_group`, `group_member_add`, `group_member_deleted`, etc.                |
+| Roles          | 4     | `role_added`, `role_removed`, `role_updated`, `memberrole_updated`                |
+| System         | 8     | `hello`, `config_changed`, `license_changed`, `plugin_enabled`, etc.              |
+| Dialog         | 1     | `open_dialog`                                                                     |
+| Apps           | 1     | `apps_framework_refresh_bindings`                                                 |
+| Bookmarks      | 2     | `channel_bookmark_created`, `channel_bookmark_deleted`                            |
+| Burn on Read   | 3     | `burn_on_read_message_created`, `burn_on_read_message_deleted`, etc.              |
+| Cloud          | 3     | `cloud_payment_status_updated`, `cloud_subscription_changed`, etc.                |
+| Scheduled Post | 3     | `scheduled_post_created`, `scheduled_post_updated`, `scheduled_post_deleted`      |
 
 ## RxJS Operators Used
 
@@ -280,31 +299,44 @@ export const websocketService = new WebSocketService();
 ### posts$.ts
 
 ```typescript
-import { filter, bufferTime, map } from "rxjs";
-import { websocketService } from "../socket";
+import { filter, mergeMap, of, share } from "rxjs";
+import { websocketService, IWebSocketEvent } from "../socket";
+import { debounceAfterN } from "../operators";
 import type { IPost } from "@/types";
 
-type IPostEvent = {
-  event: "posted" | "post_edited" | "post_deleted";
-  data: { post: string }; // JSON stringified post
-};
+const POST_EVENTS = [
+  "posted",
+  "post_edited",
+  "post_deleted",
+  "post_unread",
+  "ephemeral_message",
+  "post_acknowledgement_added",
+  "post_acknowledgement_removed",
+] as const;
+
+type IPostEventType = (typeof POST_EVENTS)[number];
 
 /**
- * Post events batched at 100ms intervals.
- * Matches vendor debouncePostEvent behavior.
+ * Post events with vendor-matching debounce behavior.
+ *
+ * Uses debounceAfterN operator (T8.03):
+ * - First 5 events: emitted IMMEDIATELY (no latency)
+ * - Events 6+: batched and flushed after 100ms of silence
+ * - Max queue: 200 events before overflow protection
  */
 export const posts$ = websocketService.events$.pipe(
-  filter((msg): msg is IPostEvent =>
-    ["posted", "post_edited", "post_deleted"].includes(msg.event),
+  filter((msg) => POST_EVENTS.includes(msg.event as IPostEventType)),
+  debounceAfterN(5, 100, 200), // First 5 immediate, then batch
+  mergeMap((batch) =>
+    of(
+      ...batch.map((msg) => ({
+        type: msg.event as IPostEventType,
+        post: JSON.parse(msg.data.post) as IPost,
+        channelId: msg.data.channel_id || msg.broadcast?.channel_id || "",
+      })),
+    ),
   ),
-  bufferTime(100),
-  filter((batch) => batch.length > 0),
-  map((batch) =>
-    batch.map((msg) => ({
-      type: msg.event as "posted" | "post_edited" | "post_deleted",
-      post: JSON.parse(msg.data.post) as IPost,
-    })),
-  ),
+  share(),
 );
 ```
 
