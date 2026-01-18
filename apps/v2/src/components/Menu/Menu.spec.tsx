@@ -305,7 +305,11 @@ describe("<MenuItem />", () => {
     it("closes menu on press by default", async () => {
       const onOpenChange = jest.fn();
       const { getByText } = render(
-        <Menu trigger={<Text>Open</Text>} open={true} onOpenChange={onOpenChange}>
+        <Menu
+          trigger={<Text>Open</Text>}
+          open={true}
+          onOpenChange={onOpenChange}
+        >
           <MenuItem label="Click me" onPress={() => {}} />
         </Menu>,
       );
@@ -323,7 +327,11 @@ describe("<MenuItem />", () => {
     it("keeps menu open with keepOpen=true", async () => {
       const onOpenChange = jest.fn();
       const { getByText } = render(
-        <Menu trigger={<Text>Open</Text>} open={true} onOpenChange={onOpenChange}>
+        <Menu
+          trigger={<Text>Open</Text>}
+          open={true}
+          onOpenChange={onOpenChange}
+        >
           <MenuItem label="Keep open" onPress={() => {}} keepOpen />
         </Menu>,
       );
@@ -492,7 +500,9 @@ describe("<MenuHeader />", () => {
         <MenuHeader title="This is a very long header title that should be truncated" />
       </Menu>,
     );
-    const header = getByText("This is a very long header title that should be truncated");
+    const header = getByText(
+      "This is a very long header title that should be truncated",
+    );
     expect(header.props.numberOfLines).toBe(1);
   });
 });

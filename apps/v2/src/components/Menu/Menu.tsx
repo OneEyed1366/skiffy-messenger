@@ -9,13 +9,7 @@
  */
 
 import { createContext, useContext, useEffect, useRef, useState } from "react";
-import {
-  Modal,
-  Platform,
-  Pressable,
-  ScrollView,
-  View,
-} from "react-native";
+import { Modal, Platform, Pressable, ScrollView, View } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
 
 //#region Types
@@ -197,11 +191,22 @@ function getMenuPositionStyle(
     case "bottom-start":
       return { top: y + height + 4, left: x };
     case "bottom-end":
-      return { top: y + height + 4, left: x + width, transform: [{ translateX: -200 }] } as { top: number; left: number };
+      return {
+        top: y + height + 4,
+        left: x + width,
+        transform: [{ translateX: -200 }],
+      } as { top: number; left: number };
     case "top-start":
-      return { top: y - 4, left: x, transform: [{ translateY: -200 }] } as { top: number; left: number };
+      return { top: y - 4, left: x, transform: [{ translateY: -200 }] } as {
+        top: number;
+        left: number;
+      };
     case "top-end":
-      return { top: y - 4, left: x + width, transform: [{ translateX: -200 }, { translateY: -200 }] } as { top: number; left: number };
+      return {
+        top: y - 4,
+        left: x + width,
+        transform: [{ translateX: -200 }, { translateY: -200 }],
+      } as { top: number; left: number };
     default:
       return { top: y + height + 4, left: x };
   }

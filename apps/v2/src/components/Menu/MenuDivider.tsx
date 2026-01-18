@@ -23,11 +23,7 @@ type IProps = {
 
 export function MenuDivider({ testID }: IProps) {
   return (
-    <View
-      style={styles.divider}
-      accessibilityRole="none"
-      testID={testID}
-    />
+    <View style={styles.divider} accessibilityRole="none" testID={testID} />
   );
 }
 

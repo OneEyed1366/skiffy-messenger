@@ -123,7 +123,9 @@ export function TextArea({
     : false;
   const isAtLimit = maxLength ? characterCount >= maxLength : false;
 
-  const handleContentSizeChange: TextInputProps["onContentSizeChange"] = (e) => {
+  const handleContentSizeChange: TextInputProps["onContentSizeChange"] = (
+    e,
+  ) => {
     const contentHeight = e.nativeEvent.contentSize.height;
     const newHeight = Math.min(Math.max(contentHeight, minHeight), maxHeight);
     setHeight(newHeight);

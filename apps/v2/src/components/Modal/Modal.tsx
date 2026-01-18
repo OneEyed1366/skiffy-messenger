@@ -190,7 +190,14 @@ export function Modal({
         onExited?.();
       });
     }
-  }, [visible, backdropOpacity, contentOpacity, contentTranslateY, onEntered, onExited]);
+  }, [
+    visible,
+    backdropOpacity,
+    contentOpacity,
+    contentTranslateY,
+    onEntered,
+    onExited,
+  ]);
 
   // Handle escape key (desktop/web)
   useEffect(() => {
@@ -234,9 +241,7 @@ export function Modal({
     >
       <View style={styles.container} ref={ref}>
         {/* Backdrop */}
-        <Animated.View
-          style={[styles.backdrop, { opacity: backdropOpacity }]}
-        >
+        <Animated.View style={[styles.backdrop, { opacity: backdropOpacity }]}>
           <Pressable
             style={styles.backdropPressable}
             onPress={handleBackdropPress}
@@ -259,10 +264,18 @@ export function Modal({
         >
           {/* Header */}
           {hasHeader && (
-            <View style={styles.header} testID={testID ? `${testID}-header` : undefined}>
+            <View
+              style={styles.header}
+              testID={testID ? `${testID}-header` : undefined}
+            >
               <View style={styles.headerTitle}>
                 {displayTitle && (
-                  <Text variant="heading" size="lg" weight="semiBold" testID={testID ? `${testID}-title` : undefined}>
+                  <Text
+                    variant="heading"
+                    size="lg"
+                    weight="semiBold"
+                    testID={testID ? `${testID}-title` : undefined}
+                  >
                     {displayTitle}
                   </Text>
                 )}
@@ -290,7 +303,10 @@ export function Modal({
 
           {/* Footer */}
           {footer && (
-            <View style={styles.footer} testID={testID ? `${testID}-footer` : undefined}>
+            <View
+              style={styles.footer}
+              testID={testID ? `${testID}-footer` : undefined}
+            >
               {footer}
             </View>
           )}

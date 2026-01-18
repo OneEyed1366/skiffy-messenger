@@ -63,7 +63,12 @@ describe("<Modal />", () => {
     it("does not call onClose when backdrop is pressed and dismissOnBackdrop is false", () => {
       const onClose = jest.fn();
       const { getByLabelText } = render(
-        <Modal visible onClose={onClose} dismissOnBackdrop={false} testID="modal">
+        <Modal
+          visible
+          onClose={onClose}
+          dismissOnBackdrop={false}
+          testID="modal"
+        >
           <Text>Content</Text>
         </Modal>,
       );
@@ -90,7 +95,12 @@ describe("<Modal />", () => {
 
     it("hides close button when showCloseButton is false", () => {
       const { queryByLabelText } = render(
-        <Modal visible onClose={jest.fn()} showCloseButton={false} testID="modal">
+        <Modal
+          visible
+          onClose={jest.fn()}
+          showCloseButton={false}
+          testID="modal"
+        >
           <Text>Content</Text>
         </Modal>,
       );
@@ -139,7 +149,13 @@ describe("<Modal />", () => {
 
     it("prioritizes titleKey over title when both provided", () => {
       const { getByText, queryByText } = render(
-        <Modal visible onClose={jest.fn()} title="String Title" titleKey="label.save" testID="modal">
+        <Modal
+          visible
+          onClose={jest.fn()}
+          title="String Title"
+          titleKey="label.save"
+          testID="modal"
+        >
           <Text>Content</Text>
         </Modal>,
       );
@@ -150,7 +166,12 @@ describe("<Modal />", () => {
 
     it("renders without header when no title and showCloseButton is false", () => {
       const { queryByTestId } = render(
-        <Modal visible onClose={jest.fn()} showCloseButton={false} testID="modal">
+        <Modal
+          visible
+          onClose={jest.fn()}
+          showCloseButton={false}
+          testID="modal"
+        >
           <Text>Content</Text>
         </Modal>,
       );
@@ -286,7 +307,12 @@ describe("<Modal />", () => {
 
       // Close modal
       rerender(
-        <Modal visible={false} onClose={jest.fn()} onExited={onExited} testID="modal">
+        <Modal
+          visible={false}
+          onClose={jest.fn()}
+          onExited={onExited}
+          testID="modal"
+        >
           <Text>Content</Text>
         </Modal>,
       );
